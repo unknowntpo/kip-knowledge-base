@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Expose the secret as a job env so the deploy step can be gated on its presence.
+    env:
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     defaults:
       run:
         working-directory: viewer
@@ -22,6 +25,9 @@ jobs:
       - run: npm test
       - run: npm run build # prebuild regenerates data from ../vault
       - name: Deploy to Cloudflare Pages
+        # Skipped (not failed) until CLOUDFLARE_API_TOKEN is set on the repo.
+        # Local `npm run deploy` uses your wrangler OAuth login instead.
+        if: ${{ env.CF_API_TOKEN != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
