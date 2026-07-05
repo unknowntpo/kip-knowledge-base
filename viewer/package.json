@@ -10,7 +10,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "deploy": "npm run build && npx --yes wrangler pages deploy",
+    "cf:dev": "npm run build && npx --yes wrangler pages dev dist"
   },
   "dependencies": {
     "react": "^18.3.1",

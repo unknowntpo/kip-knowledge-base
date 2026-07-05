@@ -23,7 +23,7 @@ viewer/                 "our own viewer" — React + TS + Vite SPA
   src/                      TopBar, Browse, Detail, Ask views (routes /, /kip/:id, /ask)
   test/parse.test.ts        round-trips the vault losslessly against the seed
 tools/kips.seed.json    canonical import snapshot (provenance + parser fixture)
-.github/workflows/      GitHub Pages deploy for the viewer
+.github/workflows/      Cloudflare Pages deploy for the viewer
 ```
 
 ## KIP note format
@@ -66,13 +66,19 @@ cd viewer
 npm install
 npm run dev        # http://localhost:5173  (predev regenerates data from ../vault)
 npm test           # parser round-trip
-npm run build      # production build (base /kip-knowledge-base/ for Pages)
+npm run build      # production build (served at the domain root on Cloudflare Pages)
+npm run deploy     # build + wrangler pages deploy   (run `npx wrangler login` once first)
 ```
 
-## Deploy
+## Deploy — Cloudflare Pages
 
-Pushing to `main` builds the viewer and publishes it to GitHub Pages
-(`.github/workflows/deploy-pages.yml`). Enable Pages → *Source: GitHub Actions*.
+Hosted on **Cloudflare Pages** (`kip-knowledge-base.pages.dev`). Two ways to ship:
+
+- **Local:** `cd viewer && npx wrangler login` once, then `npm run deploy`.
+- **CI:** pushing to `main` runs `.github/workflows/deploy-cf-pages.yml`
+  (`npm ci → test → build → wrangler pages deploy`). Add two repo secrets:
+  `CLOUDFLARE_API_TOKEN` (token with the *Cloudflare Pages: Edit* permission) and
+  `CLOUDFLARE_ACCOUNT_ID`. Project config lives in `viewer/wrangler.toml`.
 
 ## Ask AI (deferred)
 

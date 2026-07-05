@@ -1,0 +1,6 @@
+# Cloudflare Pages project config. Lets `wrangler pages deploy` (no args) find
+# the project name + build output. Static-only for now; add [[r2_buckets]] /
+# functions/ later if Ask AI needs an edge API (see cloudflare-quickship skill §4).
+name = "kip-knowledge-base"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-07-05"
