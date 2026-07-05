@@ -1,0 +1,781 @@
+[
+  {
+    "id": "KIP-500",
+    "title": "Replace ZooKeeper with a Self-Managed Metadata Quorum",
+    "status": "Adopted",
+    "category": "Cluster Architecture",
+    "release": "2.8 (EA) → 3.3 (prod)",
+    "authors": "Colin McCabe, Jason Gustafson",
+    "tags": [
+      "KRaft",
+      "Metadata",
+      "Controller",
+      "Scalability"
+    ],
+    "summary": "Removes Kafka's dependency on ZooKeeper by storing all cluster metadata in an internal Raft-based quorum run by the controllers themselves.",
+    "motivation": [
+      "ZooKeeper is a second distributed system operators must deploy, secure, monitor and tune. It doubles the operational surface and forces a separate security and configuration model on top of Kafka's own.",
+      "Metadata scalability is bounded by ZooKeeper. On controller failover the new controller must load the full cluster state from ZooKeeper, and propagate it broker-by-broker — an O(partitions) operation that caps practical partition counts and lengthens recovery."
+    ],
+    "design": [
+      "Metadata is stored in a single-partition internal topic, __cluster_metadata, replicated by a Raft quorum. The active controller is the quorum leader; other controllers are hot standbys that already have the full log.",
+      "Brokers stop watching ZooKeeper and instead consume the metadata log as an ordered event stream, caching state locally. Failover becomes a matter of a standby taking over leadership with the log already in memory — near-instant rather than an O(partitions) reload."
+    ],
+    "pros": [
+      "One system to deploy, secure and operate instead of two.",
+      "Controller failover is near-instant; recovery no longer scales with partition count.",
+      "Supports clusters with millions of partitions.",
+      "Single, consistent security and RBAC model."
+    ],
+    "cons": [
+      "A brand-new consensus implementation to harden and battle-test.",
+      "Multi-release migration path for existing ZooKeeper clusters.",
+      "Operators must relearn tooling, metrics and failure modes."
+    ],
+    "rejected": [
+      {
+        "name": "Keep ZooKeeper but sharded",
+        "why": "Sharding metadata across multiple ZK ensembles would reduce Kafka's control over consistency and add even more operational moving parts."
+      },
+      {
+        "name": "Use an external Raft library",
+        "why": "An off-the-shelf library couldn't be tuned to Kafka's log semantics and record format; a purpose-built quorum integrates with the existing replication machinery."
+      }
+    ],
+    "discussionMeta": "May 2019 – Sep 2020, 190+ messages",
+    "discussion": [
+      {
+        "author": "Colin McCabe",
+        "date": "May 2019",
+        "text": "This KIP proposes to replace ZooKeeper with a self-managed metadata quorum. It is an umbrella that several follow-up KIPs (the Raft protocol, the controller, migration) will fill in."
+      },
+      {
+        "author": "Jun Rao",
+        "date": "May 2019",
+        "text": "Overall +1 on the direction. My main question is around the migration story — we need a path where a running production cluster can move off ZK without downtime."
+      },
+      {
+        "author": "Ismael Juma",
+        "date": "Jun 2019",
+        "text": "Agree this is worth doing. Suggest we clearly scope which pieces land in which release so the community can follow the incremental KIPs."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+4 binding, +6 non-binding, 0 -1",
+      "closed": "Vote closed Sep 2020",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Ismael Juma",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Gwen Shapira",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Colin McCabe",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-405",
+      "KIP-848"
+    ]
+  },
+  {
+    "id": "KIP-405",
+    "title": "Kafka Tiered Storage",
+    "status": "Adopted",
+    "category": "Storage",
+    "release": "3.6 (EA) → 3.9",
+    "authors": "Satish Duggana, Harsha Chintalapani, Suresh Srinivas",
+    "tags": [
+      "Storage",
+      "Tiered Storage",
+      "Scalability",
+      "Cost"
+    ],
+    "summary": "Decouples storage from compute by offloading older log segments to a cheaper remote store (e.g. object storage) while keeping recent data on the broker's local disk.",
+    "motivation": [
+      "Retaining data for weeks or months forces operators to over-provision broker local disk, coupling storage capacity to broker count and making scaling expensive and slow.",
+      "Most reads target recent data; historical segments sit idle on premium local disk. Moving them to cheap remote storage cuts cost and lets brokers scale on throughput, not retention."
+    ],
+    "design": [
+      "Each log is split into a local tier (recent segments) and a remote tier. A pluggable RemoteStorageManager uploads closed segments and their indexes to the remote store; a RemoteLogMetadataManager tracks segment locations.",
+      "Fetch requests for offsets that have aged out of local storage are served transparently from the remote tier, so consumers see one continuous log regardless of where a segment physically lives."
+    ],
+    "pros": [
+      "Local disk sized for recent data only — dramatically lower storage cost.",
+      "Retention becomes near-unlimited without growing the broker fleet.",
+      "Faster broker recovery and reassignment: less local data to move."
+    ],
+    "cons": [
+      "Reads of cold data pay remote-storage latency.",
+      "Adds a remote store as a new dependency and failure domain.",
+      "Pluggable RSM/RLMM implementations must be correct and performant."
+    ],
+    "rejected": [
+      {
+        "name": "External tiering via a sidecar",
+        "why": "Copying segments out-of-band leaves Kafka unaware of remote data, so consumers couldn't transparently read aged-out offsets through the normal fetch path."
+      },
+      {
+        "name": "Compaction-only retention",
+        "why": "Compaction addresses key-based dedup, not the cost of retaining a long history of all records; it doesn't solve the storage-scaling problem."
+      }
+    ],
+    "discussionMeta": "2019 – 2023, 250+ messages",
+    "discussion": [
+      {
+        "author": "Harsha Chintalapani",
+        "date": "2019",
+        "text": "Proposing tiered storage so retention is no longer bound by local disk. The RemoteStorageManager interface is intentionally pluggable so operators can target HDFS, S3, or others."
+      },
+      {
+        "author": "Jun Rao",
+        "date": "2020",
+        "text": "We should be explicit about the read path for aged-out segments and the consistency guarantees of the remote metadata store. Correctness there is the crux."
+      },
+      {
+        "author": "Satish Duggana",
+        "date": "2021",
+        "text": "Updated the KIP with the RemoteLogMetadataManager design and a topic-based default implementation for tracking remote segment metadata."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+3 binding, +5 non-binding, 0 -1",
+      "closed": "Vote closed 2021",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Satish Duggana",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Harsha Chintalapani",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-500",
+      "KIP-392"
+    ]
+  },
+  {
+    "id": "KIP-98",
+    "title": "Exactly Once Delivery and Transactional Messaging",
+    "status": "Adopted",
+    "category": "Delivery Semantics",
+    "release": "0.11.0",
+    "authors": "Apurva Mehta, Jason Gustafson, Guozhang Wang, Flavio Junqueira",
+    "tags": [
+      "Delivery Semantics",
+      "Transactions",
+      "Idempotence",
+      "Producer"
+    ],
+    "summary": "Introduces idempotent producers and multi-partition atomic writes, giving Kafka exactly-once semantics for produce and read-process-write pipelines.",
+    "motivation": [
+      "The default producer offered at-least-once delivery: a retried send after a network hiccup could produce duplicates, forcing every downstream consumer to dedupe.",
+      "Stream-processing apps read, transform, and write back to Kafka. Without atomic writes across output partitions plus offset commits, a crash mid-flight leaves partial, inconsistent results."
+    ],
+    "design": [
+      "Idempotence: each producer gets a Producer ID and per-partition sequence numbers, so the broker can detect and drop duplicate retries within a session.",
+      "Transactions: a producer wraps writes to multiple partitions — and its consumer offset commits — in a transaction coordinated by a transaction log. Consumers with read_committed only see records once the transaction commits."
+    ],
+    "pros": [
+      "True exactly-once for read-process-write topologies.",
+      "Idempotence removes duplicates from producer retries with minimal overhead.",
+      "Enables correct, atomic Kafka Streams state and output."
+    ],
+    "cons": [
+      "Transactions add coordinator state and two-phase commit latency.",
+      "read_committed consumers may wait on the Last Stable Offset.",
+      "More client and broker complexity to reason about and operate."
+    ],
+    "rejected": [
+      {
+        "name": "Consumer-side dedup only",
+        "why": "Pushing dedup to every consumer duplicates effort, is error-prone, and can't make multi-partition writes atomic."
+      },
+      {
+        "name": "Per-message unique keys",
+        "why": "Application-level dedup keys don't cover offset commits and cross-partition atomicity, so they can't deliver end-to-end exactly-once."
+      }
+    ],
+    "discussionMeta": "Nov 2016 – Feb 2017, 150+ messages",
+    "discussion": [
+      {
+        "author": "Apurva Mehta",
+        "date": "Dec 2016",
+        "text": "This KIP covers idempotent produce and transactions. Idempotence ships first and is cheap; transactions build on the same Producer ID machinery."
+      },
+      {
+        "author": "Jason Gustafson",
+        "date": "Dec 2016",
+        "text": "The Last Stable Offset is key: read_committed consumers must not see records past an open transaction, or we break isolation."
+      },
+      {
+        "author": "Jay Kreps",
+        "date": "Jan 2017",
+        "text": "Big +1. This is foundational for stream processing correctness. Worth being very careful about the default configs so most users get idempotence without surprises."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+4 binding, +3 non-binding, 0 -1",
+      "closed": "Vote closed Feb 2017",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jay Kreps",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Guozhang Wang",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Neha Narkhede",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-679",
+      "KIP-848"
+    ]
+  },
+  {
+    "id": "KIP-848",
+    "title": "The Next Generation of the Consumer Rebalance Protocol",
+    "status": "Adopted",
+    "category": "Consumer",
+    "release": "3.7 (EA) → 4.0 (GA)",
+    "authors": "David Jacot",
+    "tags": [
+      "Consumer",
+      "Rebalance",
+      "Scalability",
+      "Group Coordinator"
+    ],
+    "summary": "Replaces the client-driven, stop-the-world rebalance with a broker-coordinated, incremental protocol that removes global synchronization barriers.",
+    "motivation": [
+      "The classic protocol relies on a global synchronization barrier: every member must rejoin and the whole group stalls on each membership change, causing latency spikes and cascading rebalances at scale.",
+      "Assignment logic lived in the clients, so fixing bugs or changing strategy meant upgrading every consumer — painful across polyglot fleets."
+    ],
+    "design": [
+      "The group coordinator on the broker computes assignments and drives reconciliation. Members send their current state via a heartbeat and receive incremental target assignments.",
+      "Reconciliation is incremental: only the partitions that actually move are revoked and reassigned, and members that are unaffected keep processing — no group-wide stop-the-world."
+    ],
+    "pros": [
+      "No stop-the-world; unaffected members keep consuming during a rebalance.",
+      "Assignment logic on the broker — upgrade once, not every client.",
+      "Scales to much larger consumer groups with less disruption."
+    ],
+    "cons": [
+      "New protocol coexisting with the old one during a long migration window.",
+      "More coordinator-side CPU and state.",
+      "Client and tooling ecosystem must add support incrementally."
+    ],
+    "rejected": [
+      {
+        "name": "Incrementally patch the old protocol",
+        "why": "Cooperative rebalancing (KIP-429) already softened revocation, but the global JoinGroup barrier is structural and can't be removed without a new protocol."
+      },
+      {
+        "name": "Fully client-side redesign",
+        "why": "Keeping assignment in clients perpetuates the upgrade-everyone problem and can't leverage the coordinator's global view."
+      }
+    ],
+    "discussionMeta": "2021 – 2023, 200+ messages",
+    "discussion": [
+      {
+        "author": "David Jacot",
+        "date": "2021",
+        "text": "Proposing a server-driven rebalance protocol. The core idea: move the assignor to the coordinator and make reconciliation incremental via heartbeats."
+      },
+      {
+        "author": "Guozhang Wang",
+        "date": "2022",
+        "text": "Strong support. The upgrade path from the old protocol needs to be crystal clear since both will run in the same group for a while."
+      },
+      {
+        "author": "Jason Gustafson",
+        "date": "2022",
+        "text": "The incremental reconciliation state machine is the tricky part — we should document the member and coordinator states exhaustively."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+3 binding, +4 non-binding, 0 -1",
+      "closed": "Vote closed 2023",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Guozhang Wang",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Jason Gustafson",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "David Jacot",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-98",
+      "KIP-500"
+    ]
+  },
+  {
+    "id": "KIP-679",
+    "title": "Producer will Enable the Strongest Delivery Guarantee by Default",
+    "status": "Adopted",
+    "category": "Producer",
+    "release": "3.0",
+    "authors": "Cheng Tan",
+    "tags": [
+      "Producer",
+      "Idempotence",
+      "Delivery Semantics",
+      "Defaults"
+    ],
+    "summary": "Turns on producer idempotence by default (enable.idempotence=true, acks=all) so out-of-the-box producers get exactly-once-in-order delivery per partition.",
+    "motivation": [
+      "Idempotence existed since 0.11 but was off by default, so most producers silently ran at-least-once and could reorder or duplicate records on retry.",
+      "Safe defaults matter: the majority of users never tune these configs, and they deserve the strongest guarantee Kafka can give without extra work."
+    ],
+    "design": [
+      "Default enable.idempotence to true, which implies acks=all and a bounded max.in.flight.requests.per.connection, preserving ordering under retries.",
+      "If a user sets configs that conflict with idempotence (e.g. acks=1), the producer either overrides sensibly or fails fast with a clear message rather than silently degrading."
+    ],
+    "pros": [
+      "No duplicates or reordering on retry, for free, for most users.",
+      "Aligns the default behavior with what users generally expect.",
+      "Negligible throughput cost on modern brokers."
+    ],
+    "cons": [
+      "acks=all can slightly raise latency versus acks=1.",
+      "Existing configs that assumed the old defaults may need review.",
+      "Edge-case config conflicts must be handled gracefully."
+    ],
+    "rejected": [
+      {
+        "name": "Keep idempotence opt-in",
+        "why": "Leaving it off means most producers never benefit; safe-by-default is the whole point of the change."
+      },
+      {
+        "name": "Enable idempotence but keep acks=1",
+        "why": "acks=1 can't guarantee no data loss on leader failover, undermining the strongest-guarantee goal."
+      }
+    ],
+    "discussionMeta": "2020 – 2021, 60+ messages",
+    "discussion": [
+      {
+        "author": "Cheng Tan",
+        "date": "2020",
+        "text": "Proposing to flip enable.idempotence to true by default. The main discussion point is how to handle users who explicitly set conflicting configs."
+      },
+      {
+        "author": "Ismael Juma",
+        "date": "2021",
+        "text": "+1. We should fail fast on genuine conflicts rather than silently overriding, so users aren't surprised by behavior changes."
+      },
+      {
+        "author": "Jason Gustafson",
+        "date": "2021",
+        "text": "Agreed. Let's make sure the error messages point users to exactly which config to change."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+3 binding, +2 non-binding, 0 -1",
+      "closed": "Vote closed 2021",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Ismael Juma",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Jason Gustafson",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Guozhang Wang",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-98",
+      "KIP-101"
+    ]
+  },
+  {
+    "id": "KIP-101",
+    "title": "Alter Replication Protocol to use Leader Epoch for Truncation",
+    "status": "Adopted",
+    "category": "Replication",
+    "release": "0.11.0",
+    "authors": "Ben Stopford",
+    "tags": [
+      "Replication",
+      "Correctness",
+      "Log"
+    ],
+    "summary": "Uses a monotonically increasing leader epoch to decide log truncation on recovery, fixing data-loss and divergence edge cases in the old high-watermark scheme.",
+    "motivation": [
+      "The old truncation logic relied only on the high watermark. After certain leader-change and crash sequences, a returning replica could truncate to the wrong offset, causing silent log divergence or data loss.",
+      "The high watermark alone can't distinguish records from different leadership terms, so a follower had no reliable way to know exactly where its log diverged from the leader's."
+    ],
+    "design": [
+      "Each leader stamps its records with a leader epoch and maintains a leader-epoch-to-start-offset map. On becoming follower, a replica asks the leader for the end offset of its last known epoch.",
+      "The follower truncates precisely to that offset — the true point of divergence — instead of guessing from the high watermark, guaranteeing logs converge correctly."
+    ],
+    "pros": [
+      "Eliminates a class of silent data-loss and divergence bugs.",
+      "Truncation is precise and provably correct across leader changes.",
+      "Foundation for later correctness work in the replication layer."
+    ],
+    "cons": [
+      "Adds a leader-epoch cache and a new inter-broker request.",
+      "On-disk and protocol format changes require careful upgrade handling."
+    ],
+    "rejected": [
+      {
+        "name": "Tune high-watermark timing",
+        "why": "No amount of timing tweaks fixes the fundamental inability of the high watermark to identify the divergence point across epochs."
+      }
+    ],
+    "discussionMeta": "2017, 80+ messages",
+    "discussion": [
+      {
+        "author": "Ben Stopford",
+        "date": "2017",
+        "text": "The high-watermark-based truncation has genuine correctness gaps. Leader epochs give us an unambiguous divergence point for follower truncation."
+      },
+      {
+        "author": "Jun Rao",
+        "date": "2017",
+        "text": "+1 on using leader epochs. We need to be careful about the upgrade path since this changes the on-disk format and adds a new request type."
+      },
+      {
+        "author": "Jason Gustafson",
+        "date": "2017",
+        "text": "This closes real bugs we've seen in the field. Let's document the exact follower recovery sequence step by step."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+3 binding, +2 non-binding, 0 -1",
+      "closed": "Vote closed 2017",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Jason Gustafson",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Ismael Juma",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-392",
+      "KIP-98"
+    ]
+  },
+  {
+    "id": "KIP-227",
+    "title": "Introduce Incremental FetchRequests to Increase Partition Scalability",
+    "status": "Adopted",
+    "category": "Replication",
+    "release": "1.1.0",
+    "authors": "Colin McCabe",
+    "tags": [
+      "Replication",
+      "Performance",
+      "Scalability",
+      "Fetch"
+    ],
+    "summary": "Replaces full fetch requests with a stateful, incremental session so brokers and consumers only exchange data for partitions that actually changed.",
+    "motivation": [
+      "Every fetch request listed every partition and its offset, even for idle partitions. With thousands of partitions the request/response overhead dominated, wasting network and CPU.",
+      "This overhead scaled with total partition count rather than active partitions, capping how many partitions a broker or consumer could follow efficiently."
+    ],
+    "design": [
+      "A fetch session is established once; the broker tracks the client's per-partition state under a session ID. Subsequent incremental fetches send only partitions that changed since the last round.",
+      "Idle partitions are omitted entirely, so steady-state fetch traffic scales with the number of active partitions, not the total."
+    ],
+    "pros": [
+      "Fetch overhead scales with active, not total, partitions.",
+      "Substantially higher partition density per broker and consumer.",
+      "Less network and CPU for large, mostly-idle topics."
+    ],
+    "cons": [
+      "Brokers must maintain per-session state and evict stale sessions.",
+      "More complex fetch protocol and error/recovery handling."
+    ],
+    "rejected": [
+      {
+        "name": "Compress the full fetch request",
+        "why": "Compression shrinks bytes but not the per-partition bookkeeping and CPU cost; it doesn't change the O(total partitions) scaling."
+      }
+    ],
+    "discussionMeta": "2017 – 2018, 90+ messages",
+    "discussion": [
+      {
+        "author": "Colin McCabe",
+        "date": "2017",
+        "text": "Proposing incremental fetch sessions so we stop re-sending state for partitions that haven't changed. This is the main blocker for very high partition counts per broker."
+      },
+      {
+        "author": "Jun Rao",
+        "date": "2018",
+        "text": "+1. Please spell out the session cache eviction policy — we don't want unbounded broker memory from abandoned sessions."
+      },
+      {
+        "author": "Jason Gustafson",
+        "date": "2018",
+        "text": "The incremental protocol looks right. Make sure clients can gracefully fall back to a full fetch if their session is evicted."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+3 binding, +2 non-binding, 0 -1",
+      "closed": "Vote closed 2018",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Jason Gustafson",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Ismael Juma",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-392",
+      "KIP-500"
+    ]
+  },
+  {
+    "id": "KIP-392",
+    "title": "Allow Consumers to Fetch from Closest Replica",
+    "status": "Adopted",
+    "category": "Replication",
+    "release": "2.4.0",
+    "authors": "Jason Gustafson, David Arthur",
+    "tags": [
+      "Replication",
+      "Consumer",
+      "Performance",
+      "Cost"
+    ],
+    "summary": "Lets consumers read from a nearby follower instead of always the leader, cutting cross-datacenter and cross-AZ network cost and latency.",
+    "motivation": [
+      "Consumers historically had to fetch only from the partition leader. In multi-AZ or multi-region deployments that meant expensive, high-latency cross-zone reads even when a local replica held the data.",
+      "Cross-AZ traffic is a major cloud cost line item; forcing all reads through the leader inflates both bill and tail latency."
+    ],
+    "design": [
+      "Brokers expose rack/zone metadata and a pluggable replica selector. The consumer sends its own rack id; the broker replies with the preferred read replica for that location.",
+      "Followers serve reads only up to the high watermark, preserving consumer consistency, while the leader still handles all writes."
+    ],
+    "pros": [
+      "Large cut in cross-AZ / cross-region network cost.",
+      "Lower read latency by staying within a zone.",
+      "Pluggable selector lets operators encode their own topology."
+    ],
+    "cons": [
+      "Follower reads can lag the leader up to the high watermark.",
+      "Requires accurate rack/zone configuration to pay off.",
+      "Adds replica-selection logic to the fetch path."
+    ],
+    "rejected": [
+      {
+        "name": "Client-side leader avoidance",
+        "why": "Without broker-provided topology and high-watermark guarantees, clients can't safely choose a replica without risking inconsistent reads."
+      }
+    ],
+    "discussionMeta": "2018 – 2019, 70+ messages",
+    "discussion": [
+      {
+        "author": "Jason Gustafson",
+        "date": "2018",
+        "text": "Proposing follower fetching driven by a pluggable replica selector. Reads stay bounded by the high watermark so consistency is unchanged."
+      },
+      {
+        "author": "David Arthur",
+        "date": "2019",
+        "text": "The rack-aware default selector should cover the common cloud AZ case; operators with exotic topologies can plug in their own."
+      },
+      {
+        "author": "Jun Rao",
+        "date": "2019",
+        "text": "+1. Let's be explicit that followers only serve up to the HW so users understand the latency-vs-cost trade-off."
+      }
+    ],
+    "vote": {
+      "result": "Accepted",
+      "tally": "+3 binding, +3 non-binding, 0 -1",
+      "closed": "Vote closed 2019",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Jason Gustafson",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Ismael Juma",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-405",
+      "KIP-227"
+    ]
+  },
+  {
+    "id": "KIP-932",
+    "title": "Queues for Kafka",
+    "status": "Early Access",
+    "category": "Consumer",
+    "release": "4.0 (Early Access)",
+    "authors": "Andrew Schofield",
+    "tags": [
+      "Consumer",
+      "Queues",
+      "Share Groups",
+      "Delivery Semantics"
+    ],
+    "summary": "Adds share groups — a queue-like consumption model where many consumers cooperatively read a topic without being bound to partition ownership.",
+    "motivation": [
+      "Classic consumer groups tie parallelism to partition count: you can't have more active consumers than partitions, which is awkward for work-queue-style workloads.",
+      "Many teams want point-to-point queue semantics — competing consumers, per-message acknowledgement, redelivery — which Kafka's partition-ownership model doesn't naturally provide."
+    ],
+    "design": [
+      "A share group lets multiple consumers read from the same partitions cooperatively. Records are delivered to individual consumers and individually acknowledged, rather than being tied to a committed offset per partition.",
+      "The broker tracks per-record delivery state (acquired, acknowledged, released) so unacknowledged records can be redelivered, enabling competing-consumer queue behavior on top of the existing log."
+    ],
+    "pros": [
+      "Consumer parallelism decoupled from partition count.",
+      "Per-message acknowledgement and redelivery — true queue semantics.",
+      "Reuses the existing durable log rather than a separate queue system."
+    ],
+    "cons": [
+      "Broker must track per-record delivery state — new state and overhead.",
+      "Weaker ordering guarantees than partition-ordered consumption.",
+      "Still maturing: shipped as early access, semantics may evolve."
+    ],
+    "rejected": [
+      {
+        "name": "A separate queue product",
+        "why": "Building queues as a distinct system would fragment Kafka's storage and tooling; layering share groups on the existing log reuses durability and ops."
+      },
+      {
+        "name": "More partitions for parallelism",
+        "why": "Scaling partitions to add consumers is expensive and doesn't give per-message ack or redelivery semantics."
+      }
+    ],
+    "discussionMeta": "2023 – 2024, 130+ messages",
+    "discussion": [
+      {
+        "author": "Andrew Schofield",
+        "date": "2023",
+        "text": "Proposing share groups to bring queue semantics to Kafka: competing consumers, individual acknowledgement, and redelivery on top of the existing log."
+      },
+      {
+        "author": "Jun Rao",
+        "date": "2024",
+        "text": "Interesting direction. The per-record delivery state tracking is the crux — we need to bound its memory and be clear about the ordering guarantees users can expect."
+      },
+      {
+        "author": "David Jacot",
+        "date": "2024",
+        "text": "+1 to ship as early access first so we can gather real usage feedback before locking the semantics."
+      }
+    ],
+    "vote": {
+      "result": "Accepted (Early Access)",
+      "tally": "+3 binding, +4 non-binding, 0 -1",
+      "closed": "Vote closed 2024",
+      "votes": [
+        {
+          "vote": "+1",
+          "name": "Jun Rao",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "David Jacot",
+          "role": "binding"
+        },
+        {
+          "vote": "+1",
+          "name": "Andrew Schofield",
+          "role": "binding"
+        }
+      ]
+    },
+    "related": [
+      "KIP-848",
+      "KIP-98"
+    ]
+  }
+]

@@ -1,0 +1,44 @@
+:root {
+  /* surfaces */
+  --page-bg: #f5f4f1;
+  --surface: #ffffff;
+  --surface-alt: #faf9f7;
+  /* dark top bar */
+  --dark-bar: #16161a;
+  --dark-control: #202027;
+  --dark-border: #33333b;
+  --dark-muted: #8f8c96;
+  --dark-muted-2: #7f7c86;
+  --dark-text: #f5f4f1;
+  /* accent */
+  --accent: #3a53b0;
+  --accent-tint: #eef1fb;
+  --accent-tint-2: #d9defa;
+  --accent-hover-border: #b9c0e8;
+  --brand-orange: #e35b3f;
+  /* text */
+  --text-strong: #1c1b19;
+  --text-1: #24221d;
+  --text-2: #33312c;
+  --text-3: #565349;
+  --text-4: #5c584f;
+  --text-5: #4a473f;
+  --muted-1: #716e67;
+  --muted-2: #6b6860;
+  --muted-3: #9a968d;
+  --muted-4: #a7a39a;
+  /* borders (light) */
+  --border-1: #e6e2db;
+  --border-2: #d8d4cc;
+  --border-3: #f0eee9;
+  /* chips */
+  --chip-bg: #f2f0ec;
+  --chip-text: #6f6c76;
+  /* votes */
+  --vote-pos: #1f7a4d;
+  --vote-neg: #a3402c;
+
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-serif: "IBM Plex Serif", Georgia, serif;
+}
