@@ -7,3 +7,5 @@ viewer/src/data/kips.generated.json
 # Obsidian per-user workspace state (keep shared config, ignore local state)
 vault/.obsidian/workspace*.json
 vault/.obsidian/cache
+# Ingestion: raw upstream payload snapshots referenced by ChangeEvent.payloadRef
+tools/ingest-cache/

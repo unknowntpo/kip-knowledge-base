@@ -1,0 +1,60 @@
+name: Confluence ingest (M1)
+
+# Polls cwiki.apache.org for the 9 followed KIPs and applies deterministic
+# frontmatter (the additive cwiki block) + records drift. Test-then-act CI
+# discipline: viewer tests must pass before the poll runs, and we commit only
+# when the working tree is actually dirty.
+
+on:
+  schedule:
+    # Daily at 03:17 UTC (off the top of the hour to be a polite neighbor).
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run in --dry-run mode (writes nothing)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: viewer/package-lock.json
+
+      # Test-then-act: never mutate the vault on a red build.
+      - name: Install + test viewer
+        working-directory: viewer
+        run: |
+          npm ci
+          npm test
+
+      - name: Run ingest (dry-run)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: node tools/ingest/run.mjs --dry-run
+
+      - name: Run ingest
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: node tools/ingest/run.mjs
+
+      - name: Commit deterministic changes if any
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes — nothing to commit (idempotent no-op)."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(ingest): confluence sync $(date -u +%Y-%m-%d)"
+          git push

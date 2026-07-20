@@ -80,6 +80,31 @@ Hosted on **Cloudflare Pages** (`kip-knowledge-base.pages.dev`). Two ways to shi
   `CLOUDFLARE_API_TOKEN` (token with the *Cloudflare Pages: Edit* permission) and
   `CLOUDFLARE_ACCOUNT_ID`. Project config lives in `viewer/wrangler.toml`.
 
+## Ingestion
+
+Upstream Apache Kafka sources (Confluence, Jira, GitHub, mailing list) are polled
+by a GitHub Actions cron and applied back into the vault. The full contract lives
+in [`docs/ingestion-spec.md`](docs/ingestion-spec.md); **M1** (Confluence
+two-tier polling + deterministic `cwiki` frontmatter + drift flagging) is
+implemented under [`tools/ingest/`](tools/ingest):
+
+```bash
+node tools/ingest/run.mjs --dry-run   # prints ChangeEvents + would-be frontmatter
+                                       # diffs, writes nothing (hits the real cwiki
+                                       # API through the polite-fetch wrapper)
+node tools/ingest/run.mjs             # real run: patches the additive cwiki block,
+                                       # tools/ingest-state.json, pending-changes.json
+```
+
+All network access is funneled through `tools/ingest/polite-fetch.mjs` (spec §6:
+≤1 req/s + jitter, concurrency ≤2, descriptive UA, robots.txt, 429/backoff,
+follow-list-only). The follow list is derived from `vault/KIPs/*.md`, never
+hardcoded. Deterministic metadata is machine-committed; body/prose changes are
+recorded as drift in `tools/pending-changes.json` for human review — the KB
+prefers **stale over wrong**. Raw payload snapshots land in the git-ignored
+`tools/ingest-cache/`. The scheduled workflow is
+[`.github/workflows/ingest.yml`](.github/workflows/ingest.yml) (daily 03:17 UTC).
+
 ## Ask AI (deferred)
 
 The semantic-search "Ask AI" view is scaffolded but intentionally **not wired up
