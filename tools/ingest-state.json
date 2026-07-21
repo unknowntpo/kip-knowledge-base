@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "confluence": {
+    "pages": {
+      "KIP-98": {
+        "pageId": "66854913",
+        "version": 75
+      },
+      "KIP-101": {
+        "pageId": "67634337",
+        "version": 25
+      },
+      "KIP-227": {
+        "pageId": "74687799",
+        "version": 25
+      },
+      "KIP-392": {
+        "pageId": "95653762",
+        "version": 25
+      },
+      "KIP-405": {
+        "pageId": "97554472",
+        "version": 372
+      },
+      "KIP-500": {
+        "pageId": "123898922",
+        "version": 29
+      },
+      "KIP-679": {
+        "pageId": "165221843",
+        "version": 32
+      },
+      "KIP-848": {
+        "pageId": "217387038",
+        "version": 126
+      },
+      "KIP-932": {
+        "pageId": "255070434",
+        "version": 138
+      }
+    }
+  }
+}

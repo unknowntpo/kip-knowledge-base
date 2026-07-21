@@ -17,6 +17,11 @@ tags:
 related:
   - "[[KIP-679]]"
   - "[[KIP-848]]"
+cwiki:
+  pageId: "66854913"
+  version: 75
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=66854913"
+  lastChecked: "2026-07-21T06:05:45Z"
 ---
 
 ## Summary
