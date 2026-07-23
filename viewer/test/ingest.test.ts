@@ -235,9 +235,13 @@ describe("idempotency (§9.4)", () => {
 // ===========================================================================
 describe("frontmatter cwiki patch (spec §4 additive)", () => {
   const original = () => readFileSync(url("../../vault/KIPs/KIP-500.md"), "utf8");
+  // The live note gains a cwiki block after the first real ingest run, so the
+  // "add" case must strip any existing block to stay state-independent.
+  const withoutCwiki = () =>
+    original().replace(/^cwiki:\n(?:[ \t]+.*\n)+/m, "");
 
   it("adds a cwiki block without disturbing existing keys", () => {
-    const raw = original();
+    const raw = withoutCwiki();
     const before = matter(raw).data;
     const { changed, newRaw, oldBlock } = patchCwiki(raw, {
       pageId: "123",
