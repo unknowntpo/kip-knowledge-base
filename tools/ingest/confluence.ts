@@ -47,6 +47,23 @@ export interface DiscoverOpts {
 }
 
 /**
+ * Resolve a Confluence page id from an EXACT title in space KAFKA.
+ * One request: `GET /rest/api/content?spaceKey=KAFKA&title=<exact>`.
+ * Returns the pageId string or null. Reused by the KIP discovery helper below
+ * and by the corpus-backfill index resolution (tools/backfill).
+ */
+export async function resolvePageIdByTitle(
+  fetch: FetchLike,
+  title: string,
+  baseUrl: string = DEFAULT_BASE
+): Promise<string | null> {
+  const url = `${baseUrl}/rest/api/content?spaceKey=${SPACE_KEY}&title=${encodeURIComponent(title)}`;
+  const res = await json(fetch, url);
+  if (res?.results?.length) return String(res.results[0].id);
+  return null;
+}
+
+/**
  * Resolve a page id for a KIP (spec §2.1). Exact-title lookup first
  * (`KIP-500: <title>`), CQL `title~"KIP-500"` fallback if that misses.
  * Returns the pageId string or null.
@@ -55,12 +72,8 @@ export async function discoverPageId(
   fetch: FetchLike,
   { kipId, title, baseUrl = DEFAULT_BASE }: DiscoverOpts
 ): Promise<string | null> {
-  const exactTitle = `${kipId}: ${title}`;
-  const exactUrl = `${baseUrl}/rest/api/content?spaceKey=${SPACE_KEY}&title=${encodeURIComponent(
-    exactTitle
-  )}`;
-  const exact = await json(fetch, exactUrl);
-  if (exact?.results?.length) return String(exact.results[0].id);
+  const exact = await resolvePageIdByTitle(fetch, `${kipId}: ${title}`, baseUrl);
+  if (exact) return exact;
 
   const cql = `title~"${kipId}"`;
   const cqlUrl = `${baseUrl}/rest/api/content/search?cql=${encodeURIComponent(cql)}`;
@@ -68,6 +81,37 @@ export async function discoverPageId(
   if (search?.results?.length) return String(search.results[0].id);
 
   return null;
+}
+
+/**
+ * Resolve a KIP's page id, SCOPED to the KAFKA space and pinned to the exact KIP
+ * number (spec: corpus backfill). Unlike {@link discoverPageId}, whose CQL
+ * fallback is space-agnostic (it can match a same-numbered KIP in another
+ * Confluence space, e.g. Knox), this:
+ *   1. tries the exact title `KIP-N: <title>` in space KAFKA;
+ *   2. falls back to `space = KAFKA AND title ~ "KIP-N"`, then keeps only a
+ *      result whose title begins with the exact KIP number (so "KIP-11" never
+ *      resolves to "KIP-110").
+ * Returns null when nothing matches with confidence — the caller marks the item
+ * failed rather than importing a wrong page (prefer skip over wrong).
+ */
+export async function resolveKipPageId(
+  fetch: FetchLike,
+  kipId: string,
+  title: string,
+  baseUrl: string = DEFAULT_BASE
+): Promise<string | null> {
+  if (title) {
+    const exact = await resolvePageIdByTitle(fetch, `${kipId}: ${title}`, baseUrl);
+    if (exact) return exact;
+  }
+  const cql = `space = ${SPACE_KEY} AND title ~ "${kipId}"`;
+  const url = `${baseUrl}/rest/api/content/search?cql=${encodeURIComponent(cql)}&limit=25`;
+  const search = await json(fetch, url);
+  const results: Array<{ id?: unknown; title?: unknown }> = search?.results ?? [];
+  const boundary = new RegExp(`^\\s*\\[?${kipId}(?![0-9])`);
+  const hit = results.find((r) => boundary.test(String(r.title ?? "")));
+  return hit ? String(hit.id) : null;
 }
 
 // Best-effort status extraction from the storage-format body. Confluence KIP

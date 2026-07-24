@@ -1,4 +1,15 @@
-export type Status = "Adopted" | "Early Access" | "Under Discussion";
+export type Status =
+  | "Adopted"
+  | "Early Access"
+  | "Under Discussion"
+  | "Discarded"
+  | "Unknown";
+
+/** A mailing-list thread permalink + message count (stub notes only). */
+export interface Thread {
+  url: string;
+  count: number;
+}
 
 export interface Rejected {
   name: string;
@@ -39,4 +50,9 @@ export interface Kip {
   discussion: DiscussionMsg[];
   vote: Vote;
   related: string[];
+  // Stub-only fields (present when the note was imported by the corpus backfill).
+  // Absent on the deep, hand-authored notes so their round-trip stays byte-exact.
+  stub?: boolean;
+  cwikiUrl?: string;
+  threads?: Thread[];
 }

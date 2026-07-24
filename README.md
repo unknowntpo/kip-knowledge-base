@@ -112,6 +112,34 @@ prefers **stale over wrong**. Raw payload snapshots land in the git-ignored
 `tools/ingest-cache/`. The scheduled workflow is
 [`.github/workflows/ingest.yml`](.github/workflows/ingest.yml) (daily 03:17 UTC).
 
+## Corpus backfill
+
+The full KIP corpus (~1150 pages, every status) is imported queue-style from the
+cwiki index. `tools/backfill/queue.json` is the committed work queue — one entry
+per KIP with a state machine (`pending → detail_done → threads_done | failed`),
+checkpointed after every item, so any run resumes where the last one stopped and
+git history doubles as the crawl audit log. Each import writes a **stub note**
+(`stub: true` frontmatter: status, summary, cwiki link, mailing-list thread
+links) alongside the 9 deep hand-authored notes; stubs are upgraded to full
+structure later (M3). Statuses are normalized to
+`Adopted / Early Access / Under Discussion / Discarded / Unknown` — see
+`docs/ingestion-spec.md`.
+
+```bash
+bun tools/backfill/run.ts --dry-run           # discovery + would-crawl list
+bun tools/backfill/run.ts --limit 50          # crawl 50, checkpoint, stop
+bun tools/backfill/run.ts                     # drain all pending (~1150 × ~1s/req)
+```
+
+In CI: trigger `.github/workflows/backfill.yml` (workflow_dispatch; dry_run /
+limit / no_threads inputs) — it tests first, crawls, regenerates embeddings, and
+commits vault + vectors atomically. All crawling goes through the polite-fetch
+wrapper (1 req/s + jitter, cwiki + lists.apache.org only). The resolver is
+space-scoped with a KIP-number boundary match and prefers **skipping over
+importing a wrong page**. See [`docs/sync-strategy.md`](docs/sync-strategy.md)
+for the steady-state freshness design (CQL delta, twice-daily cron, monthly
+reconciliation).
+
 ## Semantic layer
 
 A build-time semantic index over the vault, under [`tools/semantic/`](tools/semantic):

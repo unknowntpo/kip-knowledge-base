@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
-import type { Kip, Rejected, DiscussionMsg, VoteRow, Status } from "../src/types";
+import type { Kip, Rejected, DiscussionMsg, VoteRow, Status, Thread } from "../src/types";
 
 /** Frontmatter shape of a vault KIP note (before parsing the body sections). */
 interface KipFrontmatter {
@@ -18,6 +18,10 @@ interface KipFrontmatter {
   authors: string[];
   tags: string[];
   related: string[];
+  // Stub-only frontmatter (imported by the corpus backfill).
+  stub?: boolean;
+  cwiki?: { url?: string };
+  threads?: Thread[];
 }
 
 const splitParas = (t: string): string[] =>
@@ -32,11 +36,47 @@ const sectionMap = (body: string): Record<string, string> => {
 
 const stripStars = (s: string): string => s.replace(/^\*/, "").replace(/\*$/, "").trim();
 
+const unwikilink = (r: string): string => r.replace(/^\[\[|\]\]$/g, "");
+
+// Lenient parse for imported stub notes (frontmatter `stub: true`). Only
+// id/title/status/summary are required; every deep-note section defaults to an
+// empty value so the strict viewer/model stays total. Deep, hand-authored notes
+// never take this path, so their round-trip against the seed is untouched.
+function parseStub(fm: KipFrontmatter, sec: Record<string, string>): Kip {
+  const summary = (sec["Summary"] || "")
+    .replace(/\n?> \[!note\][\s\S]*$/, "") // drop the trailing "Imported stub" callout
+    .trim();
+  return {
+    id: fm.id,
+    title: fm.title,
+    status: fm.status,
+    category: "",
+    release: "",
+    authors: "",
+    tags: fm.tags ?? [],
+    summary,
+    motivation: [],
+    design: [],
+    pros: [],
+    cons: [],
+    rejected: [],
+    discussionMeta: "",
+    discussion: [],
+    vote: { result: "", tally: "", closed: "", votes: [] },
+    related: (fm.related ?? []).map(unwikilink),
+    stub: true,
+    cwikiUrl: fm.cwiki?.url,
+    threads: fm.threads ?? [],
+  };
+}
+
 function parseNote(raw: string): Kip {
   const parsed = matter(raw);
   const fm = parsed.data as KipFrontmatter;
   const content = parsed.content;
   const sec = sectionMap(content);
+
+  if (fm.stub === true) return parseStub(fm, sec);
 
   // Trade-offs -> pros / cons
   const trade = sec["Trade-offs"] || "";
