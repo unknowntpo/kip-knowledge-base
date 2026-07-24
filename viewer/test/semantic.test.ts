@@ -11,13 +11,30 @@ const embeddings = readJson("../../tools/semantic/embeddings.json");
 const related = readJson("../../tools/semantic/related.json");
 const golden = readJson("../../tools/semantic/golden-embeddings.json");
 
-const vaultIds = new Set<string>(parseVault(url("../../vault/KIPs")).map((k: any) => k.id));
+const parsedVault = parseVault(url("../../vault/KIPs"));
+const vaultIds = new Set<string>(parsedVault.map((k: any) => k.id));
 
 // vectors are L2-normalized, so cosine similarity == dot product.
 const dot = (a: number[], b: number[]) => a.reduce((s, v, i) => s + v * b[i], 0);
 
+// "Pending regeneration" allowance (spec §6): after the corpus backfill imports
+// stub notes, the committed embeddings are intentionally stale until the
+// orchestrator runs `bun run embeddings`. When BACKFILL_WIP=1 AND the vault
+// contains stub notes AND the corpusHash has drifted, SKIP the staleness +
+// golden suites (they depend on regenerated vectors). Defaults to strict: with a
+// stub-free vault, or without the env flag, every assertion runs as before.
+const hasStubs = parsedVault.some((k: any) => k.stub === true);
+const hashMismatch = corpusHash(buildCorpus()) !== embeddings.corpusHash;
+const pendingRegen = process.env.BACKFILL_WIP === "1" && hasStubs && hashMismatch;
+if (pendingRegen)
+  console.warn(
+    "[semantic] BACKFILL_WIP=1 + stub notes + corpusHash drift: skipping staleness/golden " +
+      "suites until `cd viewer && bun run embeddings` regenerates the vectors."
+  );
+const strictIt = pendingRegen ? it.skip : it;
+
 describe("semantic: staleness guard", () => {
-  it("embeddings.json.corpusHash matches the current vault corpus", () => {
+  strictIt("embeddings.json.corpusHash matches the current vault corpus", () => {
     const hash = corpusHash(buildCorpus());
     expect(
       hash,
@@ -30,7 +47,7 @@ describe("semantic: staleness guard", () => {
 describe("semantic: golden queries", () => {
   const docIds = Object.keys(embeddings.vectors);
   for (const { q, expect: want, vector } of golden.queries) {
-    it(`retrieves an expected KIP in top-3 for: "${q}"`, () => {
+    strictIt(`retrieves an expected KIP in top-3 for: "${q}"`, () => {
       const ranked = docIds
         .map((id) => ({ id, score: dot(vector, embeddings.vectors[id]) }))
         .sort((a, b) => b.score - a.score);

@@ -1,0 +1,4634 @@
+{
+  "generatedAt": "2026-07-24T18:55:29Z",
+  "items": {
+    "KIP-1": {
+      "title": "Remove support of request.required.acks",
+      "state": "threads_done",
+      "pageId": "50859269"
+    },
+    "KIP-2": {
+      "title": "Refactor brokers to allow listening on multiple ports and IPs",
+      "state": "threads_done",
+      "pageId": "50860018"
+    },
+    "KIP-3": {
+      "title": "Mirror Maker Enhancement",
+      "state": "threads_done",
+      "pageId": "50860288"
+    },
+    "KIP-4": {
+      "title": "Metadata Protocol Changes",
+      "state": "threads_done",
+      "pageId": "50860476"
+    },
+    "KIP-8": {
+      "title": "Add a flush method to the producer API",
+      "state": "threads_done",
+      "pageId": "51809757"
+    },
+    "KIP-11": {
+      "title": "Kafka Authorizer design",
+      "state": "threads_done",
+      "pageId": "51807580"
+    },
+    "KIP-12": {
+      "title": "Kafka Sasl/Kerberos and SSL implementation",
+      "state": "threads_done",
+      "pageId": "51809888"
+    },
+    "KIP-13": {
+      "title": "Quota Design",
+      "state": "threads_done",
+      "pageId": "51812210"
+    },
+    "KIP-15": {
+      "title": "Add a close method with a timeout in the producer",
+      "state": "threads_done",
+      "pageId": "53739782"
+    },
+    "KIP-16": {
+      "title": "Automated Replica Lag Tuning",
+      "state": "threads_done",
+      "pageId": "53740845"
+    },
+    "KIP-19": {
+      "title": "Add a request timeout to NetworkClient",
+      "state": "threads_done",
+      "pageId": "55154824"
+    },
+    "KIP-20": {
+      "title": "Enable log preallocate to improve consume performance under windows and some old Linux file system",
+      "state": "threads_done",
+      "pageId": "55155993"
+    },
+    "KIP-21": {
+      "title": "Dynamic Configuration",
+      "state": "threads_done",
+      "pageId": "55156351"
+    },
+    "KIP-22": {
+      "title": "Expose a Partitioner interface in the new producer",
+      "state": "threads_done",
+      "pageId": "55156546"
+    },
+    "KIP-25": {
+      "title": "System test improvements",
+      "state": "threads_done",
+      "pageId": "57903177"
+    },
+    "KIP-26": {
+      "title": "Add Kafka Connect framework for data import/export",
+      "state": "threads_done",
+      "pageId": "58851767"
+    },
+    "KIP-28": {
+      "title": "Add a processor client",
+      "state": "threads_done",
+      "pageId": "61309558"
+    },
+    "KIP-31": {
+      "title": "Move to relative offsets in compressed message sets",
+      "state": "threads_done",
+      "pageId": "61317519"
+    },
+    "KIP-32": {
+      "title": "Add timestamps to Kafka message",
+      "state": "threads_done",
+      "pageId": "61318265"
+    },
+    "KIP-33": {
+      "title": "Add a time based log index",
+      "state": "threads_done",
+      "pageId": "61318517"
+    },
+    "KIP-35": {
+      "title": "Retrieving protocol version",
+      "state": "pending"
+    },
+    "KIP-36": {
+      "title": "Rack aware replica assignment",
+      "state": "pending"
+    },
+    "KIP-38": {
+      "title": "ZooKeeper Authentication",
+      "state": "pending"
+    },
+    "KIP-40": {
+      "title": "ListGroups and DescribeGroup",
+      "state": "pending"
+    },
+    "KIP-41": {
+      "title": "Consumer Max Records",
+      "state": "pending"
+    },
+    "KIP-42": {
+      "title": "Add Producer and Consumer Interceptors",
+      "state": "pending"
+    },
+    "KIP-43": {
+      "title": "Kafka SASL enhancements",
+      "state": "pending"
+    },
+    "KIP-45": {
+      "title": "Standardize all client sequence interaction on j.u.Collection.",
+      "state": "pending"
+    },
+    "KIP-48": {
+      "title": "Delegation token support for Kafka",
+      "state": "pending"
+    },
+    "KIP-51": {
+      "title": "List Connectors REST API",
+      "state": "pending"
+    },
+    "KIP-52": {
+      "title": "Connector Control APIs",
+      "state": "pending"
+    },
+    "KIP-54": {
+      "title": "Sticky Partition Assignment Strategy",
+      "state": "pending"
+    },
+    "KIP-55": {
+      "title": "Secure Quotas for Authenticated Users",
+      "state": "pending"
+    },
+    "KIP-56": {
+      "title": "Allow cross origin HTTP requests on all HTTP methods",
+      "state": "pending"
+    },
+    "KIP-57": {
+      "title": "Interoperable LZ4 Framing",
+      "state": "pending"
+    },
+    "KIP-58": {
+      "title": "Make Log Compaction Point Configurable",
+      "state": "pending"
+    },
+    "KIP-59": {
+      "title": "Proposal for a kafka broker command",
+      "state": "pending"
+    },
+    "KIP-60": {
+      "title": "Make Java client classloading more flexible",
+      "state": "pending"
+    },
+    "KIP-62": {
+      "title": "Allow consumer to send heartbeats from a background thread",
+      "state": "pending"
+    },
+    "KIP-63": {
+      "title": "Unify store and downstream caching in streams",
+      "state": "pending"
+    },
+    "KIP-65": {
+      "title": "Expose timestamps to Connect",
+      "state": "pending"
+    },
+    "KIP-66": {
+      "title": "Single Message Transforms for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-67": {
+      "title": "Queryable state for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-70": {
+      "title": "Revise Partition Assignment Semantics on New Consumer's Subscription Change",
+      "state": "pending"
+    },
+    "KIP-71": {
+      "title": "Enable log compaction and deletion to co-exist",
+      "state": "pending"
+    },
+    "KIP-72": {
+      "title": "Allow putting a bound on memory consumed by Incoming request",
+      "state": "pending"
+    },
+    "KIP-73": {
+      "title": "Replication Quotas",
+      "state": "pending"
+    },
+    "KIP-74": {
+      "title": "Add Fetch Response Size Limit in Bytes",
+      "state": "pending"
+    },
+    "KIP-75": {
+      "title": "Add per-connector Converters",
+      "state": "pending"
+    },
+    "KIP-77": {
+      "title": "Improve Kafka Streams Join Semantics",
+      "state": "pending"
+    },
+    "KIP-78": {
+      "title": "Cluster Id",
+      "state": "pending"
+    },
+    "KIP-79": {
+      "title": "ListOffsetRequest/ListOffsetResponse v1 and add timestamp search methods to the new consumer",
+      "state": "pending"
+    },
+    "KIP-81": {
+      "title": "Bound Fetch memory usage in the consumer",
+      "state": "pending"
+    },
+    "KIP-82": {
+      "title": "Add Record Headers",
+      "state": "pending"
+    },
+    "KIP-84": {
+      "title": "Support SASL SCRAM mechanisms",
+      "state": "pending"
+    },
+    "KIP-85": {
+      "title": "Dynamic JAAS configuration for Kafka clients",
+      "state": "pending"
+    },
+    "KIP-86": {
+      "title": "Configurable SASL callback handlers",
+      "state": "pending"
+    },
+    "KIP-88": {
+      "title": "OffsetFetch Protocol Update",
+      "state": "pending"
+    },
+    "KIP-89": {
+      "title": "Allow sink connectors to decouple flush and offset commit",
+      "state": "pending"
+    },
+    "KIP-90": {
+      "title": "Remove zkClient dependency from Streams",
+      "state": "pending"
+    },
+    "KIP-91": {
+      "title": "Provide Intuitive User Timeouts in The Producer",
+      "state": "pending"
+    },
+    "KIP-92": {
+      "title": "Add per partition lag metrics to KafkaConsumer",
+      "state": "pending"
+    },
+    "KIP-93": {
+      "title": "Improve invalid timestamp handling in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-94": {
+      "title": "Session Windows",
+      "state": "pending"
+    },
+    "KIP-96": {
+      "title": "Add per partition metrics for in-sync and assigned replica count",
+      "state": "pending"
+    },
+    "KIP-97": {
+      "title": "Improved Kafka Client RPC Compatibility Policy",
+      "state": "pending"
+    },
+    "KIP-98": {
+      "title": "Exactly Once Delivery and Transactional Messaging",
+      "state": "detail_done",
+      "pageId": "66854913"
+    },
+    "KIP-99": {
+      "title": "Add Global Tables to Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-100": {
+      "title": "Relax Type constraints in Kafka Streams API",
+      "state": "pending"
+    },
+    "KIP-101": {
+      "title": "Alter Replication Protocol to use Leader Epoch rather than High Watermark for Truncation",
+      "state": "detail_done",
+      "pageId": "67634337"
+    },
+    "KIP-102": {
+      "title": "Add close with timeout for consumers",
+      "state": "pending"
+    },
+    "KIP-103": {
+      "title": "Separation of Internal and External traffic",
+      "state": "pending"
+    },
+    "KIP-104": {
+      "title": "Granular Sensors for Streams",
+      "state": "pending"
+    },
+    "KIP-105": {
+      "title": "Addition of Record Level for Sensors",
+      "state": "pending"
+    },
+    "KIP-106": {
+      "title": "Change Default unclean.leader.election.enabled from True to False",
+      "state": "pending"
+    },
+    "KIP-107": {
+      "title": "Add deleteRecordsBefore() API in AdminClient",
+      "state": "pending"
+    },
+    "KIP-108": {
+      "title": "Create Topic Policy",
+      "state": "pending"
+    },
+    "KIP-109": {
+      "title": "Old Consumer Deprecation",
+      "state": "pending"
+    },
+    "KIP-110": {
+      "title": "Add Codec for ZStandard Compression",
+      "state": "pending"
+    },
+    "KIP-112": {
+      "title": "Handle disk failure for JBOD",
+      "state": "pending"
+    },
+    "KIP-113": {
+      "title": "Support replicas movement between log directories",
+      "state": "pending"
+    },
+    "KIP-114": {
+      "title": "KTable state stores and improved semantics",
+      "state": "pending"
+    },
+    "KIP-115": {
+      "title": "Enforce offsets.topic.replication.factor upon __consumer_offsets auto topic creation",
+      "state": "pending"
+    },
+    "KIP-117": {
+      "title": "Add a public AdminClient API for Kafka admin operations",
+      "state": "pending"
+    },
+    "KIP-118": {
+      "title": "Drop Support for Java 7",
+      "state": "pending"
+    },
+    "KIP-119": {
+      "title": "Drop Support for Scala 2.10 in Kafka 0.11",
+      "state": "pending"
+    },
+    "KIP-120": {
+      "title": "Cleanup Kafka Streams builder API",
+      "state": "pending"
+    },
+    "KIP-121": {
+      "title": "Add KStream peek method",
+      "state": "pending"
+    },
+    "KIP-122": {
+      "title": "Add Reset Consumer Group Offsets tooling",
+      "state": "pending"
+    },
+    "KIP-123": {
+      "title": "Allow per stream/table timestamp extractor",
+      "state": "pending"
+    },
+    "KIP-124": {
+      "title": "Request rate quotas",
+      "state": "pending"
+    },
+    "KIP-125": {
+      "title": "ZookeeperConsumerConnector to KafkaConsumer Migration and Rollback",
+      "state": "pending"
+    },
+    "KIP-126": {
+      "title": "Allow KafkaProducer to split and resend oversized batches.",
+      "state": "pending"
+    },
+    "KIP-128": {
+      "title": "Add ByteArrayConverter for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-129": {
+      "title": "Streams Exactly-Once Semantics",
+      "state": "pending"
+    },
+    "KIP-130": {
+      "title": "Expose states of active tasks to KafkaStreams public API",
+      "state": "pending"
+    },
+    "KIP-131": {
+      "title": "Add access to OffsetStorageReader from SourceConnector",
+      "state": "pending"
+    },
+    "KIP-133": {
+      "title": "Describe and Alter Configs Admin APIs",
+      "state": "pending"
+    },
+    "KIP-134": {
+      "title": "Delay initial consumer group rebalance",
+      "state": "pending"
+    },
+    "KIP-135": {
+      "title": "Send of null key to a compacted topic should throw non-retriable error back to user",
+      "state": "pending"
+    },
+    "KIP-136": {
+      "title": "Add Listener name to SelectorMetrics tags",
+      "state": "pending"
+    },
+    "KIP-137": {
+      "title": "Enhance TopicCommand --describe to show topics marked for deletion",
+      "state": "pending"
+    },
+    "KIP-138": {
+      "title": "Change punctuate semantics",
+      "state": "pending"
+    },
+    "KIP-140": {
+      "title": "Add administrative RPCs for adding, deleting, and listing ACLs",
+      "state": "pending"
+    },
+    "KIP-142": {
+      "title": "Add ListTopicsRequest to efficiently list all the topics in a cluster",
+      "state": "pending"
+    },
+    "KIP-143": {
+      "title": "Controller Health Metrics",
+      "state": "pending"
+    },
+    "KIP-144": {
+      "title": "Exponential backoff for broker reconnect attempts",
+      "state": "pending"
+    },
+    "KIP-145": {
+      "title": "Expose Record Headers in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-146": {
+      "title": "Classloading Isolation in Connect",
+      "state": "pending"
+    },
+    "KIP-148": {
+      "title": "Add a connect timeout for client",
+      "state": "pending"
+    },
+    "KIP-149": {
+      "title": "Enabling key access in ValueTransformer, ValueMapper, and ValueJoiner",
+      "state": "pending"
+    },
+    "KIP-150": {
+      "title": "Kafka-Streams Cogroup",
+      "state": "pending"
+    },
+    "KIP-151": {
+      "title": "Expose Connector type in REST API",
+      "state": "pending"
+    },
+    "KIP-152": {
+      "title": "Improve diagnostics for SASL authentication failures",
+      "state": "pending"
+    },
+    "KIP-153": {
+      "title": "Include only client traffic in BytesOutPerSec metric",
+      "state": "pending"
+    },
+    "KIP-154": {
+      "title": "Add Kafka Connect configuration properties for creating internal topics",
+      "state": "pending"
+    },
+    "KIP-155": {
+      "title": "Add range scan for windowed state stores",
+      "state": "pending"
+    },
+    "KIP-156": {
+      "title": "Add option \"dry run\" to Streams application reset tool",
+      "state": "pending"
+    },
+    "KIP-157": {
+      "title": "Add consumer config options to streams reset tool",
+      "state": "pending"
+    },
+    "KIP-158": {
+      "title": "Kafka Connect should allow source connectors to set topic-specific settings for new topics",
+      "state": "pending"
+    },
+    "KIP-160": {
+      "title": "Augment KStream.print(), KStream.writeAsText() to allow users pass in extra parameters in the printed string",
+      "state": "pending"
+    },
+    "KIP-161": {
+      "title": "streams deserialization exception handlers",
+      "state": "pending"
+    },
+    "KIP-162": {
+      "title": "Enable topic deletion by default",
+      "state": "pending"
+    },
+    "KIP-163": {
+      "title": "Lower the Minimum Required ACL Permission of OffsetFetch",
+      "state": "pending"
+    },
+    "KIP-164": {
+      "title": "Add UnderMinIsrPartitionCount and per-partition UnderMinIsr metrics",
+      "state": "pending"
+    },
+    "KIP-166": {
+      "title": "Add a tool to make amounts of replicas and leaders on brokers balanced",
+      "state": "pending"
+    },
+    "KIP-167": {
+      "title": "Add interface for the state store restoration process",
+      "state": "pending"
+    },
+    "KIP-168": {
+      "title": "Add GlobalTopicCount and GlobalPartitionCount metric per cluster",
+      "state": "pending"
+    },
+    "KIP-169": {
+      "title": "Lag-Aware Partition Assignment Strategy",
+      "state": "pending"
+    },
+    "KIP-171": {
+      "title": "Extend Consumer Group Reset Offset for Stream Application",
+      "state": "pending"
+    },
+    "KIP-173": {
+      "title": "Add prefix to StreamsConfig to enable setting default internal topic configs",
+      "state": "pending"
+    },
+    "KIP-174": {
+      "title": "Deprecate and remove internal converter configs in WorkerConfig",
+      "state": "pending"
+    },
+    "KIP-175": {
+      "title": "Additional '--describe' views for ConsumerGroupCommand",
+      "state": "pending"
+    },
+    "KIP-176": {
+      "title": "Remove deprecated new-consumer option for tools",
+      "state": "pending"
+    },
+    "KIP-177": {
+      "title": "Consumer perf tool should count rebalance time",
+      "state": "pending"
+    },
+    "KIP-178": {
+      "title": "Size-based log directory selection strategy",
+      "state": "pending"
+    },
+    "KIP-180": {
+      "title": "Add a broker metric specifying the number of consumer group rebalances in progress",
+      "state": "pending"
+    },
+    "KIP-182": {
+      "title": "Reduce Streams DSL overloads and allow easier use of custom storage engines",
+      "state": "pending"
+    },
+    "KIP-183": {
+      "title": "Change PreferredReplicaLeaderElectionCommand to use AdminClient",
+      "state": "pending"
+    },
+    "KIP-185": {
+      "title": "Make exactly once in order delivery the default producer setting",
+      "state": "pending"
+    },
+    "KIP-186": {
+      "title": "Increase offsets retention default to 7 days",
+      "state": "pending"
+    },
+    "KIP-187": {
+      "title": "Add cumulative count metric for all Kafka rate metrics",
+      "state": "pending"
+    },
+    "KIP-188": {
+      "title": "Add new metrics to support health checks",
+      "state": "pending"
+    },
+    "KIP-189": {
+      "title": "Improve principal builder interface and add support for SASL",
+      "state": "pending"
+    },
+    "KIP-190": {
+      "title": "Handle client-ids consistently between clients and brokers",
+      "state": "pending"
+    },
+    "KIP-191": {
+      "title": "KafkaConsumer.subscribe() overload that takes just Pattern",
+      "state": "pending"
+    },
+    "KIP-192": {
+      "title": "Provide cleaner semantics when idempotence is enabled",
+      "state": "pending"
+    },
+    "KIP-193": {
+      "title": "Add SchemaBuilder.from(Schema)",
+      "state": "pending"
+    },
+    "KIP-195": {
+      "title": "AdminClient.createPartitions",
+      "state": "pending"
+    },
+    "KIP-196": {
+      "title": "Add metrics to Kafka Connect framework",
+      "state": "pending"
+    },
+    "KIP-197": {
+      "title": "Connect REST API should include the connector type when describing a connector",
+      "state": "pending"
+    },
+    "KIP-198": {
+      "title": "Remove ZK dependency from Streams Reset Tool",
+      "state": "pending"
+    },
+    "KIP-201": {
+      "title": "Rationalising Policy interfaces",
+      "state": "pending"
+    },
+    "KIP-202": {
+      "title": "Move merge() from StreamsBuilder to KStream",
+      "state": "pending"
+    },
+    "KIP-203": {
+      "title": "Add toLowerCase support to sasl.kerberos.principal.to.local rule",
+      "state": "pending"
+    },
+    "KIP-204": {
+      "title": "Adding records deletion operation to the new Admin Client API",
+      "state": "pending"
+    },
+    "KIP-205": {
+      "title": "Add all() and range() API to ReadOnlyWindowStore",
+      "state": "pending"
+    },
+    "KIP-206": {
+      "title": "Add support for UUID serialization and deserialization",
+      "state": "pending"
+    },
+    "KIP-207": {
+      "title": "Offsets returned by ListOffsetsResponse should be monotonically increasing even during a partition leader change",
+      "state": "pending"
+    },
+    "KIP-208": {
+      "title": "Add SSL support to Kafka Connect REST interface",
+      "state": "pending"
+    },
+    "KIP-209": {
+      "title": "Connection String Support",
+      "state": "pending"
+    },
+    "KIP-210": {
+      "title": "Provide for custom error handling when Kafka Streams fails to produce",
+      "state": "pending"
+    },
+    "KIP-211": {
+      "title": "Revise Expiration Semantics of Consumer Group Offsets",
+      "state": "pending"
+    },
+    "KIP-212": {
+      "title": "Enforce set of legal characters for connector names",
+      "state": "pending"
+    },
+    "KIP-213": {
+      "title": "Support non-key joining in KTable",
+      "state": "pending"
+    },
+    "KIP-214": {
+      "title": "Add zookeeper.max.in.flight.requests config to the broker",
+      "state": "pending"
+    },
+    "KIP-215": {
+      "title": "Add topic regex support for Connect sinks",
+      "state": "pending"
+    },
+    "KIP-216": {
+      "title": "IQ should throw different exceptions for different errors",
+      "state": "pending"
+    },
+    "KIP-217": {
+      "title": "Expose a timeout to allow an expired ZK session to be re-created",
+      "state": "pending"
+    },
+    "KIP-218": {
+      "title": "Make KafkaFuture.Function java 8 lambda compatible",
+      "state": "pending"
+    },
+    "KIP-219": {
+      "title": "Improve quota communication",
+      "state": "pending"
+    },
+    "KIP-220": {
+      "title": "Add AdminClient into Kafka Streams' ClientSupplier",
+      "state": "pending"
+    },
+    "KIP-221": {
+      "title": "Enhance DSL with Connecting Topic Creation and Repartition Hint",
+      "state": "pending"
+    },
+    "KIP-222": {
+      "title": "Add Consumer Group operations to Admin API",
+      "state": "pending"
+    },
+    "KIP-223": {
+      "title": "Add per-topic min lead and per-partition lead metrics to KafkaConsumer",
+      "state": "pending"
+    },
+    "KIP-224": {
+      "title": "Add configuration parameter `retries` to Streams API",
+      "state": "pending"
+    },
+    "KIP-225": {
+      "title": "Use tags for consumer “records.lag” metrics",
+      "state": "pending"
+    },
+    "KIP-226": {
+      "title": "Dynamic Broker Configuration",
+      "state": "pending"
+    },
+    "KIP-227": {
+      "title": "Introduce Incremental FetchRequests to Increase Partition Scalability",
+      "state": "detail_done",
+      "pageId": "74687799"
+    },
+    "KIP-228": {
+      "title": "Negative record timestamp support",
+      "state": "pending"
+    },
+    "KIP-229": {
+      "title": "DeleteGroups API",
+      "state": "pending"
+    },
+    "KIP-231": {
+      "title": "Improve the Required ACL of ListGroups API",
+      "state": "pending"
+    },
+    "KIP-233": {
+      "title": "Simplify StreamsBuilder#addGlobalStore",
+      "state": "pending"
+    },
+    "KIP-234": {
+      "title": "add support for getting topic defaults from AdminClient",
+      "state": "pending"
+    },
+    "KIP-235": {
+      "title": "Add DNS alias support for secured connection",
+      "state": "pending"
+    },
+    "KIP-236": {
+      "title": "Interruptible Partition Reassignment",
+      "state": "pending"
+    },
+    "KIP-237": {
+      "title": "More Controller Health Metrics",
+      "state": "pending"
+    },
+    "KIP-238": {
+      "title": "Expose Kafka cluster ID in Connect REST API",
+      "state": "pending"
+    },
+    "KIP-239": {
+      "title": "Add queryableStoreName() to GlobalKTable",
+      "state": "pending"
+    },
+    "KIP-240": {
+      "title": "AdminClient.listReassignments() AdminClient.describeReassignments()",
+      "state": "pending"
+    },
+    "KIP-242": {
+      "title": "Mask password in Kafka Connect Rest API response",
+      "state": "pending"
+    },
+    "KIP-243": {
+      "title": "Make ProducerConfig and ConsumerConfig constructors public",
+      "state": "pending"
+    },
+    "KIP-244": {
+      "title": "Add Record Header support to Kafka Streams Processor API",
+      "state": "pending"
+    },
+    "KIP-245": {
+      "title": "Use Properties instead of StreamsConfig in KafkaStreams constructor",
+      "state": "pending"
+    },
+    "KIP-247": {
+      "title": "Add public test utils for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-249": {
+      "title": "Add Delegation Token Operations to KafkaAdminClient",
+      "state": "pending"
+    },
+    "KIP-250": {
+      "title": "Add Support for Quorum-based Producer Acknowledgment",
+      "state": "pending"
+    },
+    "KIP-251": {
+      "title": "Allow timestamp manipulation in Processor API",
+      "state": "pending"
+    },
+    "KIP-252": {
+      "title": "Extend ACLs to allow filtering based on ip ranges and subnets",
+      "state": "pending"
+    },
+    "KIP-253": {
+      "title": "Support in-order message delivery with partition expansion",
+      "state": "pending"
+    },
+    "KIP-254": {
+      "title": "JsonConverter Exception Handeling",
+      "state": "pending"
+    },
+    "KIP-255": {
+      "title": "OAuth Authentication via SASL/OAUTHBEARER",
+      "state": "pending"
+    },
+    "KIP-257": {
+      "title": "Configurable Quota Management",
+      "state": "pending"
+    },
+    "KIP-258": {
+      "title": "Allow to Store Record Timestamps in RocksDB",
+      "state": "pending"
+    },
+    "KIP-261": {
+      "title": "Add Single Value Fetch in Window Stores",
+      "state": "pending"
+    },
+    "KIP-264": {
+      "title": "Add a consumer metric to record raw fetch size",
+      "state": "pending"
+    },
+    "KIP-265": {
+      "title": "Make Windowed Serde to public APIs",
+      "state": "pending"
+    },
+    "KIP-266": {
+      "title": "Fix consumer indefinite blocking behavior",
+      "state": "pending"
+    },
+    "KIP-267": {
+      "title": "Add Processor Unit Test Support to Kafka Streams Test Utils",
+      "state": "pending"
+    },
+    "KIP-268": {
+      "title": "Simplify Kafka Streams Rebalance Metadata Upgrade",
+      "state": "pending"
+    },
+    "KIP-270": {
+      "title": "A Scala Wrapper Library for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-271": {
+      "title": "Add NetworkClient redirector",
+      "state": "pending"
+    },
+    "KIP-272": {
+      "title": "Add API version tag to broker's RequestsPerSec metric",
+      "state": "pending"
+    },
+    "KIP-273": {
+      "title": "Kafka to support using ETCD beside Zookeeper",
+      "state": "pending"
+    },
+    "KIP-274": {
+      "title": "Kafka Streams Skipped Records Metrics",
+      "state": "pending"
+    },
+    "KIP-276": {
+      "title": "Add StreamsConfig prefix for different consumers",
+      "state": "pending"
+    },
+    "KIP-277": {
+      "title": "Fine Grained ACL for CreateTopics API",
+      "state": "pending"
+    },
+    "KIP-278": {
+      "title": "Add version option to Kafka's commands",
+      "state": "pending"
+    },
+    "KIP-279": {
+      "title": "Fix log divergence between leader and follower after fast leader fail over",
+      "state": "pending"
+    },
+    "KIP-280": {
+      "title": "Enhanced log compaction",
+      "state": "pending"
+    },
+    "KIP-281": {
+      "title": "ConsumerPerformance: Increase Polling Loop Timeout and Make It Reachable by the End User",
+      "state": "pending"
+    },
+    "KIP-282": {
+      "title": "Add the listener name to the authentication context",
+      "state": "pending"
+    },
+    "KIP-283": {
+      "title": "Efficient Memory Usage for Down-Conversion",
+      "state": "pending"
+    },
+    "KIP-284": {
+      "title": "Set default retention ms for Streams repartition topics to Long.MAX_VALUE",
+      "state": "pending"
+    },
+    "KIP-285": {
+      "title": "Connect Rest Extension Plugin",
+      "state": "pending"
+    },
+    "KIP-289": {
+      "title": "Improve the default group id behavior in KafkaConsumer",
+      "state": "pending"
+    },
+    "KIP-290": {
+      "title": "Support for Prefixed ACLs",
+      "state": "pending"
+    },
+    "KIP-291": {
+      "title": "Separating controller connections and requests from the data plane",
+      "state": "pending"
+    },
+    "KIP-292": {
+      "title": "Add transformValues() method to KTable",
+      "state": "pending"
+    },
+    "KIP-293": {
+      "title": "Add new metrics for consumer/replication fetch requests",
+      "state": "pending"
+    },
+    "KIP-294": {
+      "title": "Enable TLS hostname verification by default",
+      "state": "pending"
+    },
+    "KIP-295": {
+      "title": "Add Streams Configuration Allowing for Optional Topology Optimization",
+      "state": "pending"
+    },
+    "KIP-296": {
+      "title": "Connector level configurability for client configs",
+      "state": "pending"
+    },
+    "KIP-297": {
+      "title": "Externalizing Secrets for Connect Configurations",
+      "state": "pending"
+    },
+    "KIP-298": {
+      "title": "Error Handling in Connect",
+      "state": "pending"
+    },
+    "KIP-300": {
+      "title": "Add Windowed KTable API in StreamsBuilder",
+      "state": "pending"
+    },
+    "KIP-301": {
+      "title": "Schema Inferencing for JsonConverter",
+      "state": "pending"
+    },
+    "KIP-302": {
+      "title": "Enable Kafka clients to use all DNS resolved IP addresses",
+      "state": "pending"
+    },
+    "KIP-303": {
+      "title": "Add Dynamic Routing in Streams Sink",
+      "state": "pending"
+    },
+    "KIP-304": {
+      "title": "Connect runtime mode improvements for container platforms",
+      "state": "pending"
+    },
+    "KIP-305": {
+      "title": "Add Connect primitive number converters",
+      "state": "pending"
+    },
+    "KIP-306": {
+      "title": "Configuration for Delaying Response to Failed Client Authentication",
+      "state": "pending"
+    },
+    "KIP-307": {
+      "title": "Allow to define custom processor names with KStreams DSL",
+      "state": "pending"
+    },
+    "KIP-308": {
+      "title": "Support dynamic update of max.connections.per.ip/max.connections.per.ip.overrides",
+      "state": "pending"
+    },
+    "KIP-309": {
+      "title": "Add toUpperCase support to sasl.kerberos.principal.to.local rule",
+      "state": "pending"
+    },
+    "KIP-312": {
+      "title": "Add Overloaded StreamsBuilder Build Method to Accept java.util.Properties",
+      "state": "pending"
+    },
+    "KIP-313": {
+      "title": "Add KStream.flatTransform and KStream.flatTransformValues",
+      "state": "pending"
+    },
+    "KIP-315": {
+      "title": "Stream Join Sticky Assignor",
+      "state": "pending"
+    },
+    "KIP-316": {
+      "title": "Command-line overrides for ConnectDistributed worker properties",
+      "state": "pending"
+    },
+    "KIP-317": {
+      "title": "Add end-to-end data encryption functionality to Apache Kafka",
+      "state": "pending"
+    },
+    "KIP-319": {
+      "title": "Replace segments with segmentInterval in WindowBytesStoreSupplier",
+      "state": "pending"
+    },
+    "KIP-320": {
+      "title": "Allow fetchers to detect and handle log truncation",
+      "state": "pending"
+    },
+    "KIP-321": {
+      "title": "Update TopologyDescription to better represent Source and Sink Nodes",
+      "state": "pending"
+    },
+    "KIP-322": {
+      "title": "Return new error code for DeleteTopics API when topic deletion disabled.",
+      "state": "pending"
+    },
+    "KIP-324": {
+      "title": "Add method to get metrics() in AdminClient",
+      "state": "pending"
+    },
+    "KIP-325": {
+      "title": "Extend Consumer Group Command to Show Beginning Offsets",
+      "state": "pending"
+    },
+    "KIP-328": {
+      "title": "Ability to suppress updates for KTables",
+      "state": "pending"
+    },
+    "KIP-330": {
+      "title": "Add retentionPeriod in SessionBytesStoreSupplier",
+      "state": "pending"
+    },
+    "KIP-331": {
+      "title": "Add default implementation to close() and configure() for Serializer, Deserializer and Serde",
+      "state": "pending"
+    },
+    "KIP-332": {
+      "title": "Update AclCommand to use AdminClient API",
+      "state": "pending"
+    },
+    "KIP-333": {
+      "title": "Add faster mode of rebalancing",
+      "state": "pending"
+    },
+    "KIP-334": {
+      "title": "Include partitions in exceptions raised during consumer record deserialization/validation",
+      "state": "pending"
+    },
+    "KIP-336": {
+      "title": "Consolidate ExtendedSerializer/Serializer and ExtendedDeserializer/Deserializer",
+      "state": "pending"
+    },
+    "KIP-338": {
+      "title": "Support to exclude the internal topics in kafka-topics.sh command",
+      "state": "pending"
+    },
+    "KIP-339": {
+      "title": "Create a new IncrementalAlterConfigs API",
+      "state": "pending"
+    },
+    "KIP-340": {
+      "title": "Allow kafka-reassign-partitions.sh and kafka-log-dirs.sh to take admin client property file",
+      "state": "pending"
+    },
+    "KIP-341": {
+      "title": "Update Sticky Assignor's User Data Protocol",
+      "state": "pending"
+    },
+    "KIP-342": {
+      "title": "Add support for custom SASL extensions in OAuthBearer authentication",
+      "state": "pending"
+    },
+    "KIP-345": {
+      "title": "Introduce static membership protocol to reduce consumer rebalances",
+      "state": "pending"
+    },
+    "KIP-346": {
+      "title": "Improve LogCleaner behavior on error",
+      "state": "pending"
+    },
+    "KIP-348": {
+      "title": "Eliminate null from SourceTask#poll()",
+      "state": "pending"
+    },
+    "KIP-350": {
+      "title": "Allow kafka-topics.sh to take brokerid as parameter to show partitions associated with it",
+      "state": "pending"
+    },
+    "KIP-351": {
+      "title": "Add --under-min-isr option to describe topics command",
+      "state": "pending"
+    },
+    "KIP-352": {
+      "title": "Distinguish URPs caused by reassignment",
+      "state": "pending"
+    },
+    "KIP-353": {
+      "title": "Improve Kafka Streams Timestamp Synchronization",
+      "state": "pending"
+    },
+    "KIP-354": {
+      "title": "Add a Maximum Log Compaction Lag",
+      "state": "pending"
+    },
+    "KIP-356": {
+      "title": "Add withCachingDisabled() to StoreBuilder",
+      "state": "pending"
+    },
+    "KIP-357": {
+      "title": "Add support to list ACLs per principal",
+      "state": "pending"
+    },
+    "KIP-358": {
+      "title": "Migrate Streams API to Duration instead of long ms times",
+      "state": "pending"
+    },
+    "KIP-359": {
+      "title": "Verify leader epoch in produce requests",
+      "state": "pending"
+    },
+    "KIP-360": {
+      "title": "Improve reliability of idempotent/transactional producer",
+      "state": "pending"
+    },
+    "KIP-363": {
+      "title": "Allow performance tools to print final results to output file",
+      "state": "pending"
+    },
+    "KIP-365": {
+      "title": "Materialized, Serialized, Joined, Consumed and Produced with implicit Serde",
+      "state": "pending"
+    },
+    "KIP-366": {
+      "title": "Make FunctionConversions deprecated",
+      "state": "pending"
+    },
+    "KIP-367": {
+      "title": "Introduce close(Duration) to Producer and AdminClient instead of close(long, TimeUnit)",
+      "state": "pending"
+    },
+    "KIP-369": {
+      "title": "Alternative Partitioner to Support \"Always Round-Robin\" Selection",
+      "state": "pending"
+    },
+    "KIP-370": {
+      "title": "Remove Orphan Partitions",
+      "state": "pending"
+    },
+    "KIP-371": {
+      "title": "Add a configuration to build custom SSL principal name",
+      "state": "pending"
+    },
+    "KIP-372": {
+      "title": "Naming Repartition Topics for Joins and Grouping",
+      "state": "pending"
+    },
+    "KIP-373": {
+      "title": "Allow users to create delegation tokens for other users",
+      "state": "pending"
+    },
+    "KIP-374": {
+      "title": "Add '--help' option to all available Kafka CLI commands",
+      "state": "pending"
+    },
+    "KIP-375": {
+      "title": "Kafka Clients - make Metadata#TOPIC_EXPIRY_MS configurable",
+      "state": "pending"
+    },
+    "KIP-376": {
+      "title": "Implement AutoClosable on appropriate classes that want to be used in a try-with-resource statement",
+      "state": "pending"
+    },
+    "KIP-377": {
+      "title": "TopicCommand to use AdminClient",
+      "state": "pending"
+    },
+    "KIP-379": {
+      "title": "Multiple Consumer Group Management",
+      "state": "pending"
+    },
+    "KIP-380": {
+      "title": "Detect outdated control requests and bounced brokers using broker generation",
+      "state": "pending"
+    },
+    "KIP-381": {
+      "title": "Connect: Tell about records that had their offsets flushed in callback",
+      "state": "pending"
+    },
+    "KIP-382": {
+      "title": "MirrorMaker 2.0",
+      "state": "pending"
+    },
+    "KIP-384": {
+      "title": "Add config for incompatible changes to persistent metadata",
+      "state": "pending"
+    },
+    "KIP-385": {
+      "title": "Avoid throwing away prefetched data",
+      "state": "pending"
+    },
+    "KIP-386": {
+      "title": "Standardize on Min/Avg/Max metrics' default value",
+      "state": "pending"
+    },
+    "KIP-387": {
+      "title": "Fair Message Consumption Across Partitions in KafkaConsumer",
+      "state": "pending"
+    },
+    "KIP-388": {
+      "title": "Add observer interface to record request and response",
+      "state": "pending"
+    },
+    "KIP-389": {
+      "title": "Introduce a configurable consumer group size limit",
+      "state": "pending"
+    },
+    "KIP-390": {
+      "title": "Support Compression Level",
+      "state": "pending"
+    },
+    "KIP-392": {
+      "title": "Allow consumers to fetch from closest replica",
+      "state": "detail_done",
+      "pageId": "95653762"
+    },
+    "KIP-393": {
+      "title": "Time windowed serde to properly deserialize changelog input topic",
+      "state": "pending"
+    },
+    "KIP-394": {
+      "title": "Require member.id for initial join group request",
+      "state": "pending"
+    },
+    "KIP-395": {
+      "title": "Encypt-then-MAC Delegation token metadata",
+      "state": "pending"
+    },
+    "KIP-396": {
+      "title": "Add Commit/List Offsets Operations to AdminClient",
+      "state": "pending"
+    },
+    "KIP-399": {
+      "title": "Extend ProductionExceptionHandler to cover serialization exceptions",
+      "state": "pending"
+    },
+    "KIP-400": {
+      "title": "Improve exit status in case of errors in ConsoleProducer",
+      "state": "pending"
+    },
+    "KIP-401": {
+      "title": "TransformerSupplier/ProcessorSupplier StateStore connecting",
+      "state": "pending"
+    },
+    "KIP-402": {
+      "title": "Improve fairness in SocketServer processors",
+      "state": "pending"
+    },
+    "KIP-403": {
+      "title": "Increase ProducerPerformance precision by using nanoTime",
+      "state": "pending"
+    },
+    "KIP-405": {
+      "title": "Kafka Tiered Storage",
+      "state": "detail_done",
+      "pageId": "97554472"
+    },
+    "KIP-406": {
+      "title": "GlobalStreamThread should honor custom offset policy.",
+      "state": "pending"
+    },
+    "KIP-407": {
+      "title": "Kafka Connect support override worker kafka api configuration with connector configuration that post by rest api",
+      "state": "pending"
+    },
+    "KIP-409": {
+      "title": "Allow creating under-replicated topics and partitions",
+      "state": "pending"
+    },
+    "KIP-410": {
+      "title": "Add metric for request handler thread pool utilization by request type",
+      "state": "pending"
+    },
+    "KIP-411": {
+      "title": "Make default Kafka Connect worker task client IDs distinct",
+      "state": "pending"
+    },
+    "KIP-412": {
+      "title": "Extend Admin API to support dynamic application log levels",
+      "state": "pending"
+    },
+    "KIP-414": {
+      "title": "Expose Embedded ClientIds in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-415": {
+      "title": "Incremental Cooperative Rebalancing in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-416": {
+      "title": "Notify SourceTask of ACK'd offsets, metadata",
+      "state": "pending"
+    },
+    "KIP-417": {
+      "title": "Allow JmxTool to connect to a secured RMI port",
+      "state": "pending"
+    },
+    "KIP-418": {
+      "title": "A method-chaining way to branch KStream",
+      "state": "pending"
+    },
+    "KIP-420": {
+      "title": "Add Single Value Fetch in Session Stores",
+      "state": "pending"
+    },
+    "KIP-422": {
+      "title": "Add support for client quota configuration in the Kafka Admin Client",
+      "state": "pending"
+    },
+    "KIP-423": {
+      "title": "Add JoinReason to Consumer Join Group Protocol",
+      "state": "pending"
+    },
+    "KIP-424": {
+      "title": "Allow suppression of intermediate events based on wall clock time",
+      "state": "pending"
+    },
+    "KIP-425": {
+      "title": "Add some Log4J Kafka Appender Properties for Producing to Secured Brokers",
+      "state": "pending"
+    },
+    "KIP-426": {
+      "title": "Persist Broker Id to Zookeeper",
+      "state": "pending"
+    },
+    "KIP-427": {
+      "title": "Add AtMinIsr topic partition category (new metric & TopicCommand option)",
+      "state": "pending"
+    },
+    "KIP-428": {
+      "title": "Add in-memory window store",
+      "state": "pending"
+    },
+    "KIP-429": {
+      "title": "Kafka Consumer Incremental Rebalance Protocol",
+      "state": "pending"
+    },
+    "KIP-430": {
+      "title": "Return Authorized Operations in Describe Responses",
+      "state": "pending"
+    },
+    "KIP-431": {
+      "title": "Support of printing additional ConsumerRecord fields in DefaultMessageFormatter",
+      "state": "pending"
+    },
+    "KIP-434": {
+      "title": "Add Replica Fetcher and Log Cleaner Count Metrics",
+      "state": "pending"
+    },
+    "KIP-435": {
+      "title": "Internal Partition Reassignment Batching",
+      "state": "pending"
+    },
+    "KIP-436": {
+      "title": "Add a metric indicating start time",
+      "state": "pending"
+    },
+    "KIP-437": {
+      "title": "Custom replacement for MaskField SMT",
+      "state": "pending"
+    },
+    "KIP-438": {
+      "title": "Expose task, connector IDs in Connect API",
+      "state": "pending"
+    },
+    "KIP-439": {
+      "title": "Cleanup built-in Store interfaces",
+      "state": "pending"
+    },
+    "KIP-440": {
+      "title": "Extend Connect Converter to support headers",
+      "state": "pending"
+    },
+    "KIP-441": {
+      "title": "Smooth Scaling Out for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-442": {
+      "title": "Return to default max poll interval in Streams",
+      "state": "pending"
+    },
+    "KIP-443": {
+      "title": "Return to default segment.ms and segment.index.bytes in Streams repartition topics",
+      "state": "pending"
+    },
+    "KIP-444": {
+      "title": "Augment metrics for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-445": {
+      "title": "In-memory Session Store",
+      "state": "pending"
+    },
+    "KIP-446": {
+      "title": "Add changelog topic configuration to KTable suppress",
+      "state": "pending"
+    },
+    "KIP-447": {
+      "title": "Producer scalability for exactly once semantics",
+      "state": "pending"
+    },
+    "KIP-448": {
+      "title": "Add State Stores Unit Test Support to Kafka Streams Test Utils",
+      "state": "pending"
+    },
+    "KIP-449": {
+      "title": "Add connector contexts to Connect worker logs",
+      "state": "pending"
+    },
+    "KIP-450": {
+      "title": "Sliding Window Aggregations in the DSL",
+      "state": "pending"
+    },
+    "KIP-452": {
+      "title": "Tool to view cluster status",
+      "state": "pending"
+    },
+    "KIP-453": {
+      "title": "Add close() method to RocksDBConfigSetter",
+      "state": "pending"
+    },
+    "KIP-454": {
+      "title": "Expansion of the ConnectClusterState interface",
+      "state": "pending"
+    },
+    "KIP-455": {
+      "title": "Create an Administrative API for Replica Reassignment",
+      "state": "pending"
+    },
+    "KIP-458": {
+      "title": "Connector Client Config Override Policy",
+      "state": "pending"
+    },
+    "KIP-460": {
+      "title": "Admin Leader Election RPC",
+      "state": "pending"
+    },
+    "KIP-461": {
+      "title": "Improve Replica Fetcher behavior at handling partition failure",
+      "state": "pending"
+    },
+    "KIP-462": {
+      "title": "Use local thread id for KStreams",
+      "state": "pending"
+    },
+    "KIP-464": {
+      "title": "Defaults for AdminClient#createTopic",
+      "state": "pending"
+    },
+    "KIP-465": {
+      "title": "Add Consolidated Connector Endpoint to Connect REST API",
+      "state": "pending"
+    },
+    "KIP-466": {
+      "title": "Add support for List<T> serialization and deserialization",
+      "state": "pending"
+    },
+    "KIP-467": {
+      "title": "Augment ProduceResponse error messaging for specific culprit records",
+      "state": "pending"
+    },
+    "KIP-468": {
+      "title": "Avoid decompression of record when validate record at server in the scene of inPlaceAssignment .",
+      "state": "pending"
+    },
+    "KIP-470": {
+      "title": "TopologyTestDriver test input and output usability improvements",
+      "state": "pending"
+    },
+    "KIP-471": {
+      "title": "Expose RocksDB Metrics in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-473": {
+      "title": "Enable KafkaLog4JAppender to use SASL Authentication Callback Handlers",
+      "state": "pending"
+    },
+    "KIP-474": {
+      "title": "To deprecate WindowStore#put(key, value)",
+      "state": "pending"
+    },
+    "KIP-475": {
+      "title": "New Metrics to Measure Number of Tasks on a Connector",
+      "state": "pending"
+    },
+    "KIP-476": {
+      "title": "Add Java AdminClient Interface",
+      "state": "pending"
+    },
+    "KIP-477": {
+      "title": "Add PATCH method for connector config in Connect REST API",
+      "state": "pending"
+    },
+    "KIP-478": {
+      "title": "Strongly typed Processor API",
+      "state": "pending"
+    },
+    "KIP-479": {
+      "title": "Add StreamJoined config object to Join",
+      "state": "pending"
+    },
+    "KIP-480": {
+      "title": "Sticky Partitioner",
+      "state": "pending"
+    },
+    "KIP-481": {
+      "title": "SerDe Improvements for Connect Decimal type in JSON",
+      "state": "pending"
+    },
+    "KIP-482": {
+      "title": "The Kafka Protocol should Support Optional Tagged Fields",
+      "state": "pending"
+    },
+    "KIP-484": {
+      "title": "Expose metrics for group and transaction metadata loading duration",
+      "state": "pending"
+    },
+    "KIP-487": {
+      "title": "Automatic Topic Creation on Producer",
+      "state": "pending"
+    },
+    "KIP-488": {
+      "title": "Clean up Sum,Count,Total Metrics",
+      "state": "pending"
+    },
+    "KIP-489": {
+      "title": "Kafka Consumer Record Latency Metric",
+      "state": "pending"
+    },
+    "KIP-490": {
+      "title": "New metric to count offsets expired without being consumed by a consumer group",
+      "state": "pending"
+    },
+    "KIP-491": {
+      "title": "Preferred Leader Deprioritized List (Temporary Blacklist)",
+      "state": "pending"
+    },
+    "KIP-492": {
+      "title": "Add java security providers in Kafka Security config",
+      "state": "pending"
+    },
+    "KIP-494": {
+      "title": "Connect REST Endpoint to get Transformations (SMTs)",
+      "state": "pending"
+    },
+    "KIP-495": {
+      "title": "Dynamically Adjust Log Levels in Connect",
+      "state": "pending"
+    },
+    "KIP-496": {
+      "title": "Administrative API to delete consumer offsets",
+      "state": "pending"
+    },
+    "KIP-497": {
+      "title": "Add inter-broker API to alter ISR",
+      "state": "pending"
+    },
+    "KIP-498": {
+      "title": "Add client-side configuration for maximum response size to protect against OOM",
+      "state": "pending"
+    },
+    "KIP-499": {
+      "title": "Unify connection name flag for command line tool",
+      "state": "pending"
+    },
+    "KIP-500": {
+      "title": "Replace ZooKeeper with a Self-Managed Metadata Quorum",
+      "state": "detail_done",
+      "pageId": "123898922"
+    },
+    "KIP-501": {
+      "title": "Avoid out-of-sync or offline partitions when follower fetch requests not processed in time",
+      "state": "pending"
+    },
+    "KIP-502": {
+      "title": "Connect Task Method Signature to be More Specific for Developers",
+      "state": "pending"
+    },
+    "KIP-503": {
+      "title": "Add metric for number of topics marked for deletion",
+      "state": "pending"
+    },
+    "KIP-504": {
+      "title": "Add new Java Authorizer Interface",
+      "state": "pending"
+    },
+    "KIP-505": {
+      "title": "Add new public method to only update assignment metadata in consumer",
+      "state": "pending"
+    },
+    "KIP-506": {
+      "title": "Allow setting SCRAM password via Admin interface",
+      "state": "pending"
+    },
+    "KIP-507": {
+      "title": "Securing Internal Connect REST Endpoints",
+      "state": "pending"
+    },
+    "KIP-508": {
+      "title": "Make Suppression State Queriable",
+      "state": "pending"
+    },
+    "KIP-509": {
+      "title": "",
+      "state": "pending"
+    },
+    "KIP-510": {
+      "title": "Metrics library upgrade",
+      "state": "pending"
+    },
+    "KIP-511": {
+      "title": "Collect and Expose Client's Name and Version in the Brokers",
+      "state": "pending"
+    },
+    "KIP-512": {
+      "title": "make Record Headers available in onAcknowledgement and onComplete",
+      "state": "pending"
+    },
+    "KIP-513": {
+      "title": "Distinguish between Key and Value serdes in scala wrapper library for kafka streams",
+      "state": "pending"
+    },
+    "KIP-514": {
+      "title": "Add a bounded flush() API to Kafka Producer",
+      "state": "pending"
+    },
+    "KIP-515": {
+      "title": "Enable ZK client to use the new TLS supported authentication",
+      "state": "pending"
+    },
+    "KIP-516": {
+      "title": "Topic Identifiers",
+      "state": "pending"
+    },
+    "KIP-517": {
+      "title": "Add consumer metrics to observe user poll behavior",
+      "state": "pending"
+    },
+    "KIP-518": {
+      "title": "Allow listing consumer groups per state",
+      "state": "pending"
+    },
+    "KIP-519": {
+      "title": "Make SSL context/engine configuration extensible",
+      "state": "pending"
+    },
+    "KIP-521": {
+      "title": "Enable redirection of Connect's log4j messages to a file by default",
+      "state": "pending"
+    },
+    "KIP-523": {
+      "title": "Add KStream#toTable to the Streams DSL",
+      "state": "pending"
+    },
+    "KIP-524": {
+      "title": "Allow users to choose config source when describing configs",
+      "state": "pending"
+    },
+    "KIP-525": {
+      "title": "Return topic metadata and configs in CreateTopics response",
+      "state": "pending"
+    },
+    "KIP-526": {
+      "title": "Reduce Producer Metadata Lookups for Large Number of Topics",
+      "state": "pending"
+    },
+    "KIP-527": {
+      "title": "Add VoidSerde to Serdes",
+      "state": "pending"
+    },
+    "KIP-528": {
+      "title": "Deprecate PartitionGrouper configuration and interface",
+      "state": "pending"
+    },
+    "KIP-530": {
+      "title": "Consider renaming 'UsePreviousTimeOnInvalidTimeStamp' class to 'UsePartitionTimeOnInvalidTimeStamp'",
+      "state": "pending"
+    },
+    "KIP-531": {
+      "title": "Drop support for Scala 2.11 in Kafka 2.5",
+      "state": "pending"
+    },
+    "KIP-532": {
+      "title": "Broker Consumer Lag metrics in size and time",
+      "state": "pending"
+    },
+    "KIP-533": {
+      "title": "Add default api timeout to AdminClient",
+      "state": "pending"
+    },
+    "KIP-534": {
+      "title": "Reorganize checkpoint system in log cleaner to per partition",
+      "state": "pending"
+    },
+    "KIP-535": {
+      "title": "Allow state stores to serve stale reads during rebalance",
+      "state": "pending"
+    },
+    "KIP-536": {
+      "title": "Propagate broker start time to Admin API",
+      "state": "pending"
+    },
+    "KIP-537": {
+      "title": "Increase default zookeeper session timeout",
+      "state": "pending"
+    },
+    "KIP-538": {
+      "title": "Add a metric tracking the number of open connections with a given SSL cipher type",
+      "state": "pending"
+    },
+    "KIP-539": {
+      "title": "Add mechanism to flush records out in low volume suppression buffers",
+      "state": "pending"
+    },
+    "KIP-540": {
+      "title": "Implement per key stream time tracking",
+      "state": "pending"
+    },
+    "KIP-541": {
+      "title": "Create a fetch.max.bytes configuration for the broker",
+      "state": "pending"
+    },
+    "KIP-542": {
+      "title": "Partition Reassignment Throttling",
+      "state": "pending"
+    },
+    "KIP-543": {
+      "title": "Expand ConfigCommand's non-ZK functionality",
+      "state": "pending"
+    },
+    "KIP-544": {
+      "title": "Make metrics exposed via JMX configurable",
+      "state": "pending"
+    },
+    "KIP-545": {
+      "title": "support automated consumer offset sync across clusters in MM 2.0",
+      "state": "pending"
+    },
+    "KIP-546": {
+      "title": "Add Client Quota APIs to the Admin Client",
+      "state": "pending"
+    },
+    "KIP-547": {
+      "title": "Extend ConsumerInterceptor to allow modification of Consumer Commits",
+      "state": "pending"
+    },
+    "KIP-548": {
+      "title": "Add Option to enforce rack-aware custom partition reassignment execution",
+      "state": "pending"
+    },
+    "KIP-549": {
+      "title": "Surface Consumer's Metadata in KafkaAdminClient",
+      "state": "pending"
+    },
+    "KIP-550": {
+      "title": "Mechanism to Delete Stray Partitions on Broker",
+      "state": "pending"
+    },
+    "KIP-551": {
+      "title": "Expose disk read and write metrics",
+      "state": "pending"
+    },
+    "KIP-552": {
+      "title": "Suppress \"unused config\" warning",
+      "state": "pending"
+    },
+    "KIP-553": {
+      "title": "Disable all SSL protocols except TLSV1.2 by default.",
+      "state": "pending"
+    },
+    "KIP-554": {
+      "title": "Add Broker-side SCRAM Config API",
+      "state": "pending"
+    },
+    "KIP-555": {
+      "title": "Deprecate Direct Zookeeper access in Kafka Administrative Tools",
+      "state": "pending"
+    },
+    "KIP-557": {
+      "title": "Add emit on change support for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-558": {
+      "title": "Track the set of actively used topics by connectors in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-559": {
+      "title": "Make the Kafka Protocol Friendlier with L7 Proxies",
+      "state": "pending"
+    },
+    "KIP-560": {
+      "title": "Auto infer external topic partitions in stream reset tool",
+      "state": "pending"
+    },
+    "KIP-561": {
+      "title": "Regex Support for ConsumerGroupCommand",
+      "state": "pending"
+    },
+    "KIP-562": {
+      "title": "Allow fetching a key from a single partition rather than iterating over all the stores on an instance",
+      "state": "pending"
+    },
+    "KIP-563": {
+      "title": "Add 'tail -n' feature for ConsoleConsumer",
+      "state": "pending"
+    },
+    "KIP-564": {
+      "title": "Add new cached authorizer:change the dim of cache",
+      "state": "pending"
+    },
+    "KIP-565": {
+      "title": "Using AclCommand,avoid call the global method loadcache in SimpleAclAuthorizer",
+      "state": "pending"
+    },
+    "KIP-566": {
+      "title": "Add rebalance callbacks to ConsumerInterceptor",
+      "state": "pending"
+    },
+    "KIP-567": {
+      "title": "Kafka Cluster Audit",
+      "state": "pending"
+    },
+    "KIP-568": {
+      "title": "Explicit rebalance triggering on the Consumer",
+      "state": "pending"
+    },
+    "KIP-569": {
+      "title": "DescribeConfigsResponse - Update the schema to include additional metadata information of the field",
+      "state": "pending"
+    },
+    "KIP-570": {
+      "title": "Add leader epoch in StopReplicaRequest",
+      "state": "pending"
+    },
+    "KIP-571": {
+      "title": "Add option to force remove members in StreamsResetter",
+      "state": "pending"
+    },
+    "KIP-572": {
+      "title": "Improve timeouts and retries in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-573": {
+      "title": "Enable TLSv1.3 by default",
+      "state": "pending"
+    },
+    "KIP-574": {
+      "title": "CLI Dynamic Configuration with file input",
+      "state": "pending"
+    },
+    "KIP-575": {
+      "title": "build a Kafka-Exporter by Java",
+      "state": "pending"
+    },
+    "KIP-576": {
+      "title": "Support dynamic update of more broker configs related to replication",
+      "state": "pending"
+    },
+    "KIP-577": {
+      "title": "Allow HTTP Response Headers to be Configured for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-578": {
+      "title": "Add configuration to limit number of partitions",
+      "state": "pending"
+    },
+    "KIP-579": {
+      "title": "new exception on min.insync.replicas > replication.factor",
+      "state": "pending"
+    },
+    "KIP-580": {
+      "title": "Exponential Backoff for Kafka Clients",
+      "state": "pending"
+    },
+    "KIP-581": {
+      "title": "Value of optional null field which has default value",
+      "state": "pending"
+    },
+    "KIP-582": {
+      "title": "Add a \"continue\" option for Kafka Connect error handling",
+      "state": "pending"
+    },
+    "KIP-583": {
+      "title": "add tag \"partition\" to BrokerTopicMetrics so as to observe the partition metrics on the same broker",
+      "state": "pending"
+    },
+    "KIP-584": {
+      "title": "Versioning scheme for features",
+      "state": "pending"
+    },
+    "KIP-585": {
+      "title": "Filter and Conditional SMTs",
+      "state": "pending"
+    },
+    "KIP-586": {
+      "title": "Deprecate commit records without record metadata",
+      "state": "pending"
+    },
+    "KIP-587": {
+      "title": "Suppress detailed responses for handled exceptions in security-sensitive environments",
+      "state": "pending"
+    },
+    "KIP-588": {
+      "title": "Allow producers to recover gracefully from transaction timeouts",
+      "state": "pending"
+    },
+    "KIP-589": {
+      "title": "Add API to update Replica state in Controller",
+      "state": "pending"
+    },
+    "KIP-590": {
+      "title": "Redirect Zookeeper Mutation Protocols to The Controller",
+      "state": "pending"
+    },
+    "KIP-591": {
+      "title": "Add Kafka Streams config to set default state store",
+      "state": "pending"
+    },
+    "KIP-592": {
+      "title": "MirrorMaker 1.0 should replicate topics from earliest",
+      "state": "pending"
+    },
+    "KIP-594": {
+      "title": "Expose output topic names from TopologyTestDriver",
+      "state": "pending"
+    },
+    "KIP-595": {
+      "title": "A Raft Protocol for the Metadata Quorum",
+      "state": "pending"
+    },
+    "KIP-596": {
+      "title": "Safely abort Producer transactions during application shutdown",
+      "state": "pending"
+    },
+    "KIP-597": {
+      "title": "MirrorMaker2 internal topics Formatters",
+      "state": "pending"
+    },
+    "KIP-598": {
+      "title": "Augment TopologyDescription with store and source / sink serde information",
+      "state": "pending"
+    },
+    "KIP-599": {
+      "title": "Throttle Create Topic, Create Partition and Delete Topic Operations",
+      "state": "pending"
+    },
+    "KIP-601": {
+      "title": "Configurable socket connection timeout",
+      "state": "pending"
+    },
+    "KIP-602": {
+      "title": "Change default value for client.dns.lookup",
+      "state": "pending"
+    },
+    "KIP-604": {
+      "title": "Remove ZooKeeper Flags from the Administrative Tools",
+      "state": "pending"
+    },
+    "KIP-605": {
+      "title": "Expand Connect Worker Internal Topic Settings",
+      "state": "pending"
+    },
+    "KIP-606": {
+      "title": "Add Metadata Context to MetricsReporter",
+      "state": "pending"
+    },
+    "KIP-607": {
+      "title": "Add Metrics to Kafka Streams to Report Properties of RocksDB",
+      "state": "pending"
+    },
+    "KIP-608": {
+      "title": "Expose Kafka Metrics in Authorizer",
+      "state": "pending"
+    },
+    "KIP-610": {
+      "title": "Error Reporting in Sink Connectors",
+      "state": "pending"
+    },
+    "KIP-612": {
+      "title": "Ability to Limit Connection Creation Rate on Brokers",
+      "state": "pending"
+    },
+    "KIP-613": {
+      "title": "Add end-to-end latency metrics to Streams",
+      "state": "pending"
+    },
+    "KIP-614": {
+      "title": "Add Prefix Scan support for State Stores",
+      "state": "pending"
+    },
+    "KIP-616": {
+      "title": "Rename implicit Serdes instances in kafka-streams-scala",
+      "state": "pending"
+    },
+    "KIP-617": {
+      "title": "Allow Kafka Streams State Stores to be iterated backwards",
+      "state": "pending"
+    },
+    "KIP-618": {
+      "title": "Exactly-Once Support for Source Connectors",
+      "state": "pending"
+    },
+    "KIP-619": {
+      "title": "Add internal topic creation support",
+      "state": "pending"
+    },
+    "KIP-620": {
+      "title": "Deprecate ConsumerConfig#addDeserializerToConfig and ProducerConfig#addSerializerToConfig",
+      "state": "pending"
+    },
+    "KIP-621": {
+      "title": "Deprecate and replace DescribeLogDirsResult.all() and .values()",
+      "state": "pending"
+    },
+    "KIP-622": {
+      "title": "Add currentSystemTimeMs and currentStreamTimeMs to ProcessorContext",
+      "state": "pending"
+    },
+    "KIP-623": {
+      "title": "Add \"internal-topics\" option to streams application reset tool",
+      "state": "pending"
+    },
+    "KIP-625": {
+      "title": "Richer encodings for integral-typed protocol fields",
+      "state": "pending"
+    },
+    "KIP-626": {
+      "title": "Rename StreamsConfig config variable name",
+      "state": "pending"
+    },
+    "KIP-627": {
+      "title": "Expose Trogdor-specific JMX Metrics for Tasks and Agents",
+      "state": "pending"
+    },
+    "KIP-628": {
+      "title": "ConsumerPerformance's multi-thread implementation",
+      "state": "pending"
+    },
+    "KIP-629": {
+      "title": "Use racially neutral terms in our codebase",
+      "state": "pending"
+    },
+    "KIP-630": {
+      "title": "Kafka Raft Snapshot",
+      "state": "pending"
+    },
+    "KIP-631": {
+      "title": "The Quorum-based Kafka Controller",
+      "state": "pending"
+    },
+    "KIP-632": {
+      "title": "Add DirectoryConfigProvider",
+      "state": "pending"
+    },
+    "KIP-633": {
+      "title": "Deprecate 24-hour Default Grace Period for Windowed Operations in Streams",
+      "state": "pending"
+    },
+    "KIP-635": {
+      "title": "GetOffsetShell: support for multiple topics and consumer configuration override",
+      "state": "pending"
+    },
+    "KIP-636": {
+      "title": "Make RPC error codes and messages tagged fields",
+      "state": "pending"
+    },
+    "KIP-637": {
+      "title": "Include min.insync.replicas in MetadataResponse to make Producer smarter in partitioning events",
+      "state": "pending"
+    },
+    "KIP-639": {
+      "title": "Move nodeLevelSensor and storeLevelSensor methods from StreamsMetricsImpl to StreamsMetrics",
+      "state": "pending"
+    },
+    "KIP-640": {
+      "title": "Add log compression analysis tool",
+      "state": "pending"
+    },
+    "KIP-641": {
+      "title": "An new java interface to replace 'kafka.common.MessageReader'",
+      "state": "pending"
+    },
+    "KIP-646": {
+      "title": "Serializer API should support ByteBuffer",
+      "state": "pending"
+    },
+    "KIP-648": {
+      "title": "Renaming getter method for Interactive Queries",
+      "state": "pending"
+    },
+    "KIP-649": {
+      "title": "Dynamic Client Configuration",
+      "state": "pending"
+    },
+    "KIP-651": {
+      "title": "Support PEM format for SSL certificates and private key",
+      "state": "pending"
+    },
+    "KIP-653": {
+      "title": "Upgrade log4j to log4j2",
+      "state": "pending"
+    },
+    "KIP-654": {
+      "title": "Aborted transaction with non-flushed data should throw a non-fatal exception",
+      "state": "pending"
+    },
+    "KIP-655": {
+      "title": "Windowed Distinct Operation for Kafka Streams API",
+      "state": "pending"
+    },
+    "KIP-656": {
+      "title": "MirrorMaker2 Exactly-once Semantics",
+      "state": "pending"
+    },
+    "KIP-659": {
+      "title": "Improve TimeWindowedDeserializer and TimeWindowedSerde to handle window size",
+      "state": "pending"
+    },
+    "KIP-661": {
+      "title": "Expose task configurations in Connect REST API",
+      "state": "pending"
+    },
+    "KIP-662": {
+      "title": "Throw Exception when Source Topics of a Streams App are Deleted",
+      "state": "pending"
+    },
+    "KIP-663": {
+      "title": "API to Start and Shut Down Stream Threads",
+      "state": "pending"
+    },
+    "KIP-665": {
+      "title": "Kafka Connect Hash SMT",
+      "state": "pending"
+    },
+    "KIP-666": {
+      "title": "Add Instant-based methods to ReadOnlySessionStore",
+      "state": "pending"
+    },
+    "KIP-668": {
+      "title": "Expose REST endpoint to list converter plugins",
+      "state": "pending"
+    },
+    "KIP-669": {
+      "title": "Preserve Source Partition in Kafka Streams from context",
+      "state": "pending"
+    },
+    "KIP-671": {
+      "title": "Introduce Kafka Streams Specific Uncaught Exception Handler",
+      "state": "pending"
+    },
+    "KIP-673": {
+      "title": "Emit JSONs with new auto-generated schema",
+      "state": "pending"
+    },
+    "KIP-674": {
+      "title": "API to Aggregate Metrics in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-676": {
+      "title": "Respect logging hierarchy",
+      "state": "pending"
+    },
+    "KIP-678": {
+      "title": "New Kafka Connect SMT for plainText => struct with Rege",
+      "state": "pending"
+    },
+    "KIP-679": {
+      "title": "Producer will enable the strongest delivery guarantee by default",
+      "state": "detail_done",
+      "pageId": "165221843"
+    },
+    "KIP-680": {
+      "title": "TopologyTestDriver should not require a Properties argument",
+      "state": "pending"
+    },
+    "KIP-681": {
+      "title": "Rename master key in delegation token feature",
+      "state": "pending"
+    },
+    "KIP-682": {
+      "title": "Connect TimestampConverter support for multiple fields and multiple input formats",
+      "state": "pending"
+    },
+    "KIP-683": {
+      "title": "Add recursive support to Connect Cast and ReplaceField transforms, and support for casting complex types to either a native or JSON string",
+      "state": "pending"
+    },
+    "KIP-684": {
+      "title": "Support mutual TLS authentication on SASL_SSL listeners",
+      "state": "pending"
+    },
+    "KIP-685": {
+      "title": "Loosen permission for listing reassignments",
+      "state": "pending"
+    },
+    "KIP-686": {
+      "title": "API to ensure Records policy on the broker",
+      "state": "pending"
+    },
+    "KIP-687": {
+      "title": "Automatic Reloading of Security Store",
+      "state": "pending"
+    },
+    "KIP-688": {
+      "title": "Support dynamic update of delete.topic.enable config",
+      "state": "pending"
+    },
+    "KIP-689": {
+      "title": "Extend `StreamJoined` to allow more store configs",
+      "state": "pending"
+    },
+    "KIP-690": {
+      "title": "Add additional configuration to control MirrorMaker 2 internal topics naming convention",
+      "state": "pending"
+    },
+    "KIP-691": {
+      "title": "Enhance Transactional Producer Exception Handling",
+      "state": "pending"
+    },
+    "KIP-692": {
+      "title": "Make AdminClient value object constructors public",
+      "state": "pending"
+    },
+    "KIP-693": {
+      "title": "Client-side Circuit Breaker for Partition Write Errors",
+      "state": "pending"
+    },
+    "KIP-694": {
+      "title": "Support Reducing Partitions for Topics",
+      "state": "pending"
+    },
+    "KIP-695": {
+      "title": "Further Improve Kafka Streams Timestamp Synchronization",
+      "state": "pending"
+    },
+    "KIP-696": {
+      "title": "Update Streams FSM to clarify ERROR state meaning",
+      "state": "pending"
+    },
+    "KIP-697": {
+      "title": "Stricter parsing of addresses in configs",
+      "state": "pending"
+    },
+    "KIP-698": {
+      "title": "Add Explicit User Initialization of Broker-side State to Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-699": {
+      "title": "Update FindCoordinator to resolve multiple Coordinators at a time",
+      "state": "pending"
+    },
+    "KIP-700": {
+      "title": "Add Describe Cluster API",
+      "state": "pending"
+    },
+    "KIP-701": {
+      "title": "Add --override option to bin/connect-distributed.sh",
+      "state": "pending"
+    },
+    "KIP-702": {
+      "title": "The control plane needs to force the validation of requests from the controller",
+      "state": "pending"
+    },
+    "KIP-703": {
+      "title": "Add a metric for reporting idle connections closed",
+      "state": "pending"
+    },
+    "KIP-704": {
+      "title": "Send a hint to the partition leader to recover the partition",
+      "state": "pending"
+    },
+    "KIP-705": {
+      "title": "Selectively Disable Topology Optimizations",
+      "state": "pending"
+    },
+    "KIP-706": {
+      "title": "Add method \"Producer#send\" to return CompletionStage instead of Future",
+      "state": "pending"
+    },
+    "KIP-707": {
+      "title": "The future of KafkaFuture",
+      "state": "pending"
+    },
+    "KIP-708": {
+      "title": "Rack aware StandbyTask assignment for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-709": {
+      "title": "Extend OffsetFetch requests to accept multiple group ids.",
+      "state": "pending"
+    },
+    "KIP-710": {
+      "title": "Full support for distributed mode in dedicated MirrorMaker 2.0 clusters",
+      "state": "pending"
+    },
+    "KIP-711": {
+      "title": "Deprecate org.apache.kafka.streams.errors.BrokerNotFoundException",
+      "state": "pending"
+    },
+    "KIP-712": {
+      "title": "Shallow Mirroring",
+      "state": "pending"
+    },
+    "KIP-713": {
+      "title": "Validation of Enums in configuration",
+      "state": "pending"
+    },
+    "KIP-714": {
+      "title": "Client metrics and observability",
+      "state": "pending"
+    },
+    "KIP-715": {
+      "title": "Expose Committed offset in streams",
+      "state": "pending"
+    },
+    "KIP-716": {
+      "title": "Allow configuring the location of the offset-syncs topic with MirrorMaker2",
+      "state": "pending"
+    },
+    "KIP-718": {
+      "title": "Make KTable Join on Foreign key unopinionated",
+      "state": "pending"
+    },
+    "KIP-719": {
+      "title": "Deprecate Log4J Appender",
+      "state": "pending"
+    },
+    "KIP-720": {
+      "title": "Deprecate MirrorMaker v1",
+      "state": "pending"
+    },
+    "KIP-721": {
+      "title": "Enable connector log contexts in Connect Log4j configuration",
+      "state": "pending"
+    },
+    "KIP-722": {
+      "title": "Enable connector client overrides by default",
+      "state": "pending"
+    },
+    "KIP-723": {
+      "title": "Add socket.tcp.no.delay property to Kafka Config",
+      "state": "pending"
+    },
+    "KIP-724": {
+      "title": "Drop support for message formats v0 and v1",
+      "state": "pending"
+    },
+    "KIP-725": {
+      "title": "Streamlining configurations for WindowedSerializer and WindowedDeserializer.",
+      "state": "pending"
+    },
+    "KIP-726": {
+      "title": "Make the \"cooperative-sticky, range\" as the default assignor",
+      "state": "pending"
+    },
+    "KIP-727": {
+      "title": "Add --under-preferred-replica-partitions option to describe topics comman",
+      "state": "pending"
+    },
+    "KIP-729": {
+      "title": "Custom validation of records on the broker prior to log append",
+      "state": "pending"
+    },
+    "KIP-730": {
+      "title": "Producer ID generation in KRaft mode",
+      "state": "pending"
+    },
+    "KIP-731": {
+      "title": "Record Rate Limiting for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-732": {
+      "title": "Deprecate eos-alpha and replace eos-beta with eos-v2",
+      "state": "pending"
+    },
+    "KIP-733": {
+      "title": "change Kafka Streams default replication factor config",
+      "state": "pending"
+    },
+    "KIP-734": {
+      "title": "Improve AdminClient.listOffsets to return timestamp and offset for the record with the largest timestamp",
+      "state": "pending"
+    },
+    "KIP-735": {
+      "title": "Increase default consumer session timeout",
+      "state": "pending"
+    },
+    "KIP-736": {
+      "title": "Report the true end to end fetch latency",
+      "state": "pending"
+    },
+    "KIP-737": {
+      "title": "Add canTrackSource to ReplicationPolicy",
+      "state": "pending"
+    },
+    "KIP-738": {
+      "title": "Removal of Connect's internal converter properties",
+      "state": "pending"
+    },
+    "KIP-739": {
+      "title": "Block Less on KafkaProducer#send",
+      "state": "pending"
+    },
+    "KIP-740": {
+      "title": "Clean up public API in TaskId",
+      "state": "pending"
+    },
+    "KIP-741": {
+      "title": "Change default serde to be null",
+      "state": "pending"
+    },
+    "KIP-743": {
+      "title": "Remove config value 0.10.0-2.4 of Streams built-in metrics version config",
+      "state": "pending"
+    },
+    "KIP-744": {
+      "title": "Migrate TaskMetadata and ThreadMetadata to an interface with internal implementation",
+      "state": "pending"
+    },
+    "KIP-745": {
+      "title": "Connect API to restart connector and tasks",
+      "state": "pending"
+    },
+    "KIP-746": {
+      "title": "Revise KRaft Metadata Records",
+      "state": "pending"
+    },
+    "KIP-748": {
+      "title": "Add Broker Count Metrics",
+      "state": "pending"
+    },
+    "KIP-749": {
+      "title": "Add --files and --file-separator options to the ConsoleProducer",
+      "state": "pending"
+    },
+    "KIP-750": {
+      "title": "Drop support for Java 8 in Kafka 4.0 (deprecate in 3.0)",
+      "state": "pending"
+    },
+    "KIP-751": {
+      "title": "Drop support for Scala 2.12 in Kafka 4.0 (deprecate in 3.0)",
+      "state": "pending"
+    },
+    "KIP-754": {
+      "title": "Make Scala case class's final",
+      "state": "pending"
+    },
+    "KIP-755": {
+      "title": "Add new AUTO_CREATE ACL for auto topic creation",
+      "state": "pending"
+    },
+    "KIP-759": {
+      "title": "Unneeded repartition canceling",
+      "state": "pending"
+    },
+    "KIP-760": {
+      "title": "Minimum value for segment.ms and segment.bytes",
+      "state": "pending"
+    },
+    "KIP-761": {
+      "title": "Add Total Blocked Time Metric to Streams",
+      "state": "pending"
+    },
+    "KIP-762": {
+      "title": "Delete Committed Connect Records",
+      "state": "pending"
+    },
+    "KIP-763": {
+      "title": "Range Queries with Open Endpoints",
+      "state": "pending"
+    },
+    "KIP-764": {
+      "title": "Configurable backlog size for creating Acceptor",
+      "state": "pending"
+    },
+    "KIP-766": {
+      "title": "fetch/findSessions queries with open endpoints for SessionStore/WindowStore",
+      "state": "pending"
+    },
+    "KIP-767": {
+      "title": "Connect Latency Metrics",
+      "state": "pending"
+    },
+    "KIP-768": {
+      "title": "Extend SASL/OAUTHBEARER with Support for OIDC",
+      "state": "pending"
+    },
+    "KIP-769": {
+      "title": "Connect APIs to list all connector plugins and retrieve their configuration definitions",
+      "state": "pending"
+    },
+    "KIP-770": {
+      "title": "Replace \"buffered.records.per.partition\" with \"input.buffer.max.bytes\"",
+      "state": "pending"
+    },
+    "KIP-773": {
+      "title": "Differentiate consistently metric latency measured in millis and nanos",
+      "state": "pending"
+    },
+    "KIP-774": {
+      "title": "Deprecate public access to Admin client's *Result constructors",
+      "state": "pending"
+    },
+    "KIP-775": {
+      "title": "Custom partitioners in foreign key joins",
+      "state": "pending"
+    },
+    "KIP-777": {
+      "title": "Improved testability for Admin client",
+      "state": "pending"
+    },
+    "KIP-778": {
+      "title": "KRaft to KRaft Upgrades",
+      "state": "pending"
+    },
+    "KIP-779": {
+      "title": "Allow Source Tasks to Handle Producer Exceptions",
+      "state": "pending"
+    },
+    "KIP-780": {
+      "title": "Support fine-grained compression options",
+      "state": "pending"
+    },
+    "KIP-781": {
+      "title": "Improve MirrorMaker2's client configuration",
+      "state": "pending"
+    },
+    "KIP-782": {
+      "title": "Expandable batch size in producer",
+      "state": "pending"
+    },
+    "KIP-783": {
+      "title": "Add TaskId field to StreamsException",
+      "state": "pending"
+    },
+    "KIP-784": {
+      "title": "Add top-level error code field to DescribeLogDirsResponse",
+      "state": "pending"
+    },
+    "KIP-785": {
+      "title": "Automatic storage formatting",
+      "state": "pending"
+    },
+    "KIP-786": {
+      "title": "Emit Metric Client Quota Values",
+      "state": "pending"
+    },
+    "KIP-787": {
+      "title": "MM2 manage Kafka resources with custom Admin implementation.",
+      "state": "pending"
+    },
+    "KIP-788": {
+      "title": "Allow configuring num.network.threads per listener",
+      "state": "pending"
+    },
+    "KIP-789": {
+      "title": "Use localhost:9092 as default bootstrap-server/broker-list in client tools",
+      "state": "pending"
+    },
+    "KIP-791": {
+      "title": "Add Record Metadata to StateStoreContext",
+      "state": "pending"
+    },
+    "KIP-792": {
+      "title": "Add \"generation\" field into consumer protocol",
+      "state": "pending"
+    },
+    "KIP-793": {
+      "title": "Allow sink connectors to be used with topic-mutating SMTs",
+      "state": "pending"
+    },
+    "KIP-794": {
+      "title": "Strictly Uniform Sticky Partitioner",
+      "state": "pending"
+    },
+    "KIP-796": {
+      "title": "Interactive Query v2",
+      "state": "pending"
+    },
+    "KIP-797": {
+      "title": "Accept duplicate listener on port for IPv4/IPv6",
+      "state": "pending"
+    },
+    "KIP-798": {
+      "title": "Add possibility to write kafka headers in Kafka Console Producer",
+      "state": "pending"
+    },
+    "KIP-799": {
+      "title": "Align behaviour for producer callbacks with documented behaviour",
+      "state": "pending"
+    },
+    "KIP-800": {
+      "title": "Add reason to JoinGroupRequest and LeaveGroupRequest",
+      "state": "pending"
+    },
+    "KIP-801": {
+      "title": "Implement an Authorizer that stores metadata in __cluster_metadata",
+      "state": "pending"
+    },
+    "KIP-802": {
+      "title": "Validation Support for Kafka Connect SMT Options",
+      "state": "pending"
+    },
+    "KIP-803": {
+      "title": "Add Task ID and Connector Name to Connect Task Context",
+      "state": "pending"
+    },
+    "KIP-804": {
+      "title": "OfflinePartitionsCount Tagged by Topic",
+      "state": "pending"
+    },
+    "KIP-805": {
+      "title": "Add range and scan query over kv-store in IQv2",
+      "state": "pending"
+    },
+    "KIP-806": {
+      "title": "Add session and window query over kv-store in IQv2",
+      "state": "pending"
+    },
+    "KIP-807": {
+      "title": "Refactor KafkaStreams exposed metadata hierarchy",
+      "state": "pending"
+    },
+    "KIP-808": {
+      "title": "Add support for different unix precisions in TimestampConverter SMT",
+      "state": "pending"
+    },
+    "KIP-809": {
+      "title": "Support live upgrades with dynamic addition/removal of modular topologies",
+      "state": "pending"
+    },
+    "KIP-810": {
+      "title": "Allow producing records with null values in Kafka Console Producer",
+      "state": "pending"
+    },
+    "KIP-811": {
+      "title": "Add config repartition.purge.interval.ms to Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-812": {
+      "title": "Introduce another form of the `KafkaStreams.close()` API that forces the member to leave the consumer group",
+      "state": "pending"
+    },
+    "KIP-813": {
+      "title": "Shareable State Stores",
+      "state": "pending"
+    },
+    "KIP-814": {
+      "title": "Static membership protocol should let the leader skip assignment",
+      "state": "pending"
+    },
+    "KIP-815": {
+      "title": "Support max-timestamp in GetOffsetShell",
+      "state": "pending"
+    },
+    "KIP-816": {
+      "title": "Topology changes without local state reset",
+      "state": "pending"
+    },
+    "KIP-817": {
+      "title": "Fix inconsistency in dynamic application log levels",
+      "state": "pending"
+    },
+    "KIP-819": {
+      "title": "Merge multiple KStreams in one operation",
+      "state": "pending"
+    },
+    "KIP-820": {
+      "title": "Extend KStream process with new Processor API",
+      "state": "pending"
+    },
+    "KIP-821": {
+      "title": "Connect Transforms support for nested structures",
+      "state": "pending"
+    },
+    "KIP-822": {
+      "title": "Optimize the semantics of KafkaConsumer#pause to be consistent between the two RebalanceProtocols",
+      "state": "pending"
+    },
+    "KIP-823": {
+      "title": "Update Admin::describeConfigs to allow fetching specific configurations",
+      "state": "pending"
+    },
+    "KIP-824": {
+      "title": "Allowing dumping segmentlogs limiting the batches in the output",
+      "state": "pending"
+    },
+    "KIP-825": {
+      "title": "introduce a new API to control when aggregated results are produced",
+      "state": "pending"
+    },
+    "KIP-826": {
+      "title": "Define platforms supported",
+      "state": "pending"
+    },
+    "KIP-827": {
+      "title": "Expose logdirs total and usable space via Kafka API",
+      "state": "pending"
+    },
+    "KIP-828": {
+      "title": "Add the corresponding validator to the configuration where the validator is missing",
+      "state": "pending"
+    },
+    "KIP-829": {
+      "title": "(console-consumer) add print.topic property",
+      "state": "pending"
+    },
+    "KIP-830": {
+      "title": "Allow disabling JMX Reporter",
+      "state": "pending"
+    },
+    "KIP-831": {
+      "title": "Add metric for log recovery progress",
+      "state": "pending"
+    },
+    "KIP-833": {
+      "title": "Mark KRaft as Production Ready",
+      "state": "pending"
+    },
+    "KIP-834": {
+      "title": "Pause / Resume KafkaStreams Topologies",
+      "state": "pending"
+    },
+    "KIP-835": {
+      "title": "Monitor KRaft Controller Quorum Health",
+      "state": "pending"
+    },
+    "KIP-836": {
+      "title": "Expose replication information of the cluster metadata",
+      "state": "pending"
+    },
+    "KIP-837": {
+      "title": "Allow MultiCasting a Result Record.",
+      "state": "pending"
+    },
+    "KIP-838": {
+      "title": "Simulate batching and compression",
+      "state": "pending"
+    },
+    "KIP-839": {
+      "title": "Provide builders for KafkaProducer/KafkaConsumer and KafkaStreams",
+      "state": "pending"
+    },
+    "KIP-840": {
+      "title": "Config file option for MessageReader/MessageFormatter in ConsoleProducer/ConsoleConsumer",
+      "state": "pending"
+    },
+    "KIP-841": {
+      "title": "Fenced replicas should not be allowed to join the ISR in KRaft",
+      "state": "pending"
+    },
+    "KIP-842": {
+      "title": "Add richer group offset reset mechanisms",
+      "state": "pending"
+    },
+    "KIP-843": {
+      "title": "Adding addMetricIfAbsent method to Metrics",
+      "state": "pending"
+    },
+    "KIP-846": {
+      "title": "Source/sink node metrics for Consumed/Produced throughput in Streams",
+      "state": "pending"
+    },
+    "KIP-847": {
+      "title": "Add ProducerIdCount metrics",
+      "state": "pending"
+    },
+    "KIP-848": {
+      "title": "The Next Generation of the Consumer Rebalance Protocol",
+      "state": "detail_done",
+      "pageId": "217387038"
+    },
+    "KIP-849": {
+      "title": "Expose logdirs total and usable space via kafka-log-dirs.sh",
+      "state": "pending"
+    },
+    "KIP-851": {
+      "title": "Add requireStable flag into ListConsumerGroupOffsetsOptions",
+      "state": "pending"
+    },
+    "KIP-852": {
+      "title": "Optimize calculation of size for log in remote tier",
+      "state": "pending"
+    },
+    "KIP-853": {
+      "title": "KRaft Controller Membership Changes",
+      "state": "pending"
+    },
+    "KIP-854": {
+      "title": "Separate configuration for producer ID expiry",
+      "state": "pending"
+    },
+    "KIP-855": {
+      "title": "Add schema.namespace parameter to SetSchemaMetadata SMT in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-857": {
+      "title": "Streaming recursion in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-858": {
+      "title": "Handle JBOD broker disk failure in KRaft",
+      "state": "pending"
+    },
+    "KIP-859": {
+      "title": "Add Metadata Log Processing Error Related Metrics",
+      "state": "pending"
+    },
+    "KIP-860": {
+      "title": "Add client-provided option to guard against replication factor change during partition reassignments",
+      "state": "pending"
+    },
+    "KIP-862": {
+      "title": "Self-join optimization for stream-stream joins",
+      "state": "pending"
+    },
+    "KIP-863": {
+      "title": "Reduce CompletedFetch#parseRecord() memory copy",
+      "state": "pending"
+    },
+    "KIP-864": {
+      "title": "Add End-To-End Latency Metrics to Connectors",
+      "state": "pending"
+    },
+    "KIP-865": {
+      "title": "Support --bootstrap-server in kafka-streams-application-reset",
+      "state": "pending"
+    },
+    "KIP-866": {
+      "title": "ZooKeeper to KRaft Migration",
+      "state": "pending"
+    },
+    "KIP-868": {
+      "title": "Metadata Transactions",
+      "state": "pending"
+    },
+    "KIP-869": {
+      "title": "Improve Streams State Restoration Visibility",
+      "state": "pending"
+    },
+    "KIP-870": {
+      "title": "Retention policy based on record event time",
+      "state": "pending"
+    },
+    "KIP-872": {
+      "title": "Add Serializer#serializeToByteBuffer() to reduce memory copying",
+      "state": "pending"
+    },
+    "KIP-873": {
+      "title": "ExceptionHandlingDeserializer, RetryDeserializer, PipeSerializer, PipeDeserializer",
+      "state": "pending"
+    },
+    "KIP-875": {
+      "title": "First-class offsets support in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-876": {
+      "title": "Time based cluster metadata snapshots",
+      "state": "pending"
+    },
+    "KIP-877": {
+      "title": "Mechanism for plugins and connectors to register metrics",
+      "state": "pending"
+    },
+    "KIP-878": {
+      "title": "Internal Topic Autoscaling for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-879": {
+      "title": "Multi-level Rack Awareness",
+      "state": "pending"
+    },
+    "KIP-880": {
+      "title": "X509 SAN based SPIFFE URI ACL within mTLS Client Certificates",
+      "state": "pending"
+    },
+    "KIP-881": {
+      "title": "Rack-aware Partition Assignment for Kafka Consumers",
+      "state": "pending"
+    },
+    "KIP-882": {
+      "title": "Kafka Connect REST API configuration validation timeout improvements",
+      "state": "pending"
+    },
+    "KIP-884": {
+      "title": "Add config to configure KafkaClientSupplier in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-885": {
+      "title": "Expose Broker's Name and Version to Clients",
+      "state": "pending"
+    },
+    "KIP-886": {
+      "title": "Add Client Producer and Consumer Builders",
+      "state": "pending"
+    },
+    "KIP-887": {
+      "title": "Add ConfigProvider to make use of environment variables",
+      "state": "pending"
+    },
+    "KIP-888": {
+      "title": "Batch describe ACLs and describe client quotas",
+      "state": "pending"
+    },
+    "KIP-889": {
+      "title": "Versioned State Stores",
+      "state": "pending"
+    },
+    "KIP-890": {
+      "title": "Transactions Server-Side Defense",
+      "state": "pending"
+    },
+    "KIP-891": {
+      "title": "Running multiple versions of Connector plugins",
+      "state": "pending"
+    },
+    "KIP-892": {
+      "title": "Transactional Semantics for StateStores",
+      "state": "pending"
+    },
+    "KIP-893": {
+      "title": "The Kafka protocol should support nullable structs",
+      "state": "pending"
+    },
+    "KIP-894": {
+      "title": "Use incrementalAlterConfig for syncing topic configurations",
+      "state": "pending"
+    },
+    "KIP-895": {
+      "title": "Dynamically refresh partition count of __consumer_offsets",
+      "state": "pending"
+    },
+    "KIP-896": {
+      "title": "Remove old client protocol API versions in Kafka 4.0",
+      "state": "pending"
+    },
+    "KIP-898": {
+      "title": "Modernize Connect plugin discovery",
+      "state": "pending"
+    },
+    "KIP-899": {
+      "title": "Allow clients to rebootstrap",
+      "state": "pending"
+    },
+    "KIP-900": {
+      "title": "KRaft kafka-storage.sh API additions to support SCRAM for Kafka Brokers",
+      "state": "pending"
+    },
+    "KIP-902": {
+      "title": "Upgrade Zookeeper to 3.8.2",
+      "state": "pending"
+    },
+    "KIP-903": {
+      "title": "Replicas with stale broker epoch should not be allowed to join the ISR",
+      "state": "pending"
+    },
+    "KIP-904": {
+      "title": "Kafka Streams - Guarantee subtractor is called before adder if key has not changed",
+      "state": "pending"
+    },
+    "KIP-905": {
+      "title": "Broker interceptors",
+      "state": "pending"
+    },
+    "KIP-906": {
+      "title": "Tools migration guidelines",
+      "state": "pending"
+    },
+    "KIP-907": {
+      "title": "Add Boolean Serde to public interface",
+      "state": "pending"
+    },
+    "KIP-909": {
+      "title": "DNS Resolution Failure Should Not Fail the Client",
+      "state": "pending"
+    },
+    "KIP-910": {
+      "title": "Update Source offsets for Source Connectors without producing records",
+      "state": "pending"
+    },
+    "KIP-911": {
+      "title": "Add source tag to Mirror source metric",
+      "state": "pending"
+    },
+    "KIP-912": {
+      "title": "Support decreasing send's block time without worrying about metadata's fetch",
+      "state": "pending"
+    },
+    "KIP-913": {
+      "title": "add new method to provide possibility for accelerate first record's sending",
+      "state": "pending"
+    },
+    "KIP-914": {
+      "title": "DSL Processor Semantics for Versioned Stores",
+      "state": "pending"
+    },
+    "KIP-915": {
+      "title": "Txn and Group Coordinator Downgrade Foundation",
+      "state": "pending"
+    },
+    "KIP-916": {
+      "title": "MM2 distributed mode flow log context",
+      "state": "pending"
+    },
+    "KIP-917": {
+      "title": "Additional custom metadata for remote log segment",
+      "state": "pending"
+    },
+    "KIP-918": {
+      "title": "MM2 Topic And Group Listener",
+      "state": "pending"
+    },
+    "KIP-919": {
+      "title": "Allow AdminClient to Talk Directly with the KRaft Controller Quorum and add Controller Registration",
+      "state": "pending"
+    },
+    "KIP-921": {
+      "title": "OpenJDK CRaC support",
+      "state": "pending"
+    },
+    "KIP-922": {
+      "title": "Add the traffic metric of the partition dimension",
+      "state": "pending"
+    },
+    "KIP-923": {
+      "title": "Add A Grace Period to Stream Table Join",
+      "state": "pending"
+    },
+    "KIP-924": {
+      "title": "customizable task assignment for Streams",
+      "state": "pending"
+    },
+    "KIP-925": {
+      "title": "Rack aware task assignment in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-926": {
+      "title": "introducing acks=min.insync.replicas config",
+      "state": "pending"
+    },
+    "KIP-927": {
+      "title": "Improve the kafka-metadata-quorum output",
+      "state": "pending"
+    },
+    "KIP-928": {
+      "title": "Making Kafka resilient to log directories becoming full",
+      "state": "pending"
+    },
+    "KIP-930": {
+      "title": "Rename ambiguous Tiered Storage Metrics",
+      "state": "pending"
+    },
+    "KIP-931": {
+      "title": "Flag to ignore unused message attribute field",
+      "state": "pending"
+    },
+    "KIP-932": {
+      "title": "Queues for Kafka",
+      "state": "detail_done",
+      "pageId": "255070434"
+    },
+    "KIP-933": {
+      "title": "Publish metrics when source connector fails to poll data",
+      "state": "pending"
+    },
+    "KIP-934": {
+      "title": "Add DeleteTopicPolicy",
+      "state": "pending"
+    },
+    "KIP-935": {
+      "title": "Extend AlterConfigPolicy with existing configurations",
+      "state": "pending"
+    },
+    "KIP-936": {
+      "title": "Throttle number of active PIDs",
+      "state": "pending"
+    },
+    "KIP-937": {
+      "title": "Improve Message Timestamp Validation",
+      "state": "pending"
+    },
+    "KIP-938": {
+      "title": "Add more metrics for measuring KRaft performance",
+      "state": "pending"
+    },
+    "KIP-939": {
+      "title": "Support Participation in 2PC",
+      "state": "pending"
+    },
+    "KIP-940": {
+      "title": "Broker extension point for validating record contents at produce time",
+      "state": "pending"
+    },
+    "KIP-941": {
+      "title": "Range queries to accept null lower and upper bounds",
+      "state": "pending"
+    },
+    "KIP-942": {
+      "title": "Add Power(ppc64le) support",
+      "state": "pending"
+    },
+    "KIP-943": {
+      "title": "Add independent “offset.storage.segment.bytes” for connect-distributed.properties",
+      "state": "pending"
+    },
+    "KIP-945": {
+      "title": "Update threading model for Consumer",
+      "state": "pending"
+    },
+    "KIP-946": {
+      "title": "Modify exceptions thrown by Consumer APIs",
+      "state": "pending"
+    },
+    "KIP-948": {
+      "title": "Allow custom prefix for internal topic names in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-949": {
+      "title": "Add flag to enable the usage of topic separator in MM2 DefaultReplicationPolicy",
+      "state": "pending"
+    },
+    "KIP-950": {
+      "title": "Tiered Storage Disablement",
+      "state": "pending"
+    },
+    "KIP-951": {
+      "title": "Leader discovery optimizations for the client",
+      "state": "pending"
+    },
+    "KIP-952": {
+      "title": "Regenerate segment-aligned producer snapshots when upgrading to a Kafka version supporting Tiered Storage",
+      "state": "pending"
+    },
+    "KIP-953": {
+      "title": "partition method to be overloaded to accept headers as well.",
+      "state": "pending"
+    },
+    "KIP-954": {
+      "title": "expand default DSL store configuration to custom types",
+      "state": "pending"
+    },
+    "KIP-956": {
+      "title": "Tiered Storage Quotas",
+      "state": "pending"
+    },
+    "KIP-959": {
+      "title": "Add BooleanConverter to Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-960": {
+      "title": "Support single-key_single-timestamp Interactive Queries (IQv2) for Versioned State Stores",
+      "state": "pending"
+    },
+    "KIP-962": {
+      "title": "Relax non-null key requirement in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-963": {
+      "title": "Additional metrics in Tiered Storage",
+      "state": "pending"
+    },
+    "KIP-964": {
+      "title": "Have visibility when produce requests become \"async\"",
+      "state": "pending"
+    },
+    "KIP-965": {
+      "title": "Support disaster recovery between clusters by MirrorMaker",
+      "state": "pending"
+    },
+    "KIP-966": {
+      "title": "Eligible Leader Replicas",
+      "state": "pending"
+    },
+    "KIP-968": {
+      "title": "Support single-key_multi-timestamp interactive queries (IQv2) for versioned state stores",
+      "state": "pending"
+    },
+    "KIP-969": {
+      "title": "Support range interactive queries (IQv2) for versioned state stores",
+      "state": "pending"
+    },
+    "KIP-970": {
+      "title": "Deprecate and remove Connect's redundant task configurations endpoint",
+      "state": "pending"
+    },
+    "KIP-971": {
+      "title": "Expose replication-record-lag MirrorMaker2 metric",
+      "state": "pending"
+    },
+    "KIP-972": {
+      "title": "Add the metric of the current running version of kafka",
+      "state": "pending"
+    },
+    "KIP-973": {
+      "title": "Expose per topic replication rate metrics",
+      "state": "pending"
+    },
+    "KIP-974": {
+      "title": "Docker Image for GraalVM based Native Kafka Broker",
+      "state": "pending"
+    },
+    "KIP-975": {
+      "title": "Docker Image for Apache Kafka",
+      "state": "pending"
+    },
+    "KIP-976": {
+      "title": "Cluster-wide dynamic log adjustment for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-977": {
+      "title": "Partition-level Throughput Metrics",
+      "state": "pending"
+    },
+    "KIP-978": {
+      "title": "Allow dynamic reloading of certificates with different DN / SANs",
+      "state": "pending"
+    },
+    "KIP-979": {
+      "title": "Allow independently stop KRaft processes",
+      "state": "pending"
+    },
+    "KIP-980": {
+      "title": "Allow creating connectors in a stopped state",
+      "state": "pending"
+    },
+    "KIP-981": {
+      "title": "Manage Connect topics with custom implementation of Admin",
+      "state": "pending"
+    },
+    "KIP-982": {
+      "title": "Access SslPrincipalMapper and kerberosShortNamer in Custom KafkaPrincipalBuilder",
+      "state": "pending"
+    },
+    "KIP-983": {
+      "title": "Full speed async processing during rebalance",
+      "state": "pending"
+    },
+    "KIP-984": {
+      "title": "Add pluggable compression interface to Kafka",
+      "state": "pending"
+    },
+    "KIP-985": {
+      "title": "Add reverseRange and reverseAll query over kv-store in IQv2",
+      "state": "pending"
+    },
+    "KIP-986": {
+      "title": "Cross-Cluster Replication",
+      "state": "pending"
+    },
+    "KIP-987": {
+      "title": "Connect Static Assignments",
+      "state": "pending"
+    },
+    "KIP-988": {
+      "title": "Streams Standby Task Update Listener",
+      "state": "pending"
+    },
+    "KIP-989": {
+      "title": "Improved StateStore Iterator metrics for detecting leaks",
+      "state": "pending"
+    },
+    "KIP-991": {
+      "title": "Allow DropHeaders SMT to drop headers by wildcard/regexp",
+      "state": "pending"
+    },
+    "KIP-992": {
+      "title": "Proposal to introduce IQv2 Query Types: TimestampedKeyQuery and TimestampedRangeQuery",
+      "state": "pending"
+    },
+    "KIP-993": {
+      "title": "Allow restricting files accessed by File and Directory ConfigProviders",
+      "state": "pending"
+    },
+    "KIP-994": {
+      "title": "Minor Enhancements to ListTransactions and DescribeTransactions APIs",
+      "state": "pending"
+    },
+    "KIP-995": {
+      "title": "Allow users to specify initial offsets while creating connectors",
+      "state": "pending"
+    },
+    "KIP-996": {
+      "title": "Pre-Vote",
+      "state": "pending"
+    },
+    "KIP-997": {
+      "title": "update WindowRangeQuery and unify WindowKeyQuery and WindowRangeQuery",
+      "state": "pending"
+    },
+    "KIP-999": {
+      "title": "Server-side Consumer Lag Metrics",
+      "state": "pending"
+    },
+    "KIP-1000": {
+      "title": "List Client Metrics Configuration Resources",
+      "state": "pending"
+    },
+    "KIP-1001": {
+      "title": "Add CurrentControllerId Metric",
+      "state": "pending"
+    },
+    "KIP-1002": {
+      "title": "Fetch remote segment indexes at once",
+      "state": "pending"
+    },
+    "KIP-1003": {
+      "title": "Signal next segment when remote fetching",
+      "state": "pending"
+    },
+    "KIP-1004": {
+      "title": "Enforce tasks.max property in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-1005": {
+      "title": "Expose EarliestLocalOffset and TieredOffset",
+      "state": "pending"
+    },
+    "KIP-1006": {
+      "title": "Remove SecurityManager Support",
+      "state": "pending"
+    },
+    "KIP-1008": {
+      "title": "",
+      "state": "pending"
+    },
+    "KIP-1009": {
+      "title": "Add Broker-level Throttle Configurations",
+      "state": "pending"
+    },
+    "KIP-1010": {
+      "title": "Topic Partition Quota",
+      "state": "pending"
+    },
+    "KIP-1011": {
+      "title": "Use incrementalAlterConfigs when updating broker configs by kafka-configs.sh",
+      "state": "pending"
+    },
+    "KIP-1012": {
+      "title": "The need for a Kafka 3.8 and 3.9 release",
+      "state": "pending"
+    },
+    "KIP-1013": {
+      "title": "Drop broker and tools support for Java 11 in Kafka 4.0 (deprecate in 3.7)",
+      "state": "pending"
+    },
+    "KIP-1014": {
+      "title": "Managing Unstable Features in Apache Kafka",
+      "state": "pending"
+    },
+    "KIP-1015": {
+      "title": "Limit number of ssl connections in brokers",
+      "state": "pending"
+    },
+    "KIP-1016": {
+      "title": "Make MM2 heartbeats topic name configurable",
+      "state": "pending"
+    },
+    "KIP-1017": {
+      "title": "Health check endpoint for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-1018": {
+      "title": "Introduce max remote fetch timeout config for DelayedRemoteFetch requests",
+      "state": "pending"
+    },
+    "KIP-1019": {
+      "title": "Expose method to determine Metric Measurability",
+      "state": "pending"
+    },
+    "KIP-1020": {
+      "title": "Move `window.size.ms` and `windowed.inner.class.serde` from `StreamsConfig` to TimeWindowedDe/Serializer and SessionWindowedDe/Serializer class",
+      "state": "pending"
+    },
+    "KIP-1021": {
+      "title": "Allow to get last stable offset (LSO) in kafka-get-offsets.sh",
+      "state": "pending"
+    },
+    "KIP-1022": {
+      "title": "Formatting and Updating Features",
+      "state": "pending"
+    },
+    "KIP-1023": {
+      "title": "Follower fetch from tiered offset",
+      "state": "pending"
+    },
+    "KIP-1025": {
+      "title": "Optionally URL-encode clientID and clientSecret in authorization header",
+      "state": "pending"
+    },
+    "KIP-1027": {
+      "title": "Add MockFixedKeyProcessorContext and TestFixedKeyRecordFactory",
+      "state": "pending"
+    },
+    "KIP-1028": {
+      "title": "Docker Official Image for Apache Kafka",
+      "state": "pending"
+    },
+    "KIP-1030": {
+      "title": "Change constraints and default values for various configurations",
+      "state": "pending"
+    },
+    "KIP-1031": {
+      "title": "Control offset translation in MirrorSourceConnector",
+      "state": "pending"
+    },
+    "KIP-1032": {
+      "title": "Upgrade to Jakarta and JavaEE 10 in Kafka 4.0",
+      "state": "pending"
+    },
+    "KIP-1033": {
+      "title": "Add Kafka Streams exception handler for exceptions occurring during processing",
+      "state": "pending"
+    },
+    "KIP-1034": {
+      "title": "Dead letter queue in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-1035": {
+      "title": "StateStore managed changelog offsets",
+      "state": "pending"
+    },
+    "KIP-1036": {
+      "title": "Extend RecordDeserializationException exception",
+      "state": "pending"
+    },
+    "KIP-1037": {
+      "title": "Allow WriteTxnMarkers API with Alter Cluster Permission",
+      "state": "pending"
+    },
+    "KIP-1038": {
+      "title": "Add Custom Error Handler to Producer",
+      "state": "pending"
+    },
+    "KIP-1040": {
+      "title": "Improve handling of nullable values in InsertField/ExtractField transformations",
+      "state": "pending"
+    },
+    "KIP-1041": {
+      "title": "Drop `offsets.commit.required.acks` config in 4.0 (deprecate in 3.8)",
+      "state": "pending"
+    },
+    "KIP-1042": {
+      "title": "Implementation of a GLOB Pattern type for ACL pattern matching.",
+      "state": "pending"
+    },
+    "KIP-1043": {
+      "title": "Administration of groups",
+      "state": "pending"
+    },
+    "KIP-1044": {
+      "title": "A proposal to change idempotent producer -- server implementation",
+      "state": "pending"
+    },
+    "KIP-1045": {
+      "title": "Move MockAdminClient to public api",
+      "state": "pending"
+    },
+    "KIP-1046": {
+      "title": "Expose producer.id.expiration.check.interval.ms as dynamic broker configuration",
+      "state": "pending"
+    },
+    "KIP-1047": {
+      "title": "Introduce new org.apache.kafka.tools.api.Decoder to replace kafka.serializer.Decoder",
+      "state": "pending"
+    },
+    "KIP-1048": {
+      "title": "Improve kafka-consumer-perf-test to benchmark single partition",
+      "state": "pending"
+    },
+    "KIP-1049": {
+      "title": "Add config log.summary.interval.ms to Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-1050": {
+      "title": "Consistent error handling for Transactions",
+      "state": "pending"
+    },
+    "KIP-1051": {
+      "title": "Statically configured log replication throttling",
+      "state": "pending"
+    },
+    "KIP-1052": {
+      "title": "Enable warmup in producer performance test",
+      "state": "pending"
+    },
+    "KIP-1053": {
+      "title": "Align the naming convention for config and default variables in *Config classes",
+      "state": "pending"
+    },
+    "KIP-1054": {
+      "title": "Support External schema in JSONConvertor",
+      "state": "pending"
+    },
+    "KIP-1055": {
+      "title": "Introducing Round-Robin Assignment Strategy to ConnectorUtils",
+      "state": "pending"
+    },
+    "KIP-1056": {
+      "title": "Remove `default.` prefix for exception handler StreamsConfig",
+      "state": "pending"
+    },
+    "KIP-1057": {
+      "title": "Add remote log metadata flag to the dump log tool",
+      "state": "pending"
+    },
+    "KIP-1058": {
+      "title": "Txn consumer exerts pressure on remote storage when reading non-txn topic",
+      "state": "pending"
+    },
+    "KIP-1059": {
+      "title": "The Producer flush() method should clear the latest error produced by send()",
+      "state": "pending"
+    },
+    "KIP-1061": {
+      "title": "Allow exporting SCRAM credentials",
+      "state": "pending"
+    },
+    "KIP-1062": {
+      "title": "Introduce Pagination for some requests used by Admin API",
+      "state": "pending"
+    },
+    "KIP-1064": {
+      "title": "Upgrade slf4j to 2.x",
+      "state": "pending"
+    },
+    "KIP-1065": {
+      "title": "Add \"retry\" return-option to ProductionExceptionHandler",
+      "state": "pending"
+    },
+    "KIP-1066": {
+      "title": "Mechanism to cordon brokers and log directories",
+      "state": "pending"
+    },
+    "KIP-1067": {
+      "title": "Remove ReplicaVerificationTool in 5.0 (deprecate in 3.9)",
+      "state": "pending"
+    },
+    "KIP-1068": {
+      "title": "New metrics for the new KafkaConsumer",
+      "state": "pending"
+    },
+    "KIP-1070": {
+      "title": "deprecate MockProcessorContext",
+      "state": "pending"
+    },
+    "KIP-1071": {
+      "title": "Streams Rebalance Protocol",
+      "state": "pending"
+    },
+    "KIP-1073": {
+      "title": "Return fenced brokers in DescribeCluster response",
+      "state": "pending"
+    },
+    "KIP-1074": {
+      "title": "Allow the replication of user internal topics",
+      "state": "pending"
+    },
+    "KIP-1075": {
+      "title": "Introduce delayed remote list offsets purgatory to make LIST_OFFSETS async",
+      "state": "pending"
+    },
+    "KIP-1076": {
+      "title": "Metrics for client applications KIP-714 extension",
+      "state": "pending"
+    },
+    "KIP-1077": {
+      "title": "Deprecate `ForeachProcessor` and move to internal package",
+      "state": "pending"
+    },
+    "KIP-1078": {
+      "title": "Remove Leaking Getter Methods in Joined Helper Class",
+      "state": "pending"
+    },
+    "KIP-1079": {
+      "title": "Deprecate `delete-config` of TopicCommand",
+      "state": "pending"
+    },
+    "KIP-1080": {
+      "title": "Fix the typo: `maxlifeTimeMs` in CreateDelegationTokenOptions",
+      "state": "pending"
+    },
+    "KIP-1082": {
+      "title": "Require Client-Generated IDs over the ConsumerGroupHeartbeat RPC",
+      "state": "pending"
+    },
+    "KIP-1083": {
+      "title": "Increase default value of task.shutdown.graceful.timeout.ms in Connect",
+      "state": "pending"
+    },
+    "KIP-1085": {
+      "title": "Fix leaking *_DOC variables in StreamsConfig",
+      "state": "pending"
+    },
+    "KIP-1086": {
+      "title": "Add ability to specify a custom produce request parser.",
+      "state": "pending"
+    },
+    "KIP-1087": {
+      "title": "Removing intermediateTopicsOption from StreamsResetter",
+      "state": "pending"
+    },
+    "KIP-1088": {
+      "title": "Replace KafkaClientSupplier with KafkaClientInterceptor",
+      "state": "pending"
+    },
+    "KIP-1089": {
+      "title": "Allow disabling heartbeats replication in MirrorSourceConnector",
+      "state": "pending"
+    },
+    "KIP-1090": {
+      "title": "Flaky Test Management",
+      "state": "pending"
+    },
+    "KIP-1091": {
+      "title": "Improved Kafka Streams operator metrics",
+      "state": "pending"
+    },
+    "KIP-1092": {
+      "title": "Extend Consumer#close with an option to leave the group or not",
+      "state": "pending"
+    },
+    "KIP-1093": {
+      "title": "Add more observability for MirrorMaker2",
+      "state": "pending"
+    },
+    "KIP-1094": {
+      "title": "Add a new constructor with nextOffsets to ConsumerRecords",
+      "state": "pending"
+    },
+    "KIP-1095": {
+      "title": "Kafka Canary Isolation",
+      "state": "pending"
+    },
+    "KIP-1097": {
+      "title": "Add Kafka Connect exception handler",
+      "state": "pending"
+    },
+    "KIP-1098": {
+      "title": "Reverse Checkpointing in MirrorMaker",
+      "state": "pending"
+    },
+    "KIP-1099": {
+      "title": "Extend kafka-consumer-groups command line tool to support new consumer group",
+      "state": "pending"
+    },
+    "KIP-1100": {
+      "title": "Rename org.apache.kafka.server:type=AssignmentsManager and org.apache.kafka.storage.internals.log.RemoteStorageThreadPool metrics",
+      "state": "pending"
+    },
+    "KIP-1101": {
+      "title": "Trigger rebalance on rack topology changes",
+      "state": "pending"
+    },
+    "KIP-1102": {
+      "title": "Enable clients to rebootstrap based on timeout or error code",
+      "state": "pending"
+    },
+    "KIP-1103": {
+      "title": "Additional metrics for cooperative consumption",
+      "state": "pending"
+    },
+    "KIP-1104": {
+      "title": "Allow Foreign Key Extraction from Both Key and Value in KTable Joins",
+      "state": "pending"
+    },
+    "KIP-1105": {
+      "title": "Make remote log manager thread-pool configs dynamic",
+      "state": "pending"
+    },
+    "KIP-1106": {
+      "title": "Add duration based offset reset option for consumer clients",
+      "state": "pending"
+    },
+    "KIP-1107": {
+      "title": "Adding topic-level acks and compressions for producers",
+      "state": "pending"
+    },
+    "KIP-1109": {
+      "title": "Unifying Kafka Consumer Topic Metrics",
+      "state": "pending"
+    },
+    "KIP-1111": {
+      "title": "Enforcing Explicit Naming for Kafka Streams Internal Topics",
+      "state": "pending"
+    },
+    "KIP-1112": {
+      "title": "allow custom processor wrapping",
+      "state": "pending"
+    },
+    "KIP-1113": {
+      "title": "Enhancements to Rack-Aware Partition Assignor for Improved Client-Side Independence and Load Balancing",
+      "state": "pending"
+    },
+    "KIP-1114": {
+      "title": "Introducing Chunk in Partition",
+      "state": "pending"
+    },
+    "KIP-1115": {
+      "title": "Bazel Builds",
+      "state": "pending"
+    },
+    "KIP-1116": {
+      "title": "Adding new Principal Types on Standard ACL side for filtering KafkaPrincipal",
+      "state": "pending"
+    },
+    "KIP-1117": {
+      "title": "Support keystore with multiple alias entries",
+      "state": "pending"
+    },
+    "KIP-1118": {
+      "title": "Add Deadlock Protection on Producer Network Thread",
+      "state": "pending"
+    },
+    "KIP-1119": {
+      "title": "Add support for SSL hot reload",
+      "state": "pending"
+    },
+    "KIP-1120": {
+      "title": "AppInfo metrics don't contain the client-id",
+      "state": "pending"
+    },
+    "KIP-1121": {
+      "title": "Compression acceleration in Kafka - Apache Kafka - Apache Software Foundation",
+      "state": "pending"
+    },
+    "KIP-1122": {
+      "title": "Create a dedicated data module for Kafka Connect data classes",
+      "state": "pending"
+    },
+    "KIP-1123": {
+      "title": "Rack-aware partitioning for Kafka Producer",
+      "state": "pending"
+    },
+    "KIP-1124": {
+      "title": "Providing a clear Kafka Client upgrade path",
+      "state": "pending"
+    },
+    "KIP-1125": {
+      "title": "Remove Invalid 'numberOfOpenFiles' Metric from RocksDB State Store",
+      "state": "pending"
+    },
+    "KIP-1126": {
+      "title": "Serialize changes to Kafka with a build queue",
+      "state": "pending"
+    },
+    "KIP-1127": {
+      "title": "Flexible Windows for Late Arriving Data",
+      "state": "pending"
+    },
+    "KIP-1128": {
+      "title": "Replace KTable.transformValues with KTable.processFixedKey and add new KStreams.processFixedKey",
+      "state": "pending"
+    },
+    "KIP-1129": {
+      "title": "Update ConfigException constructors",
+      "state": "pending"
+    },
+    "KIP-1130": {
+      "title": "Add metrics indicating the connection count exceeds",
+      "state": "pending"
+    },
+    "KIP-1131": {
+      "title": "Improved controller-side monitoring of broker states",
+      "state": "pending"
+    },
+    "KIP-1132": {
+      "title": "KRaft servers support invalid static SocketServer configurations",
+      "state": "pending"
+    },
+    "KIP-1133": {
+      "title": "AK Documentation and Website in Markdown",
+      "state": "pending"
+    },
+    "KIP-1134": {
+      "title": "Multi-tenancy in Kafka: Virtual Clusters",
+      "state": "pending"
+    },
+    "KIP-1136": {
+      "title": "Make ConsumerGroupMetadata an interface",
+      "state": "pending"
+    },
+    "KIP-1137": {
+      "title": "Standardize Configuration Precedence for Tool Scripts",
+      "state": "pending"
+    },
+    "KIP-1138": {
+      "title": "Clean up TopologyConfig and API for supplying configs needed by the topology",
+      "state": "pending"
+    },
+    "KIP-1139": {
+      "title": "Add support for OAuth jwt-bearer grant type",
+      "state": "pending"
+    },
+    "KIP-1140": {
+      "title": "Avoid to return null value in Map from public api of consumer",
+      "state": "pending"
+    },
+    "KIP-1141": {
+      "title": "Simplifying Add/Remove Voter in MetadataQuorumCommand",
+      "state": "pending"
+    },
+    "KIP-1142": {
+      "title": "Allow to list non-existent group which has dynamic config",
+      "state": "pending"
+    },
+    "KIP-1143": {
+      "title": "Deprecated Optional<String> and return String from public Endpoint#listenerName",
+      "state": "pending"
+    },
+    "KIP-1144": {
+      "title": "Exposing a new public REST API for MirrorMaker 2",
+      "state": "pending"
+    },
+    "KIP-1146": {
+      "title": "Anchored punctuation",
+      "state": "pending"
+    },
+    "KIP-1147": {
+      "title": "Improve consistency of command-line arguments",
+      "state": "pending"
+    },
+    "KIP-1148": {
+      "title": "Remove log.cleaner.enable and set lower bound 1 to log.cleaner.threads",
+      "state": "pending"
+    },
+    "KIP-1149": {
+      "title": "Helm Chart for Apache Kafka",
+      "state": "pending"
+    },
+    "KIP-1150": {
+      "title": "Diskless Topics",
+      "state": "pending"
+    },
+    "KIP-1151": {
+      "title": "Minimal movement replica balancing algorithm for reassignment",
+      "state": "pending"
+    },
+    "KIP-1152": {
+      "title": "Add transactional ID pattern filter to ListTransactions API",
+      "state": "pending"
+    },
+    "KIP-1153": {
+      "title": "Refactor Kafka Streams CloseOptions to Fluent API Style",
+      "state": "pending"
+    },
+    "KIP-1154": {
+      "title": "Extending support for Microsecond/Nanosecond Precision for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-1155": {
+      "title": "Metadata Version Downgrades",
+      "state": "pending"
+    },
+    "KIP-1157": {
+      "title": "Enforce KafkaPrincipalSerde Implementation for KafkaPrincipalBuilder",
+      "state": "pending"
+    },
+    "KIP-1158": {
+      "title": "Improve Connect SourceTask commit()",
+      "state": "pending"
+    },
+    "KIP-1159": {
+      "title": "Large message reference based Serializer",
+      "state": "pending"
+    },
+    "KIP-1160": {
+      "title": "Enable returning supported features from a specific broker",
+      "state": "pending"
+    },
+    "KIP-1161": {
+      "title": "Unifying LIST-Type Configuration Validation and Default Values",
+      "state": "pending"
+    },
+    "KIP-1162": {
+      "title": "Redesign ClientQuotaCallback#updateClusterMetadata",
+      "state": "pending"
+    },
+    "KIP-1163": {
+      "title": "Diskless Core",
+      "state": "pending"
+    },
+    "KIP-1164": {
+      "title": "Diskless Coordinator",
+      "state": "pending"
+    },
+    "KIP-1166": {
+      "title": "Improve high-watermark replication",
+      "state": "pending"
+    },
+    "KIP-1170": {
+      "title": "Unify cluster metadata bootstrapping",
+      "state": "pending"
+    },
+    "KIP-1172": {
+      "title": "Improve EndToEndLatency Tool with argument parser and message key/header support",
+      "state": "pending"
+    },
+    "KIP-1173": {
+      "title": "Connect Storage Topics Sharing Across Clusters",
+      "state": "pending"
+    },
+    "KIP-1174": {
+      "title": "Expose addReadOnlyStateStore in DSL (StreamsBuilder)",
+      "state": "pending"
+    },
+    "KIP-1175": {
+      "title": "Fix the typo `PARTITIONER_ADPATIVE_PARTITIONING_ENABLE` in ProducerConfig",
+      "state": "pending"
+    },
+    "KIP-1176": {
+      "title": "Tiered Storage for Active Log Segment",
+      "state": "pending"
+    },
+    "KIP-1178": {
+      "title": "Introduce remote.max.partition.fetch.bytes.config in Consumer",
+      "state": "pending"
+    },
+    "KIP-1179": {
+      "title": "Introduce remote.log.manager.follower.thread.pool.size config",
+      "state": "pending"
+    },
+    "KIP-1180": {
+      "title": "Add generic feature level metrics",
+      "state": "pending"
+    },
+    "KIP-1182": {
+      "title": "Quality of Service (QoS) Framework",
+      "state": "pending"
+    },
+    "KIP-1183": {
+      "title": "Unified Shared Storage",
+      "state": "pending"
+    },
+    "KIP-1184": {
+      "title": "Add connector name and task index tags to MirrorMaker task's kafka_metrics_count metric",
+      "state": "pending"
+    },
+    "KIP-1186": {
+      "title": "Update AddRaftVoterRequest RPC to support auto-join",
+      "state": "pending"
+    },
+    "KIP-1187": {
+      "title": "Support to retrieve remote log size via DescribeLogDirs RPC",
+      "state": "pending"
+    },
+    "KIP-1188": {
+      "title": "New ConnectorClientConfigOverridePolicy with allowlist of configurations",
+      "state": "pending"
+    },
+    "KIP-1189": {
+      "title": "Allow custom topic configurations for RemoteStorageManager",
+      "state": "pending"
+    },
+    "KIP-1190": {
+      "title": "Add a metric for controller thread idleness",
+      "state": "pending"
+    },
+    "KIP-1191": {
+      "title": "Dead-letter queues for share groups",
+      "state": "pending"
+    },
+    "KIP-1192": {
+      "title": "Add include argument to ConsumerPerformance tool",
+      "state": "pending"
+    },
+    "KIP-1193": {
+      "title": "Deprecate MX4j support",
+      "state": "pending"
+    },
+    "KIP-1194": {
+      "title": "Optimize Replica Assignment for Broker Load Balance in Uneven Rack Configurations",
+      "state": "pending"
+    },
+    "KIP-1195": {
+      "title": "deprecate and remove org.apache.kafka.streams.errors.BrokerNotFoundException",
+      "state": "pending"
+    },
+    "KIP-1196": {
+      "title": "Introduce group.coordinator.append.max.buffer.size config",
+      "state": "pending"
+    },
+    "KIP-1197": {
+      "title": "Introduce new method to improve the TopicBasedRemoteLogMetadataManager's initialization",
+      "state": "pending"
+    },
+    "KIP-1198": {
+      "title": "implement a ConfigKey.Builder class",
+      "state": "pending"
+    },
+    "KIP-1200": {
+      "title": "Deprecate ClientQuotaCallback#updateClusterMetadata",
+      "state": "pending"
+    },
+    "KIP-1201": {
+      "title": "Add disk threshold strategy to prevent disk full failure",
+      "state": "pending"
+    },
+    "KIP-1202": {
+      "title": "Align broker and controller \"advertised.listeners\" and \"listeners\" behaviour",
+      "state": "pending"
+    },
+    "KIP-1203": {
+      "title": "Allow to configure custom `ReplicaPlacer` implementation",
+      "state": "pending"
+    },
+    "KIP-1204": {
+      "title": "MetadataQuorumCommand describe to include CommittedVoters",
+      "state": "pending"
+    },
+    "KIP-1205": {
+      "title": "Improve RecordHeader to be Thread-Safe",
+      "state": "pending"
+    },
+    "KIP-1206": {
+      "title": "Strict max fetch records in share fetch",
+      "state": "pending"
+    },
+    "KIP-1207": {
+      "title": "Fix anomaly of JMX metrics RequestHandlerAvgIdlePercent in kraft combined mode",
+      "state": "pending"
+    },
+    "KIP-1208": {
+      "title": "Add prefix to TopicBasedRemoteLogMetadataManagerConfig to enable setting admin configs",
+      "state": "pending"
+    },
+    "KIP-1209": {
+      "title": "Add configuration to control internal topic creation in Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-1210": {
+      "title": "Disallow Configurations at the Broker Level",
+      "state": "pending"
+    },
+    "KIP-1211": {
+      "title": "Align the behavior of num.partitions and default.replication.factor for topic creation",
+      "state": "pending"
+    },
+    "KIP-1213": {
+      "title": "Deprecated the log.dir configuration",
+      "state": "pending"
+    },
+    "KIP-1214": {
+      "title": "Change log.segment.bytes configuration type from int to long to support segments larger than 2GB",
+      "state": "pending"
+    },
+    "KIP-1216": {
+      "title": "Add rebalance listener metrics for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-1217": {
+      "title": "Include push interval in ClientTelemetryReceiver context",
+      "state": "pending"
+    },
+    "KIP-1218": {
+      "title": "Expose consumer CorruptRecordException",
+      "state": "pending"
+    },
+    "KIP-1219": {
+      "title": "Configurations for KRaft Fetch and FetchSnapshot Byte Size",
+      "state": "pending"
+    },
+    "KIP-1220": {
+      "title": "Unify kafka-broker-api-versions tool to cluster-tool and support bootstrap controllers",
+      "state": "pending"
+    },
+    "KIP-1221": {
+      "title": "Add application-id tag to Kafka Streams state metric",
+      "state": "pending"
+    },
+    "KIP-1222": {
+      "title": "Acquisition lock timeout renewal in share consumer explicit mode",
+      "state": "pending"
+    },
+    "KIP-1223": {
+      "title": "Add user tag to DeprecatedRequestsMetric",
+      "state": "pending"
+    },
+    "KIP-1224": {
+      "title": "Adaptive append.linger.ms for the group coordinator and share coordinator",
+      "state": "pending"
+    },
+    "KIP-1226": {
+      "title": "Introducing Share Partition Lag Persistence and Retrieval",
+      "state": "pending"
+    },
+    "KIP-1227": {
+      "title": "Expose Rack ID in MemberDescription and ShareMemberDescription",
+      "state": "pending"
+    },
+    "KIP-1228": {
+      "title": "Add Transaction Version to WriteTxnMarkersRequest",
+      "state": "pending"
+    },
+    "KIP-1229": {
+      "title": "Add Idle Thread Ratio Metric to MetadataLoader",
+      "state": "pending"
+    },
+    "KIP-1230": {
+      "title": "Add config for file system permissions",
+      "state": "pending"
+    },
+    "KIP-1231": {
+      "title": "Deprecate '--max-partition-memory-bytes' option in ConsoleProducer",
+      "state": "pending"
+    },
+    "KIP-1232": {
+      "title": "Deprecate broker.id config",
+      "state": "pending"
+    },
+    "KIP-1233": {
+      "title": "Maximum lengths for resource names and IDs",
+      "state": "pending"
+    },
+    "KIP-1234": {
+      "title": "Move and Add Arguments to version-mapping Commands",
+      "state": "pending"
+    },
+    "KIP-1235": {
+      "title": "Correct the default min.insync.replicas to 2 for the __remote_log_metadata topic",
+      "state": "pending"
+    },
+    "KIP-1236": {
+      "title": "Adjust quorum-related config lower bounds",
+      "state": "pending"
+    },
+    "KIP-1237": {
+      "title": "Deprecate group.coordinator.rebalance.protocols config",
+      "state": "pending"
+    },
+    "KIP-1238": {
+      "title": "Multipartition for TopologyTestDriver in Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-1240": {
+      "title": "Additional group configurations for share groups",
+      "state": "pending"
+    },
+    "KIP-1241": {
+      "title": "Reduce tiered storage redundancy with delayed upload",
+      "state": "pending"
+    },
+    "KIP-1242": {
+      "title": "Detection and handling of misrouted connections",
+      "state": "pending"
+    },
+    "KIP-1244": {
+      "title": "Drop support for streams-scala in Kafka 5.0 (deprecate in 4.3)",
+      "state": "pending"
+    },
+    "KIP-1245": {
+      "title": "Enforce 'application.server' <server>:<port> format at config level",
+      "state": "pending"
+    },
+    "KIP-1246": {
+      "title": "Deprecate backdoor that allows any client to produce to internal topics",
+      "state": "pending"
+    },
+    "KIP-1247": {
+      "title": "Make Bytes utils class part of the public API",
+      "state": "pending"
+    },
+    "KIP-1248": {
+      "title": "Broker Support for remote tiered storage fetch from consumer",
+      "state": "pending"
+    },
+    "KIP-1249": {
+      "title": "Better offset reset for the new consumer group rebalance protocol",
+      "state": "pending"
+    },
+    "KIP-1250": {
+      "title": "Add metric to track size of in-memory state stores",
+      "state": "pending"
+    },
+    "KIP-1251": {
+      "title": "Assignment epochs for consumer groups",
+      "state": "pending"
+    },
+    "KIP-1252": {
+      "title": "AlterConfigPolicy compatibility in legacy Zookeeper mode (3.9.2 release)",
+      "state": "pending"
+    },
+    "KIP-1253": {
+      "title": "Add TopologyValidator Utility for Kafka Streams Topology Compatibility",
+      "state": "pending"
+    },
+    "KIP-1254": {
+      "title": "Kafka Consumer Support for Remote Tiered Storage Fetch",
+      "state": "pending"
+    },
+    "KIP-1255": {
+      "title": "Remote Read Replicas for Kafka Tiered Storage",
+      "state": "pending"
+    },
+    "KIP-1256": {
+      "title": "Align broker and controller behavior for the Admin.incrementalAlterConfigs API",
+      "state": "pending"
+    },
+    "KIP-1257": {
+      "title": "Partition Size Percentage Metrics for Storage Monitoring",
+      "state": "pending"
+    },
+    "KIP-1258": {
+      "title": "Add Support for OAuth Client Assertion to client_credentials Grant Type",
+      "state": "pending"
+    },
+    "KIP-1259": {
+      "title": "Add configuration to wipe Kafka Streams local state on startup",
+      "state": "pending"
+    },
+    "KIP-1262": {
+      "title": "Enable auto-formatting directories",
+      "state": "pending"
+    },
+    "KIP-1263": {
+      "title": "Group Coordinator Assignment Batching and Offload",
+      "state": "pending"
+    },
+    "KIP-1264": {
+      "title": "Configurable TTL for Tiered Storage Index Cache",
+      "state": "pending"
+    },
+    "KIP-1265": {
+      "title": "Mechanism for automatic detection of internal API usage",
+      "state": "pending"
+    },
+    "KIP-1266": {
+      "title": "Bounding The Number Of RemoteLogMetadata Messages via Compacted RemoteLogMetadata Topic",
+      "state": "pending"
+    },
+    "KIP-1267": {
+      "title": "Tiered Storage Cost Attribution Metrics",
+      "state": "pending"
+    },
+    "KIP-1268": {
+      "title": "Prevent Dynamic Partition Expansion of Internal Topics",
+      "state": "pending"
+    },
+    "KIP-1269": {
+      "title": "Configurable number of batches to retain in broker",
+      "state": "pending"
+    },
+    "KIP-1270": {
+      "title": "Introduce ProcessExceptionalHandler for Global Thread",
+      "state": "pending"
+    },
+    "KIP-1271": {
+      "title": "Allow to Store Record Headers in State Stores",
+      "state": "pending"
+    },
+    "KIP-1272": {
+      "title": "Support Compacted Topic in Tiered Storage",
+      "state": "pending"
+    },
+    "KIP-1273": {
+      "title": "Improve Connect configurable components discoverability",
+      "state": "pending"
+    },
+    "KIP-1274": {
+      "title": "Deprecate and remove support for Classic rebalance protocol in KafkaConsumer",
+      "state": "pending"
+    },
+    "KIP-1276": {
+      "title": "CIDR-based Host Patterns for ACLs",
+      "state": "pending"
+    },
+    "KIP-1277": {
+      "title": "Support Delayed Message in Kafka",
+      "state": "pending"
+    },
+    "KIP-1278": {
+      "title": "Configurable Retry Mechanism for KafkaStatusBackingStore",
+      "state": "pending"
+    },
+    "KIP-1279": {
+      "title": "Cluster Mirroring",
+      "state": "pending"
+    },
+    "KIP-1280": {
+      "title": "Update MirrorMaker to use KIP-877 to emit metrics",
+      "state": "pending"
+    },
+    "KIP-1282": {
+      "title": "Prevent data loss during partition expansion for dynamically added partitions",
+      "state": "pending"
+    },
+    "KIP-1283": {
+      "title": "Clarify KafkaStreams cleanUp semantics to preserve process metadata and state directory lock file",
+      "state": "pending"
+    },
+    "KIP-1284": {
+      "title": "Introduce CloseOptions.DEFAULT for Kafka Streams",
+      "state": "pending"
+    },
+    "KIP-1285": {
+      "title": "DSL Opt-in Support for Headers-Aware State Stores",
+      "state": "pending"
+    },
+    "KIP-1287": {
+      "title": "Disallow sendOffsetsToTransaction from committing offsets for unassigned partitions",
+      "state": "pending"
+    },
+    "KIP-1288": {
+      "title": "SSL Hot Reload for Kafka Clients",
+      "state": "pending"
+    },
+    "KIP-1289": {
+      "title": "Support Transactional Acknowledgments for Share Groups",
+      "state": "pending"
+    },
+    "KIP-1290": {
+      "title": "Rack-Aware Minimum In-Sync Replicas",
+      "state": "pending"
+    },
+    "KIP-1291": {
+      "title": "Extended I/O Metrics Collection",
+      "state": "pending"
+    },
+    "KIP-1292": {
+      "title": "New MirrorMaker2 Connector for syncing consumer offsets",
+      "state": "pending"
+    },
+    "KIP-1294": {
+      "title": "Metadata-Version-Aware Configuration Constraints",
+      "state": "pending"
+    },
+    "KIP-1295": {
+      "title": "Dead letter queue support for global store/KTable",
+      "state": "pending"
+    },
+    "KIP-1297": {
+      "title": "Role-Aware Metric Tags for NodeToControllerChannelManagerImpl",
+      "state": "pending"
+    },
+    "KIP-1298": {
+      "title": "Per-Resource-Type Authorization for LIST_CONFIG_RESOURCES",
+      "state": "pending"
+    },
+    "KIP-1299": {
+      "title": "Use key range in ProducerPerformance",
+      "state": "pending"
+    },
+    "KIP-1300": {
+      "title": "Update KStream-KStream Join to Use Plain-Value-Header Window Stores",
+      "state": "pending"
+    },
+    "KIP-1301": {
+      "title": "Deprecate Yammer-based metrics in `GroupCoordinatorMetrics`",
+      "state": "pending"
+    },
+    "KIP-1302": {
+      "title": "Support Share Groups (Queue Semantics) in Kafka Connect Sink Connectors",
+      "state": "pending"
+    },
+    "KIP-1303": {
+      "title": "Deprioritize Tiered Storage Followers In Leader Election",
+      "state": "pending"
+    },
+    "KIP-1304": {
+      "title": "Add consumer metric about paused partitions",
+      "state": "pending"
+    },
+    "KIP-1305": {
+      "title": "Per-Record Context Processing for Kafka Consumers",
+      "state": "pending"
+    },
+    "KIP-1306": {
+      "title": "Extend ConsumerRebalanceListener with Consumer-Aware methods",
+      "state": "pending"
+    },
+    "KIP-1307": {
+      "title": "SerDe and Interceptor Metrics",
+      "state": "pending"
+    },
+    "KIP-1308": {
+      "title": "Extend Header API for Common Value Types",
+      "state": "pending"
+    },
+    "KIP-1309": {
+      "title": "Improve transaction liveness checking",
+      "state": "pending"
+    },
+    "KIP-1310": {
+      "title": "General Transaction Session",
+      "state": "pending"
+    },
+    "KIP-1311": {
+      "title": "Make Time/Timer public API",
+      "state": "pending"
+    },
+    "KIP-1312": {
+      "title": "Support unregistering controllers",
+      "state": "pending"
+    },
+    "KIP-1313": {
+      "title": "Client instance ID in all request headers",
+      "state": "pending"
+    },
+    "KIP-1314": {
+      "title": "Support broker-side consumer group re balance callback",
+      "state": "pending"
+    },
+    "KIP-1315": {
+      "title": "Split Connector Listing and Expanded Views in the Connect REST API",
+      "state": "pending"
+    },
+    "KIP-1316": {
+      "title": "Circuit Breaker for Share Group DLQ Overflow",
+      "state": "pending"
+    },
+    "KIP-1317": {
+      "title": "Mandatory DLQ Disposition Header for Share Groups",
+      "state": "pending"
+    },
+    "KIP-1318": {
+      "title": "Model Context Protocol (MCP) Server for Apache Kafka",
+      "state": "pending"
+    },
+    "KIP-1319": {
+      "title": "Align TxnOffsetCommit API with OffsetCommit API",
+      "state": "pending"
+    },
+    "KIP-1320": {
+      "title": "Deprecate heavily used internal APIs",
+      "state": "pending"
+    },
+    "KIP-1321": {
+      "title": "Headers aware StreamPartitioner",
+      "state": "pending"
+    },
+    "KIP-1322": {
+      "title": "Add metrics to Kraft that measure the number of fetch timeouts and election timeouts",
+      "state": "pending"
+    },
+    "KIP-1323": {
+      "title": "Initialization of share group offsets from a specific offset or a file",
+      "state": "pending"
+    },
+    "KIP-1324": {
+      "title": "Support client configuration observability",
+      "state": "pending"
+    },
+    "KIP-1325": {
+      "title": "Add restore.buffered.records.per.partition to cap Kafka Streams state-restore memory",
+      "state": "pending"
+    },
+    "KIP-1326": {
+      "title": "Include broker static configurations in BrokerRegistrationRequest",
+      "state": "pending"
+    },
+    "KIP-1327": {
+      "title": "Prevent Hot Data Loss on Partition Expansion for Reset Offset Policy",
+      "state": "pending"
+    },
+    "KIP-1329": {
+      "title": "ListClientConnections Admin API",
+      "state": "pending"
+    },
+    "KIP-1331": {
+      "title": "Streams Group Topology Description Plugin",
+      "state": "pending"
+    },
+    "KIP-1332": {
+      "title": "Dynamic memory allocation for the Kafka producer",
+      "state": "pending"
+    },
+    "KIP-1333": {
+      "title": "Support log segments larger than 2 GB",
+      "state": "pending"
+    },
+    "KIP-1334": {
+      "title": "Introduce",
+      "state": "pending"
+    },
+    "KIP-1335": {
+      "title": "Bounded concurrency for partition reassignment via kafka-reassign-partitions.sh",
+      "state": "pending"
+    },
+    "KIP-1336": {
+      "title": "Progress Signaling for Share-Group In-Flight Records (markInProgress + IN_PROGRESS State)",
+      "state": "pending"
+    },
+    "KIP-1337": {
+      "title": "Add Protobuf MessageFormatter for Kafka Console Consumer",
+      "state": "pending"
+    },
+    "KIP-1338": {
+      "title": "Structured MDC Context for Kafka Logging",
+      "state": "pending"
+    },
+    "KIP-1339": {
+      "title": "Make KafkaConfigBackingStore read_write_total_timeout configurable",
+      "state": "pending"
+    },
+    "KIP-1340": {
+      "title": "Expose Both Mapped Key and Stream Key in Streams-GlobalKTable Joins",
+      "state": "pending"
+    },
+    "KIP-1341": {
+      "title": "Replace `<default>` placeholder in `ConfigEntity#name()` with `Optional<String> entityName()`",
+      "state": "pending"
+    },
+    "KIP-1342": {
+      "title": "Deprecate Authorizer#aclCount",
+      "state": "pending"
+    },
+    "KIP-1343": {
+      "title": "Allow opt-in leader-only acknowledgement in DeleteRecords",
+      "state": "pending"
+    },
+    "KIP-1344": {
+      "title": "Add Transaction Coordinator Metrics for Transaction State Log Appends and Marker Completion",
+      "state": "pending"
+    },
+    "KIP-1345": {
+      "title": "Cross-Cluster Atomic Transactions via Global Transaction Coordinator",
+      "state": "pending"
+    },
+    "KIP-1347": {
+      "title": "Overriding voter set on storage formatting",
+      "state": "pending"
+    },
+    "KIP-1349": {
+      "title": "Configurable snapshot frequency for share groups",
+      "state": "pending"
+    },
+    "KIP-1350": {
+      "title": "Expose Streams Group Heartbeat Statuses as Kafka Streams Metrics",
+      "state": "pending"
+    },
+    "KIP-1351": {
+      "title": "Add --cancel-all to kafka-reassign-partitions",
+      "state": "pending"
+    },
+    "KIP-1352": {
+      "title": "Ranges and Range Aggregations in the Kafka Streams DSL",
+      "state": "pending"
+    },
+    "KIP-1355": {
+      "title": "In-rack traffic observability for clients and brokers",
+      "state": "pending"
+    },
+    "KIP-1356": {
+      "title": "Introduce IQv2 for headers-aware state stores",
+      "state": "pending"
+    },
+    "KIP-1357": {
+      "title": "Add broker side custom assignors for \"streams\" groups",
+      "state": "pending"
+    },
+    "KIP-1358": {
+      "title": "Gradual and gated preferred-leader election in the KRaft controller",
+      "state": "pending"
+    },
+    "KIP-1359": {
+      "title": "Improve usability of resetting group offsets",
+      "state": "pending"
+    },
+    "KIP-1360": {
+      "title": "Cluster Synchronous Mirroring",
+      "state": "pending"
+    },
+    "KIP-1362": {
+      "title": "Add a rollback-compatible storage format option for KRaft migration",
+      "state": "pending"
+    },
+    "KIP-1363": {
+      "title": "Add --checkpoint option to kafka-metadata-shell and deprecate --snapshot",
+      "state": "pending"
+    },
+    "KIP-1364": {
+      "title": "Expose Rebalance Cause to RebalanceConsumer and Metrics",
+      "state": "pending"
+    },
+    "KIP-1365": {
+      "title": "Transform Observability and Skipped Record Handling for Kafka Connect",
+      "state": "pending"
+    },
+    "KIP-1366": {
+      "title": "Configurable Segment Interval for Window and Session Stores",
+      "state": "pending"
+    },
+    "KIP-1367": {
+      "title": "Reserve apiKey values for private use",
+      "state": "pending"
+    },
+    "KIP-1368": {
+      "title": "Client framework name and version",
+      "state": "pending"
+    },
+    "KIP-1369": {
+      "title": "API-Contract Annotations for Nullity/Thread Safety",
+      "state": "pending"
+    },
+    "KIP-20461": {
+      "title": "Support Infinite Retention for Consumer Group Offsets",
+      "state": "pending"
+    }
+  }
+}

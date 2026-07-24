@@ -326,3 +326,40 @@ exact regen command if the two drift — so stale vectors cannot merge.
 6. **Drift recorded, not rewritten:** a Tier-2 body change lands in
    `tools/pending-changes.json` with `{ kipId, fromVersion, toVersion, url,
    observedAt }`; prose in the note is left untouched.
+
+---
+
+## 10. Corpus backfill (implemented — tools/backfill/)
+
+Imports the FULL KIP corpus (every status) as stub notes, queue-style.
+
+- **Discovery:** the cwiki index page ("Kafka Improvement Proposals", space
+  KAFKA) is fetched (2 req) and every `KIP-\d+` link extracted → merged into
+  `tools/backfill/queue.json` (committed; per-item state machine
+  `pending → detail_done → threads_done | failed`; merge preserves existing
+  states and adopts pageIds already recorded in vault notes).
+- **Runner:** `bun tools/backfill/run.ts [--dry-run|--limit N|--no-threads]` —
+  politeFetch-throttled; checkpoints the queue after every item; failures are
+  recorded with the error and never bulk-retried. CI entry:
+  `.github/workflows/backfill.yml` (test → crawl → regenerate embeddings →
+  re-test → atomic commit).
+- **Page resolution (prefer skip over wrong):** exact title `"KIP-N: <title>"`
+  in space KAFKA first, then CQL `space = KAFKA AND title ~ "KIP-N"` keeping
+  only results whose title starts at a `KIP-N` word boundary (so KIP-11 never
+  resolves to KIP-110, and same-named pages in other spaces — e.g. Knox — are
+  excluded). Unresolvable → `failed`, not a wrong import.
+- **Status normalization** (raw "Current state:" text → canonical):
+  | Canonical | Raw variants (case-insensitive substring) |
+  |---|---|
+  | `Adopted` | adopted, accepted, released, implemented, completed |
+  | `Early Access` | early access, preview |
+  | `Under Discussion` | under discussion, discussion, draft, voting, wip |
+  | `Discarded` | discarded, rejected, superseded, withdrawn, abandoned, inactive, moved |
+  | `Unknown` | anything unparseable (kept honest rather than guessed) |
+- **Stub note contract:** frontmatter `stub: true`, `status`, `cwiki` block,
+  optional `threads:` (Ponymail permalinks + counts), empty `tags`/`related`;
+  body = extracted Summary + a callout linking the cwiki page. The vault parser
+  runs lenient for `stub: true` notes (deep-only fields default to empty) while
+  the 9 deep notes keep their byte-exact seed round-trip.
+- **Steady-state freshness** after the initial drain is governed by
+  `docs/sync-strategy.md` (CQL delta, twice-daily cron, monthly reconciliation).

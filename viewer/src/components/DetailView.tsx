@@ -1,4 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
+import type { Kip } from "../types";
 import { avatarColor, getKip, initials, similarKips } from "../lib/kips";
 import { StatusBadge, TagPill } from "./common";
 
@@ -109,24 +110,31 @@ export default function DetailView() {
             {kip.summary}
           </p>
 
-          <div style={section}>
-            <div style={heading}>Motivation</div>
-            {kip.motivation.map((p, i) => (
-              <p key={i} style={{ fontSize: 15, lineHeight: 1.62, color: "#33312c", margin: "0 0 11px" }}>
-                {p}
-              </p>
-            ))}
-          </div>
+          {kip.stub && <StubNotice kip={kip} />}
 
-          <div style={section}>
-            <div style={heading}>Proposed Changes / Design</div>
-            {kip.design.map((p, i) => (
-              <p key={i} style={{ fontSize: 15, lineHeight: 1.62, color: "#33312c", margin: "0 0 11px" }}>
-                {p}
-              </p>
-            ))}
-          </div>
+          {kip.motivation.length > 0 && (
+            <div style={section}>
+              <div style={heading}>Motivation</div>
+              {kip.motivation.map((p, i) => (
+                <p key={i} style={{ fontSize: 15, lineHeight: 1.62, color: "#33312c", margin: "0 0 11px" }}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          )}
 
+          {kip.design.length > 0 && (
+            <div style={section}>
+              <div style={heading}>Proposed Changes / Design</div>
+              {kip.design.map((p, i) => (
+                <p key={i} style={{ fontSize: 15, lineHeight: 1.62, color: "#33312c", margin: "0 0 11px" }}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {(kip.pros.length > 0 || kip.cons.length > 0) && (
           <div style={section}>
             <div style={heading}>Trade-offs</div>
             <div className="tradeoffs-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -166,7 +174,9 @@ export default function DetailView() {
               </div>
             </div>
           </div>
+          )}
 
+          {kip.rejected.length > 0 && (
           <div style={section}>
             <div style={heading}>Rejected Alternatives</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -178,7 +188,9 @@ export default function DetailView() {
               ))}
             </div>
           </div>
+          )}
 
+          {kip.discussion.length > 0 && (
           <div style={section}>
             <div style={heading}>Discussion Thread</div>
             <div style={{ fontFamily: mono, fontSize: 11, color: "#9a968d", marginBottom: 6 }}>
@@ -222,7 +234,9 @@ export default function DetailView() {
               </div>
             ))}
           </div>
+          )}
 
+          {kip.vote.votes.length > 0 && (
           <div style={section}>
             <div style={heading}>Voting Thread</div>
             <div style={{ fontFamily: mono, fontSize: 11, color: "#9a968d", marginBottom: 8 }}>
@@ -284,6 +298,7 @@ export default function DetailView() {
               </div>
             </div>
           </div>
+          )}
         </main>
 
         {/* right rail */}
@@ -299,15 +314,32 @@ export default function DetailView() {
         >
           <div style={{ background: "#fff", border: "1px solid #e6e2db", borderRadius: 12, padding: "16px 17px" }}>
             <RailLabel>Metadata</RailLabel>
-            <Field label="Authors" value={kip.authors} />
-            <Field label="Category" value={kip.category} />
-            <Field label="Released in" value={kip.release} mono />
-            <div style={{ fontSize: 11, color: "#9a968d", marginBottom: 6 }}>Tags</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-              {kip.tags.map((t) => (
-                <TagPill key={t} tag={t} />
-              ))}
-            </div>
+            {kip.authors && <Field label="Authors" value={kip.authors} />}
+            {kip.category && <Field label="Category" value={kip.category} />}
+            {kip.release && <Field label="Released in" value={kip.release} mono />}
+            {kip.cwikiUrl && (
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 11, color: "#9a968d", marginBottom: 3 }}>Source</div>
+                <a
+                  href={kip.cwikiUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontSize: 13, color: "#3a53b0", wordBreak: "break-word" }}
+                >
+                  cwiki.apache.org
+                </a>
+              </div>
+            )}
+            {kip.tags.length > 0 && (
+              <>
+                <div style={{ fontSize: 11, color: "#9a968d", marginBottom: 6 }}>Tags</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                  {kip.tags.map((t) => (
+                    <TagPill key={t} tag={t} />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {kip.related.length > 0 && (
@@ -375,6 +407,54 @@ export default function DetailView() {
           )}
         </aside>
       </div>
+    </div>
+  );
+}
+
+// Prominent notice + source/thread links for imported stub notes (spec §5).
+function StubNotice({ kip }: { kip: Kip }) {
+  return (
+    <div
+      style={{
+        background: "#f4f2f8",
+        border: "1px solid #e0dcea",
+        borderRadius: 11,
+        padding: "14px 16px",
+        marginBottom: 30,
+      }}
+    >
+      <div style={{ fontFamily: mono, fontSize: 11, fontWeight: 600, color: "#6b5e79", marginBottom: 6 }}>
+        ⓘ Imported stub
+      </div>
+      <div style={{ fontSize: 13.5, lineHeight: 1.55, color: "#4a473f" }}>
+        Full structured content is pending. This note was auto-imported from the Confluence wiki.{" "}
+        {kip.cwikiUrl && (
+          <a href={kip.cwikiUrl} target="_blank" rel="noreferrer" style={{ color: "#3a53b0" }}>
+            View the KIP on cwiki →
+          </a>
+        )}
+      </div>
+      {kip.threads && kip.threads.length > 0 && (
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontFamily: mono, fontSize: 10.5, color: "#9a968d", marginBottom: 6 }}>
+            Mailing-list threads
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+            {kip.threads.map((t) => (
+              <a
+                key={t.url}
+                href={t.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{ fontSize: 13, color: "#3a53b0", wordBreak: "break-word" }}
+              >
+                {t.url.replace(/^https:\/\/lists\.apache\.org\//, "lists.apache.org/")}{" "}
+                <span style={{ color: "#9a968d" }}>· {t.count} msg</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

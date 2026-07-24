@@ -1,0 +1,73 @@
+name: Corpus backfill
+
+# Drains tools/backfill/queue.json: discovers all KIPs from the cwiki index and
+# imports pending ones as stub notes (politeFetch-throttled, ~1 req/s). Queue
+# checkpoints make every run resumable; failures are recorded, never bulk-retried.
+# Runs entirely on GitHub's runners — nothing executes on a developer machine.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Discovery + would-crawl list only (writes nothing)"
+        type: boolean
+        default: false
+      limit:
+        description: "Max KIPs to crawl this run (empty = drain all pending)"
+        type: string
+        default: ""
+      no_threads:
+        description: "Skip mailing-list thread lookups"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Test-then-act: never mutate the vault on a red build.
+      - name: Install + test
+        working-directory: viewer
+        run: |
+          bun install --frozen-lockfile
+          bun run test
+
+      - name: Run backfill
+        run: >
+          bun tools/backfill/run.ts
+          ${{ inputs.dry_run && '--dry-run' || '' }}
+          ${{ inputs.limit != '' && format('--limit {0}', inputs.limit) || '' }}
+          ${{ inputs.no_threads && '--no-threads' || '' }}
+
+      # New stubs change the corpus -> vectors must move in the same commit
+      # (the semantic staleness test enforces this invariant).
+      - name: Regenerate embeddings
+        if: ${{ !inputs.dry_run }}
+        working-directory: viewer
+        run: bun run embeddings
+
+      - name: Re-test (golden queries gate the new corpus)
+        if: ${{ !inputs.dry_run }}
+        working-directory: viewer
+        run: bun run test
+
+      - name: Commit if changed
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(backfill): import KIP stubs ($(date -u +%Y-%m-%d))"
+          git push
