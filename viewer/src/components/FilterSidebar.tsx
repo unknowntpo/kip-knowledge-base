@@ -13,12 +13,14 @@ const sectionLabel: React.CSSProperties = {
 };
 
 export default function FilterSidebar({
+  open = false,
   status,
   tags,
   onToggleStatus,
   onToggleTag,
   onClearAll,
 }: {
+  open?: boolean;
   status: string | null;
   tags: string[];
   onToggleStatus: (s: Status) => void;
@@ -27,6 +29,7 @@ export default function FilterSidebar({
 }) {
   return (
     <aside
+      className={"filter-sidebar" + (open ? " is-open" : "")}
       style={{
         flex: "0 0 258px",
         background: "var(--surface-alt)",

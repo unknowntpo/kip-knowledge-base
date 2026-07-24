@@ -34,6 +34,7 @@ export default function TopBar() {
 
   return (
     <header
+      className="topbar"
       style={{
         display: "flex",
         alignItems: "center",
@@ -72,6 +73,7 @@ export default function TopBar() {
           KIP Knowledge Base
         </span>
         <span
+          className="topbar-pill"
           style={{
             fontFamily: mono,
             fontSize: 11,
@@ -102,7 +104,7 @@ export default function TopBar() {
 
       {/* search (browse list only) or spacer */}
       {isBrowseList ? (
-        <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+        <div className="topbar-search" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
           <div style={{ position: "relative", width: "100%", maxWidth: 520 }}>
             <span
               style={{
@@ -139,7 +141,7 @@ export default function TopBar() {
       )}
 
       {/* count */}
-      <span style={{ fontFamily: mono, fontSize: 12, color: "#8f8c96", whiteSpace: "nowrap" }}>
+      <span className="topbar-count" style={{ fontFamily: mono, fontSize: 12, color: "#8f8c96", whiteSpace: "nowrap" }}>
         {KIPS.length} KIPs indexed
       </span>
     </header>
