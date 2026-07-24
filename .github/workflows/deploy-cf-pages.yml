@@ -16,17 +16,15 @@ jobs:
         working-directory: viewer
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: viewer/package-lock.json
-      - run: npm ci
-      - run: npm test
-      - run: npm run build # prebuild regenerates data from ../vault
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run test
+      - run: bun run build # prebuild regenerates data from ../vault
       - name: Deploy to Cloudflare Pages
         # Skipped (not failed) until CLOUDFLARE_API_TOKEN is set on the repo.
-        # Local `npm run deploy` uses your wrangler OAuth login instead.
+        # Local `bun run deploy` uses your wrangler OAuth login instead.
         if: ${{ env.CF_API_TOKEN != '' }}
         uses: cloudflare/wrangler-action@v3
         with:

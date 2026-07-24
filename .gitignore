@@ -1,8 +1,8 @@
 node_modules/
 viewer/dist/
-# generated from the vault by scripts/build-kips.mjs (predev/prebuild)
+# generated from the vault by scripts/build-kips.ts (predev/prebuild)
 viewer/src/data/kips.generated.json
-# copied from tools/semantic/related.json by scripts/build-kips.mjs (predev/prebuild)
+# copied from tools/semantic/related.json by scripts/build-kips.ts (predev/prebuild)
 viewer/src/data/related.generated.json
 .DS_Store
 *.log

@@ -8,17 +8,45 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { patchCwiki, readCwiki } from "./frontmatter.mjs";
-import { pageUrl } from "./confluence.mjs";
+import { patchCwiki, readCwiki } from "./frontmatter";
+import type { CwikiBlock } from "./frontmatter";
+import { pageUrl } from "./confluence";
+import type {
+  ChangeEvent,
+  CwikiFields,
+  IngestState,
+  PendingChange,
+  Snapshot,
+} from "./types";
 
 /** Map kipId -> note path under the vault. */
-export function notePath(vaultDir, kipId) {
+export function notePath(vaultDir: string, kipId: string): string {
   return join(vaultDir, `${kipId}.md`);
 }
 
 // Fields the deterministic cwiki block carries, derived from an event + state.
-function cwikiFields({ pageId, version, url, lastChecked }) {
+function cwikiFields({
+  pageId,
+  version,
+  url,
+  lastChecked,
+}: {
+  pageId?: string;
+  version: number;
+  url: string;
+  lastChecked?: string | null;
+}): CwikiFields {
   return { pageId: String(pageId), version, url, lastChecked };
+}
+
+/** What a single event would change under {@link planFrontmatter} (dry-run). */
+export interface PlanResult {
+  kipId: string;
+  missing?: boolean;
+  path?: string;
+  changed?: boolean;
+  oldBlock?: CwikiBlock | null;
+  newBlock?: string;
 }
 
 /**
@@ -26,8 +54,13 @@ function cwikiFields({ pageId, version, url, lastChecked }) {
  * writing. Used by --dry-run. `lastChecked` is passed through (a placeholder in
  * dry-run) so the printed diff is representative.
  */
-export function planFrontmatter(vaultDir, event, nextState, lastChecked) {
-  const kipId = event.entity.kipId;
+export function planFrontmatter(
+  vaultDir: string,
+  event: ChangeEvent,
+  nextState: IngestState,
+  lastChecked: string
+): PlanResult {
+  const kipId = event.entity.kipId as string;
   const page = nextState.confluence.pages[kipId] || {};
   const p = notePath(vaultDir, kipId);
   if (!existsSync(p)) return { kipId, missing: true };
@@ -43,8 +76,8 @@ export function planFrontmatter(vaultDir, event, nextState, lastChecked) {
 }
 
 // Append drift records idempotently (dedupe by kipId + toVersion).
-function appendPending(pendingPath, driftItems) {
-  let existing = [];
+function appendPending(pendingPath: string, driftItems: PendingChange[]): number {
+  let existing: PendingChange[] = [];
   if (existsSync(pendingPath)) {
     try {
       existing = JSON.parse(readFileSync(pendingPath, "utf8"));
@@ -66,7 +99,7 @@ function appendPending(pendingPath, driftItems) {
   return added;
 }
 
-function writeSnapshots(repoRoot, snapshots) {
+function writeSnapshots(repoRoot: string, snapshots: Snapshot[]): number {
   let written = 0;
   for (const s of snapshots) {
     const abs = join(repoRoot, s.path);
@@ -78,10 +111,28 @@ function writeSnapshots(repoRoot, snapshots) {
   return written;
 }
 
+/** Inputs for {@link applyDeterministic}. */
+export interface ApplyArgs {
+  repoRoot: string;
+  vaultDir: string;
+  events: ChangeEvent[];
+  drift: PendingChange[];
+  snapshots: Snapshot[];
+  nextState: IngestState;
+  pendingPath: string;
+  now?: () => Date;
+}
+
+/** What a deterministic apply wrote. */
+export interface ApplyResult {
+  notesWritten: number;
+  driftAdded: number;
+  snapshotsWritten: number;
+  patched: string[];
+}
+
 /**
  * Apply the deterministic path for a completed poll.
- *
- * @returns {{ notesWritten:number, driftAdded:number, snapshotsWritten:number, patched:string[] }}
  */
 export function applyDeterministic({
   repoRoot,
@@ -92,11 +143,11 @@ export function applyDeterministic({
   nextState,
   pendingPath,
   now = () => new Date(),
-}) {
+}: ApplyArgs): ApplyResult {
   const lastChecked = (now() instanceof Date ? now() : new Date(now()))
     .toISOString()
     .replace(/\.\d{3}Z$/, "Z");
-  const patched = [];
+  const patched: string[] = [];
 
   for (const event of events) {
     if (event.source !== "confluence" || !event.entity?.kipId) continue;

@@ -48,7 +48,7 @@ human-reviewed PR.
      └─────────────────┘                   (frontmatter + prose)
                                                     │
                                                     ▼
-                                          parse-vault.mjs → viewer / Ask AI
+                                          parse-vault.ts → viewer / Ask AI
 ```
 
 State: `tools/ingest-state.json` (cursors + per-KIP pageId/version map).
@@ -174,7 +174,7 @@ Stored two ways:
    ```
 2. **Write-back into note frontmatter** (deterministic, so machine-applied):
    `jira: ["KAFKA-9119"]`, `prs: [10251, 12345]`. These new keys are additive;
-   `parse-vault.mjs` ignores unknown frontmatter today, so adding them is
+   `parse-vault.ts` ignores unknown frontmatter today, so adding them is
    backward-compatible. The viewer surfaces them once the parser is extended.
 
 Edges are derived, never authored by hand; regenerating from the feed must
@@ -279,7 +279,7 @@ implements the first three; the LLM-as-judge extension is deferred.
 
 - **Golden-query regression harness.** `tools/semantic/golden-queries.json` pairs
   natural-language queries with the KIP(s) that should answer them.
-  `build-embeddings.mjs` embeds each query into `golden-embeddings.json`; the CI
+  `build-embeddings.ts` embeds each query into `golden-embeddings.json`; the CI
   test (`viewer/test/semantic.test.ts`) scores each query against the committed
   doc vectors with **deterministic cosine** (dot product on normalized vectors)
   and asserts an expected KIP lands in the top-3. No model download and no network
@@ -298,7 +298,7 @@ implements the first three; the LLM-as-judge extension is deferred.
 
 Semantic artifacts (`embeddings.json`, `related.json`, `golden-embeddings.json`)
 are **committed** and regenerated on any vault change via
-`cd viewer && npm run embeddings`. A **staleness-guard** test hashes the live
+`cd viewer && bun run embeddings`. A **staleness-guard** test hashes the live
 vault corpus and compares it to `embeddings.json.corpusHash`, failing with the
 exact regen command if the two drift — so stale vectors cannot merge.
 
@@ -306,7 +306,7 @@ exact regen command if the two drift — so stale vectors cannot merge.
 
 ## 9. M1 acceptance criteria
 
-1. **Runnable dry-run:** `node tools/ingest/run.mjs --dry-run` performs a full
+1. **Runnable dry-run:** `bun tools/ingest/run.ts --dry-run` performs a full
    Confluence poll, prints the ChangeEvents and the frontmatter diffs it *would*
    apply, and writes nothing to `vault/`.
 2. **Unit-tested with mocked fetch:** adapters take an injected `fetch`; tests

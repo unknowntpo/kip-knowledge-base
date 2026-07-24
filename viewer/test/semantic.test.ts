@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-// @ts-expect-error - plain ESM module, no d.ts
-import { parseVault } from "../scripts/parse-vault.mjs";
-// @ts-expect-error - plain ESM module, no d.ts
-import { buildCorpus, corpusHash } from "../../tools/semantic/corpus.mjs";
+import { parseVault } from "../scripts/parse-vault";
+import { buildCorpus, corpusHash } from "../../tools/semantic/corpus";
 
 const url = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 const readJson = (p: string) => JSON.parse(readFileSync(url(p), "utf8"));

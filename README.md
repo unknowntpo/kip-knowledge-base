@@ -18,8 +18,8 @@ vault/                  Obsidian vault (source of truth)
   KIPs.md               index / map of content
   .obsidian/            shared vault config
 viewer/                 "our own viewer" — React + TS + Vite SPA
-  scripts/parse-vault.mjs   vault markdown -> structured KIP model
-  scripts/build-kips.mjs    writes src/data/kips.generated.json (pre dev/build)
+  scripts/parse-vault.ts    vault markdown -> structured KIP model (typed)
+  scripts/build-kips.ts     writes src/data/kips.generated.json (pre dev/build)
   src/                      TopBar, Browse, Detail, Ask views (routes /, /kip/:id, /ask)
   test/parse.test.ts        round-trips the vault losslessly against the seed
 tools/kips.seed.json    canonical import snapshot (provenance + parser fixture)
@@ -61,22 +61,29 @@ rejected alternatives, discussion messages, votes) from these conventions. The
 
 ## Running the viewer
 
+Tooling is **Bun** (package manager + TS runtime); the `.ts` scripts run without a
+build step. Install Bun once: `curl -fsSL https://bun.sh/install | bash`.
+
 ```bash
 cd viewer
-npm install
-npm run dev        # http://localhost:5173  (predev regenerates data from ../vault)
-npm test           # parser round-trip
-npm run build      # production build (served at the domain root on Cloudflare Pages)
-npm run deploy     # build + wrangler pages deploy   (run `npx wrangler login` once first)
+bun install
+bun run dev        # http://localhost:5173  (predev regenerates data from ../vault)
+bun run test       # parser round-trip + ingest + semantic suites (vitest)
+bun run build      # production build (served at the domain root on Cloudflare Pages)
+bun run typecheck  # typechecks the viewer app AND the tools/ + scripts/ TS
+bun run deploy     # build + wrangler pages deploy   (run `bunx wrangler login` once first)
 ```
+
+`npm install` still works for the viewer's runtime deps (React/Vite), but the
+build/embeddings/ingest scripts shell out to `bun`, so Bun must be on `PATH`.
 
 ## Deploy — Cloudflare Pages
 
 Hosted on **Cloudflare Pages** (`kip-knowledge-base.pages.dev`). Two ways to ship:
 
-- **Local:** `cd viewer && npx wrangler login` once, then `npm run deploy`.
+- **Local:** `cd viewer && bunx wrangler login` once, then `bun run deploy`.
 - **CI:** pushing to `main` runs `.github/workflows/deploy-cf-pages.yml`
-  (`npm ci → test → build → wrangler pages deploy`). Add two repo secrets:
+  (`bun install → test → build → wrangler pages deploy`). Add two repo secrets:
   `CLOUDFLARE_API_TOKEN` (token with the *Cloudflare Pages: Edit* permission) and
   `CLOUDFLARE_ACCOUNT_ID`. Project config lives in `viewer/wrangler.toml`.
 
@@ -89,14 +96,14 @@ two-tier polling + deterministic `cwiki` frontmatter + drift flagging) is
 implemented under [`tools/ingest/`](tools/ingest):
 
 ```bash
-node tools/ingest/run.mjs --dry-run   # prints ChangeEvents + would-be frontmatter
+bun tools/ingest/run.ts --dry-run     # prints ChangeEvents + would-be frontmatter
                                        # diffs, writes nothing (hits the real cwiki
                                        # API through the polite-fetch wrapper)
-node tools/ingest/run.mjs             # real run: patches the additive cwiki block,
+bun tools/ingest/run.ts               # real run: patches the additive cwiki block,
                                        # tools/ingest-state.json, pending-changes.json
 ```
 
-All network access is funneled through `tools/ingest/polite-fetch.mjs` (spec §6:
+All network access is funneled through `tools/ingest/polite-fetch.ts` (spec §6:
 ≤1 req/s + jitter, concurrency ≤2, descriptive UA, robots.txt, 429/backoff,
 follow-list-only). The follow list is derived from `vault/KIPs/*.md`, never
 hardcoded. Deterministic metadata is machine-committed; body/prose changes are
@@ -121,7 +128,7 @@ A build-time semantic index over the vault, under [`tools/semantic/`](tools/sema
 Regenerate after editing the vault:
 
 ```bash
-cd viewer && npm run embeddings   # first run downloads the ~30MB model
+cd viewer && bun run embeddings   # first run downloads the ~30MB model
 ```
 
 All three JSON files are committed. `viewer/test/semantic.test.ts` fails (with the

@@ -1,23 +1,41 @@
 // Parse the Obsidian vault (vault/KIPs/*.md) back into the structured KIP model.
-// Source of truth = the markdown notes. Shared by build-kips.mjs and the round-trip test.
+// Source of truth = the markdown notes. Shared by build-kips.ts and the round-trip test.
+//
+// The Kip model is defined once in viewer/src/types.ts and reused here so the
+// parser output and the app's data type can never drift apart.
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
+import type { Kip, Rejected, DiscussionMsg, VoteRow, Status } from "../src/types";
 
-const splitParas = (t) =>
+/** Frontmatter shape of a vault KIP note (before parsing the body sections). */
+interface KipFrontmatter {
+  id: string;
+  title: string;
+  status: Status;
+  category: string;
+  release: string;
+  authors: string[];
+  tags: string[];
+  related: string[];
+}
+
+const splitParas = (t: string): string[] =>
   t.trim().split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
 
-const sectionMap = (body) => {
+const sectionMap = (body: string): Record<string, string> => {
   const parts = body.split(/^## (.+)$/gm); // [pre, h1, c1, h2, c2, ...]
-  const map = {};
+  const map: Record<string, string> = {};
   for (let i = 1; i < parts.length; i += 2) map[parts[i].trim()] = parts[i + 1].trim();
   return map;
 };
 
-const stripStars = (s) => s.replace(/^\*/, "").replace(/\*$/, "").trim();
+const stripStars = (s: string): string => s.replace(/^\*/, "").replace(/\*$/, "").trim();
 
-function parseNote(raw) {
-  const { data: fm, content } = matter(raw);
+function parseNote(raw: string): Kip {
+  const parsed = matter(raw);
+  const fm = parsed.data as KipFrontmatter;
+  const content = parsed.content;
   const sec = sectionMap(content);
 
   // Trade-offs -> pros / cons
@@ -25,10 +43,10 @@ function parseNote(raw) {
   const warnIdx = trade.search(/^> \[!warning\]/m);
   const benefits = warnIdx >= 0 ? trade.slice(0, warnIdx) : trade;
   const costs = warnIdx >= 0 ? trade.slice(warnIdx) : "";
-  const bullets = (b) => [...b.matchAll(/^> - (.+)$/gm)].map((m) => m[1].trim());
+  const bullets = (b: string): string[] => [...b.matchAll(/^> - (.+)$/gm)].map((m) => m[1].trim());
 
   // Rejected Alternatives
-  const rejected = splitParas(sec["Rejected Alternatives"] || "").map((b) => {
+  const rejected: Rejected[] = splitParas(sec["Rejected Alternatives"] || "").map((b) => {
     const m = b.match(/^\*\*([\s\S]+?)\*\* — ([\s\S]+)$/);
     if (!m) throw new Error(`${fm.id}: bad rejected block: ${b}`);
     return { name: m[1].trim(), why: m[2].trim() };
@@ -40,7 +58,7 @@ function parseNote(raw) {
     /^dev@kafka\.apache\.org · /,
     ""
   );
-  const discussion = dBlocks.map((b) => {
+  const discussion: DiscussionMsg[] = dBlocks.map((b) => {
     const lines = b.split("\n");
     const m = lines[0].match(/^\*\*(.+?)\*\* · \*(.+?)\*$/);
     if (!m) throw new Error(`${fm.id}: bad discussion header: ${lines[0]}`);
@@ -53,7 +71,7 @@ function parseNote(raw) {
   const closed = stripStars(vBlocks[0] || "");
   const rm = (vBlocks[1] || "").match(/^\*\*Result:\*\* (.+?) · ([\s\S]+)$/);
   if (!rm) throw new Error(`${fm.id}: bad vote result line`);
-  const votes = [
+  const votes: VoteRow[] = [
     ...vBlocks.slice(2).join("\n").matchAll(/^- \*\*(.+?)\*\* (.+?) — (.+)$/gm),
   ].map((m) => ({ vote: m[1].trim(), name: m[2].trim(), role: m[3].trim() }));
 
@@ -78,7 +96,7 @@ function parseNote(raw) {
   };
 }
 
-export function parseVault(kipsDir) {
+export function parseVault(kipsDir: string): Kip[] {
   const files = readdirSync(kipsDir).filter((f) => f.endsWith(".md"));
   const kips = files.map((f) => parseNote(readFileSync(join(kipsDir, f), "utf8")));
   // ascending by KIP number
@@ -91,3 +109,6 @@ export function parseVault(kipsDir) {
       if (!ids.has(r)) throw new Error(`${k.id}: related note ${r} does not exist`);
   return kips;
 }
+
+// Re-export the Kip model types so tooling importing the parser has one source.
+export type { Kip, Status } from "../src/types";

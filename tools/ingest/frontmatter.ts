@@ -4,16 +4,35 @@
 // and must not reorder or rewrite existing keys, so we operate on the raw text
 // between the `---` fences with line-level edits. gray-matter still parses the
 // result (verified by viewer/test/parse.test.ts round-trip).
+import type { CwikiFields } from "./types";
+
+/** Raw frontmatter text + body of a note. */
+export interface SplitNote {
+  fm: string;
+  body: string;
+  matchLen: number;
+}
+
+/** The cwiki block read back from a note's frontmatter (string-valued). */
+export type CwikiBlock = Record<string, string>;
+
+/** Result of patching (upserting) the cwiki block in a note. */
+export interface PatchResult {
+  changed: boolean;
+  newRaw: string;
+  oldBlock: CwikiBlock | null;
+  newBlock: string;
+}
 
 /** Split a note into its raw frontmatter text and the body after it. */
-export function splitFrontmatter(raw) {
+export function splitFrontmatter(raw: string): SplitNote | null {
   const m = raw.match(/^---\n([\s\S]*?)\n---\n?/);
   if (!m) return null;
   return { fm: m[1], body: raw.slice(m[0].length), matchLen: m[0].length };
 }
 
 /** Read a simple top-level scalar key value (quoted or bare). */
-export function readScalar(fm, key) {
+export function readScalar(fm: string, key: string): string | undefined {
   const re = new RegExp(`^${key}:\\s*(.+?)\\s*$`, "m");
   const m = fm.match(re);
   if (!m) return undefined;
@@ -21,11 +40,11 @@ export function readScalar(fm, key) {
 }
 
 /** Read the existing cwiki block (if any) as an object, else null. */
-export function readCwiki(fm) {
+export function readCwiki(fm: string): CwikiBlock | null {
   const lines = fm.split("\n");
   const start = lines.findIndex((l) => l === "cwiki:");
   if (start === -1) return null;
-  const block = {};
+  const block: CwikiBlock = {};
   for (let i = start + 1; i < lines.length; i++) {
     const l = lines[i];
     if (!/^  \S/.test(l)) break; // end of indented block
@@ -36,14 +55,14 @@ export function readCwiki(fm) {
 }
 
 /** Render a deterministic cwiki block. `version` is numeric (unquoted). */
-export function renderCwiki({ pageId, version, url, lastChecked }) {
+export function renderCwiki({ pageId, version, url, lastChecked }: CwikiFields): string {
   const out = ["cwiki:", `  pageId: "${pageId}"`, `  version: ${version}`, `  url: "${url}"`];
   if (lastChecked != null) out.push(`  lastChecked: "${lastChecked}"`);
   return out.join("\n");
 }
 
 // Replace an existing cwiki block or append one at the end of the frontmatter.
-function upsertCwikiText(fm, blockText) {
+function upsertCwikiText(fm: string, blockText: string): string {
   const lines = fm.split("\n");
   const start = lines.findIndex((l) => l === "cwiki:");
   if (start === -1) {
@@ -60,7 +79,7 @@ function upsertCwikiText(fm, blockText) {
  * Patch (upsert) the cwiki block in a note's raw text.
  * Returns { changed, newRaw, oldBlock, newBlock }.
  */
-export function patchCwiki(raw, fields) {
+export function patchCwiki(raw: string, fields: CwikiFields): PatchResult {
   const split = splitFrontmatter(raw);
   if (!split) throw new Error("patchCwiki: note has no frontmatter");
   const oldBlock = readCwiki(split.fm);

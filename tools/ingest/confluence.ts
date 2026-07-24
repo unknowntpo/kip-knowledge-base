@@ -6,22 +6,31 @@
 // the vault — it emits ChangeEvents, cache snapshots, drift records, and its
 // slice of nextState.
 
-import { eventId } from "./state.mjs";
+import { eventId } from "./state";
+import type {
+  ChangeEvent,
+  FetchLike,
+  FollowEntry,
+  IngestState,
+  PendingChange,
+  PollResult,
+  Snapshot,
+} from "./types";
 
 export const CWIKI_HOST = "cwiki.apache.org";
 export const DEFAULT_BASE = `https://${CWIKI_HOST}/confluence`;
 export const SPACE_KEY = "KAFKA";
 
-function toIso(d) {
+function toIso(d: Date | string | number): string {
   return (d instanceof Date ? d : new Date(d)).toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
 /** Canonical human URL for a page. */
-export function pageUrl(baseUrl, pageId) {
+export function pageUrl(baseUrl: string | undefined, pageId: string | undefined): string {
   return `${baseUrl}/pages/viewpage.action?pageId=${pageId}`;
 }
 
-async function json(fetch, url) {
+async function json(fetch: FetchLike, url: string): Promise<any> {
   const res = await fetch(url);
   if (!res || !res.ok) {
     const code = res ? res.status : "no-response";
@@ -30,12 +39,22 @@ async function json(fetch, url) {
   return res.json();
 }
 
+/** Options for {@link discoverPageId}. */
+export interface DiscoverOpts {
+  kipId: string;
+  title: string;
+  baseUrl?: string;
+}
+
 /**
  * Resolve a page id for a KIP (spec §2.1). Exact-title lookup first
  * (`KIP-500: <title>`), CQL `title~"KIP-500"` fallback if that misses.
  * Returns the pageId string or null.
  */
-export async function discoverPageId(fetch, { kipId, title, baseUrl = DEFAULT_BASE }) {
+export async function discoverPageId(
+  fetch: FetchLike,
+  { kipId, title, baseUrl = DEFAULT_BASE }: DiscoverOpts
+): Promise<string | null> {
   const exactTitle = `${kipId}: ${title}`;
   const exactUrl = `${baseUrl}/rest/api/content?spaceKey=${SPACE_KEY}&title=${encodeURIComponent(
     exactTitle
@@ -54,7 +73,7 @@ export async function discoverPageId(fetch, { kipId, title, baseUrl = DEFAULT_BA
 // Best-effort status extraction from the storage-format body. Confluence KIP
 // pages carry a "Current state: <status>" line. Per spec §5 ("prefer stale over
 // wrong") a miss returns null and never drives a frontmatter rewrite.
-export function parseStatus(storageValue) {
+export function parseStatus(storageValue: unknown): string | null {
   if (!storageValue || typeof storageValue !== "string") return null;
   const text = storageValue.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ");
   const m = text.match(/Current state[:\s]+([A-Za-z][A-Za-z /()-]*?)(?:\s{2,}|$|\.)/);
@@ -62,23 +81,26 @@ export function parseStatus(storageValue) {
   return m[1].trim();
 }
 
+/** Injected deps + follow list for a single {@link poll}. */
+export interface PollDeps {
+  fetch: FetchLike;
+  followList: FollowEntry[];
+  now?: () => Date;
+  baseUrl?: string;
+}
+
 /**
  * Poll Confluence for the follow list.
- *
- * @param {object} state ingest state
- * @param {object} deps
- * @param {Function} deps.fetch injected (polite) fetch
- * @param {Array<{kipId,title,status}>} deps.followList
- * @param {Function} [deps.now] () => Date
- * @param {string}  [deps.baseUrl]
- * @returns {Promise<{events,snapshots,drift,nextState}>}
  */
-export async function poll(state, { fetch, followList, now = () => new Date(), baseUrl = DEFAULT_BASE }) {
+export async function poll(
+  state: IngestState,
+  { fetch, followList, now = () => new Date(), baseUrl = DEFAULT_BASE }: PollDeps
+): Promise<PollResult> {
   const prevPages = state?.confluence?.pages || {};
   const nextPages = { ...prevPages };
-  const events = [];
-  const snapshots = [];
-  const drift = [];
+  const events: ChangeEvent[] = [];
+  const snapshots: Snapshot[] = [];
+  const drift: PendingChange[] = [];
 
   for (const kip of followList) {
     const { kipId, title, status: noteStatus } = kip;
@@ -96,7 +118,7 @@ export async function poll(state, { fetch, followList, now = () => new Date(), b
 
     // Tier 1: cheap version check.
     const t1 = await json(fetch, `${baseUrl}/rest/api/content/${entry.pageId}?expand=version`);
-    const newVersion = t1?.version?.number;
+    const newVersion: number | undefined = t1?.version?.number;
     if (newVersion == null) {
       nextPages[kipId] = entry;
       continue;
@@ -120,7 +142,7 @@ export async function poll(state, { fetch, followList, now = () => new Date(), b
       parsedStatus && noteStatus && parsedStatus !== noteStatus ? "status_changed" : "updated";
     const cursor = String(newVersion);
 
-    const event = {
+    const event: ChangeEvent = {
       id: eventId("confluence", { kipId }, cursor, kind),
       source: "confluence",
       entity: { kipId },

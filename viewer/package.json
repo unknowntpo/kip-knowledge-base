@@ -4,16 +4,16 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/build-kips.mjs",
+    "predev": "bun scripts/build-kips.ts",
     "dev": "vite",
-    "prebuild": "node scripts/build-kips.mjs",
+    "prebuild": "bun scripts/build-kips.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p ../tsconfig.tools.json",
     "test": "vitest run",
-    "embeddings": "node ../tools/semantic/build-embeddings.mjs",
-    "deploy": "npm run build && npx --yes wrangler pages deploy",
-    "cf:dev": "npm run build && npx --yes wrangler pages dev dist"
+    "embeddings": "bun ../tools/semantic/build-embeddings.ts",
+    "deploy": "bun run build && bunx wrangler pages deploy",
+    "cf:dev": "bun run build && bunx wrangler pages dev dist"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -21,6 +21,7 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@types/node": "^22.5.0",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",

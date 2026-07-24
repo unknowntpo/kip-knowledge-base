@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-// @ts-expect-error - plain ESM module, no d.ts
-import { parseVault } from "../scripts/parse-vault.mjs";
+import { parseVault } from "../scripts/parse-vault";
 
 const url = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 const seed = JSON.parse(readFileSync(url("../../tools/kips.seed.json"), "utf8"));

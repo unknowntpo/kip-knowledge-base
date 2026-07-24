@@ -13,9 +13,33 @@
 //
 // Timing primitives (now/sleep/random) are injectable so unit tests run instantly
 // and deterministically.
+import type { FetchLike, FetchResponse } from "./types";
 
 export const USER_AGENT =
   "kip-knowledge-base/1.0 (+https://github.com/unknowntpo/kip-knowledge-base)";
+
+/** Tuning + injectable primitives for {@link createPoliteFetch}. */
+export interface PoliteFetchConfig {
+  /** underlying fetch (injected so tests can mock the network) */
+  fetch: FetchLike;
+  /** allow-list of hostnames (e.g. ["cwiki.apache.org"]) */
+  followHosts?: string[];
+  userAgent?: string;
+  minIntervalMs?: number;
+  maxJitterMs?: number;
+  maxConcurrency?: number;
+  maxAttempts?: number;
+  backoffBaseMs?: number;
+  backoffCapMs?: number;
+  checkRobots?: boolean;
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+  random?: () => number;
+}
+
+interface RobotsRules {
+  disallow: string[];
+}
 
 const DEFAULT_OPTS = {
   userAgent: USER_AGENT,
@@ -30,12 +54,8 @@ const DEFAULT_OPTS = {
 
 /**
  * Build a politeFetch(url, init) function.
- *
- * @param {object} cfg
- * @param {(url:string, init?:object)=>Promise<Response>} cfg.fetch underlying fetch
- * @param {string[]} cfg.followHosts allow-list of hostnames (e.g. ["cwiki.apache.org"])
  */
-export function createPoliteFetch(cfg) {
+export function createPoliteFetch(cfg: PoliteFetchConfig): FetchLike {
   const o = { ...DEFAULT_OPTS, ...cfg };
   const {
     fetch,
@@ -49,7 +69,7 @@ export function createPoliteFetch(cfg) {
     backoffCapMs,
     checkRobots,
     now = () => Date.now(),
-    sleep = (ms) => new Promise((r) => setTimeout(r, ms)),
+    sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms)),
     random = Math.random,
   } = o;
 
@@ -57,13 +77,13 @@ export function createPoliteFetch(cfg) {
     throw new Error("createPoliteFetch: `fetch` must be injected");
 
   const allow = new Set(followHosts);
-  const lastAt = new Map(); // host -> reserved timestamp of next allowed request
-  const robotsCache = new Map(); // host -> { disallow: string[] } | null
+  const lastAt = new Map<string, number>(); // host -> reserved timestamp of next allowed request
+  const robotsCache = new Map<string, RobotsRules | null>(); // host -> rules | null
 
   // --- concurrency semaphore (<= maxConcurrency) ---
   let active = 0;
-  const waiters = [];
-  const acquire = () =>
+  const waiters: Array<() => void> = [];
+  const acquire = (): Promise<void> =>
     new Promise((resolve) => {
       if (active < maxConcurrency) {
         active++;
@@ -72,7 +92,7 @@ export function createPoliteFetch(cfg) {
         waiters.push(resolve);
       }
     });
-  const release = () => {
+  const release = (): void => {
     active--;
     const next = waiters.shift();
     if (next) {
@@ -82,7 +102,7 @@ export function createPoliteFetch(cfg) {
   };
 
   // --- per-host rate gate (>= minInterval + jitter between requests) ---
-  async function rateGate(host) {
+  async function rateGate(host: string): Promise<void> {
     const interval = minIntervalMs + random() * maxJitterMs;
     const t = now();
     const prev = lastAt.get(host) || 0;
@@ -94,7 +114,7 @@ export function createPoliteFetch(cfg) {
   }
 
   // --- robots.txt (fetch once per host, honor Disallow for our UA; fail-open) ---
-  async function robotsAllows(u) {
+  async function robotsAllows(u: URL): Promise<boolean> {
     if (!checkRobots) return true;
     let rules = robotsCache.get(u.host);
     if (rules === undefined) {
@@ -119,20 +139,21 @@ export function createPoliteFetch(cfg) {
     return true;
   }
 
-  function backoffDelay(attempt) {
+  function backoffDelay(attempt: number): number {
     // attempt is 1-based number of the request that just failed.
     const exp = Math.min(backoffCapMs, backoffBaseMs * 2 ** (attempt - 1));
     return random() * exp; // full jitter
   }
 
-  async function withRetries(u, init) {
+  async function withRetries(u: URL, init: RequestInit): Promise<FetchResponse> {
     let attempt = 0;
     for (;;) {
       attempt++;
       await rateGate(u.host);
+      const initHeaders = (init.headers ?? {}) as Record<string, string>;
       const res = await fetch(u.toString(), {
         ...init,
-        headers: { "User-Agent": userAgent, ...(init.headers || {}) },
+        headers: { "User-Agent": userAgent, ...initHeaders },
       });
       const status = res.status;
       if (status === 429) {
@@ -154,7 +175,7 @@ export function createPoliteFetch(cfg) {
     }
   }
 
-  async function politeFetch(url, init = {}) {
+  async function politeFetch(url: string, init: RequestInit = {}): Promise<FetchResponse> {
     const u = new URL(url);
     if (!allow.has(u.host)) {
       throw new Error(
@@ -177,8 +198,8 @@ export function createPoliteFetch(cfg) {
 
 // Minimal robots.txt parser: collect Disallow paths that apply to `*` (and to our
 // UA token). Good enough for follow-list honoring; not a full RFC implementation.
-export function parseRobots(text) {
-  const disallow = [];
+export function parseRobots(text: string): RobotsRules {
+  const disallow: string[] = [];
   let applies = false;
   for (const rawLine of text.split(/\r?\n/)) {
     const line = rawLine.replace(/#.*$/, "").trim();

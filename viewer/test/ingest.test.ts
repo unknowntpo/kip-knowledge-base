@@ -9,11 +9,11 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import matter from "gray-matter";
 
-import { createPoliteFetch, USER_AGENT, parseRobots } from "../../tools/ingest/polite-fetch.mjs";
-import { poll, discoverPageId, parseStatus } from "../../tools/ingest/confluence.mjs";
-import { loadState, saveStateIfChanged, dedupeEvents, dedupeKey } from "../../tools/ingest/state.mjs";
-import { patchCwiki, readCwiki } from "../../tools/ingest/frontmatter.mjs";
-import { applyDeterministic } from "../../tools/ingest/apply.mjs";
+import { createPoliteFetch, USER_AGENT, parseRobots } from "../../tools/ingest/polite-fetch";
+import { poll, discoverPageId, parseStatus } from "../../tools/ingest/confluence";
+import { loadState, saveStateIfChanged, dedupeEvents, dedupeKey } from "../../tools/ingest/state";
+import { patchCwiki, readCwiki } from "../../tools/ingest/frontmatter";
+import { applyDeterministic } from "../../tools/ingest/apply";
 
 const url = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 
@@ -408,7 +408,7 @@ describe("politeFetch (§6/§9.5)", () => {
   });
 
   it("the confluence adapter is network-pure (cannot bypass the injected fetch)", () => {
-    const src = readFileSync(url("../../tools/ingest/confluence.mjs"), "utf8");
+    const src = readFileSync(url("../../tools/ingest/confluence.ts"), "utf8");
     expect(src).not.toMatch(/globalThis\.fetch|window\.fetch/);
     expect(src).not.toMatch(/from ["'].*polite-fetch/); // adapter must not import the wrapper itself
   });

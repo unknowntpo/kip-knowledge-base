@@ -1,11 +1,11 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 // M1 ingestion entrypoint (spec §9).
 //
-//   node tools/ingest/run.mjs --dry-run   # prints ChangeEvents + would-be
-//                                          # frontmatter diffs, writes nothing
-//   node tools/ingest/run.mjs             # real run: patches cwiki frontmatter,
-//                                          # tools/ingest-state.json,
-//                                          # tools/pending-changes.json
+//   bun tools/ingest/run.ts --dry-run   # prints ChangeEvents + would-be
+//                                        # frontmatter diffs, writes nothing
+//   bun tools/ingest/run.ts             # real run: patches cwiki frontmatter,
+//                                        # tools/ingest-state.json,
+//                                        # tools/pending-changes.json
 //
 // The follow list is DERIVED from the vault (vault/KIPs/*.md) — not hardcoded.
 // All network access goes through the shared politeFetch (spec §6); adapters
@@ -14,11 +14,13 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createPoliteFetch } from "./polite-fetch.mjs";
-import { poll, CWIKI_HOST } from "./confluence.mjs";
-import { loadState, saveStateIfChanged, dedupeEvents } from "./state.mjs";
-import { applyDeterministic, planFrontmatter } from "./apply.mjs";
-import { splitFrontmatter, readScalar } from "./frontmatter.mjs";
+import { createPoliteFetch } from "./polite-fetch";
+import { poll, CWIKI_HOST } from "./confluence";
+import { loadState, saveStateIfChanged, dedupeEvents } from "./state";
+import { applyDeterministic, planFrontmatter } from "./apply";
+import { splitFrontmatter, readScalar } from "./frontmatter";
+import type { CwikiBlock } from "./frontmatter";
+import type { ChangeEvent, FollowEntry, IngestState, PendingChange } from "./types";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(HERE, "..", "..");
@@ -27,7 +29,7 @@ const STATE_PATH = join(REPO_ROOT, "tools", "ingest-state.json");
 const PENDING_PATH = join(REPO_ROOT, "tools", "pending-changes.json");
 
 /** Derive the follow list (kipId, title, status) from the vault notes. */
-export function readFollowList(kipsDir = VAULT_KIPS) {
+export function readFollowList(kipsDir: string = VAULT_KIPS): FollowEntry[] {
   return readdirSync(kipsDir)
     .filter((f) => f.endsWith(".md"))
     .map((f) => {
@@ -40,11 +42,11 @@ export function readFollowList(kipsDir = VAULT_KIPS) {
         status: readScalar(split.fm, "status"),
       };
     })
-    .filter((k) => k.kipId && k.title)
+    .filter((k): k is FollowEntry => Boolean(k.kipId && k.title))
     .sort((a, b) => Number(a.kipId.slice(4)) - Number(b.kipId.slice(4)));
 }
 
-function printDryRun(events, drift, nextState) {
+function printDryRun(events: ChangeEvent[], drift: PendingChange[], nextState: IngestState): void {
   console.log(`\n=== DRY RUN — ${events.length} ChangeEvent(s), nothing written ===\n`);
   if (events.length === 0) {
     console.log("No upstream changes detected (all Tier-1 version checks matched state).");
@@ -58,7 +60,7 @@ function printDryRun(events, drift, nextState) {
     } else {
       console.log(`  frontmatter diff for ${plan.kipId} (${plan.changed ? "CHANGED" : "no-op"}):`);
       console.log(`    old:\n${indent(plan.oldBlock ? renderBlock(plan.oldBlock) : "(no cwiki block)")}`);
-      console.log(`    new:\n${indent(plan.newBlock)}`);
+      console.log(`    new:\n${indent(plan.newBlock ?? "")}`);
     }
     console.log("");
   }
@@ -68,11 +70,11 @@ function printDryRun(events, drift, nextState) {
   }
 }
 
-const indent = (s) => s.split("\n").map((l) => `      ${l}`).join("\n");
-const renderBlock = (obj) =>
+const indent = (s: string): string => s.split("\n").map((l) => `      ${l}`).join("\n");
+const renderBlock = (obj: CwikiBlock): string =>
   "cwiki:\n" + Object.entries(obj).map(([k, v]) => `  ${k}: ${v}`).join("\n");
 
-async function main() {
+async function main(): Promise<void> {
   const dryRun = process.argv.includes("--dry-run");
   const followList = readFollowList();
   const state = loadState(STATE_PATH);
@@ -111,7 +113,7 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error(`ingest failed: ${err.message}`);
+main().catch((err: unknown) => {
+  console.error(`ingest failed: ${err instanceof Error ? err.message : String(err)}`);
   process.exitCode = 1;
 });
