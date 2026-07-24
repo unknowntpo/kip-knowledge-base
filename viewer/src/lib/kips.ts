@@ -23,12 +23,20 @@ export function similarKips(id: string | undefined, exclude: string[] = []): Sim
 
 export const ALL_TAGS = [...new Set(KIPS.flatMap((k) => k.tags))].sort();
 
-export const STATUS_ORDER: Status[] = ["Adopted", "Early Access", "Under Discussion"];
+export const STATUS_ORDER: Status[] = [
+  "Adopted",
+  "Early Access",
+  "Under Discussion",
+  "Discarded",
+  "Unknown",
+];
 
 export const STATUS_META: Record<Status, { bg: string; text: string; dot: string }> = {
   Adopted: { bg: "#e6f3ec", text: "#1f7a4d", dot: "#2b9e63" },
   "Early Access": { bg: "#fdf2dc", text: "#9a6410", dot: "#d69828" },
   "Under Discussion": { bg: "#f7efe9", text: "#a3542a", dot: "#cf7a3f" },
+  Discarded: { bg: "#efeef2", text: "#6b5e79", dot: "#8a7d99" },
+  Unknown: { bg: "#f0efec", text: "#6f6c66", dot: "#a7a39a" },
 };
 
 /** Statuses that actually appear in the corpus, in canonical order. */
