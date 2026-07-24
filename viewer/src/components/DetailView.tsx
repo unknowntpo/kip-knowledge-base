@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { avatarColor, getKip, initials } from "../lib/kips";
+import { avatarColor, getKip, initials, similarKips } from "../lib/kips";
 import { StatusBadge, TagPill } from "./common";
 
 const mono = "var(--font-mono)";
@@ -35,6 +35,8 @@ export default function DetailView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const kip = getKip(id);
+  // Semantic neighbors, excluding ids already surfaced in the curated `related` list.
+  const similar = kip ? similarKips(kip.id, kip.related) : [];
 
   if (!kip) {
     return (
@@ -319,6 +321,51 @@ export default function DetailView() {
                   >
                     <span style={{ fontFamily: mono, fontSize: 12, fontWeight: 600, color: "#3a53b0" }}>{rid}</span>
                     {r && <span style={{ fontSize: 12.5, color: "#4a473f" }}> {r.title}</span>}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {similar.length > 0 && (
+            <div style={{ background: "#fff", border: "1px solid #e6e2db", borderRadius: 12, padding: "16px 17px" }}>
+              <RailLabel>Similar KIPs</RailLabel>
+              {similar.map((s) => {
+                const r = getKip(s.id);
+                return (
+                  <div
+                    key={s.id}
+                    className="related-item"
+                    onClick={() => navigate(`/kip/${s.id}`)}
+                  >
+                    <div>
+                      <span style={{ fontFamily: mono, fontSize: 12, fontWeight: 600, color: "#3a53b0" }}>{s.id}</span>
+                      {r && <span style={{ fontSize: 12.5, color: "#4a473f" }}> {r.title}</span>}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 5 }}>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 54,
+                          height: 5,
+                          borderRadius: 3,
+                          background: "#ecebe6",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: "block",
+                            height: "100%",
+                            width: `${s.score * 100}%`,
+                            background: "#3a53b0",
+                          }}
+                        />
+                      </span>
+                      <span style={{ fontFamily: mono, fontSize: 10.5, color: "#9a968d" }}>
+                        {s.score.toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 );
               })}

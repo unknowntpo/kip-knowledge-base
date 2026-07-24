@@ -2,6 +2,8 @@ node_modules/
 viewer/dist/
 # generated from the vault by scripts/build-kips.mjs (predev/prebuild)
 viewer/src/data/kips.generated.json
+# copied from tools/semantic/related.json by scripts/build-kips.mjs (predev/prebuild)
+viewer/src/data/related.generated.json
 .DS_Store
 *.log
 # Obsidian per-user workspace state (keep shared config, ignore local state)

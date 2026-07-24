@@ -1,7 +1,25 @@
 import raw from "../data/kips.generated.json";
+import relatedRaw from "../data/related.generated.json";
 import type { Kip, Status } from "../types";
 
 export const KIPS = raw as Kip[];
+
+/** Semantic neighbors per KIP, from tools/semantic/related.json (built by embeddings). */
+export interface SimilarKip {
+  id: string;
+  score: number;
+}
+const RELATED = relatedRaw as Record<string, SimilarKip[]>;
+
+/**
+ * Semantic "Similar KIPs" for `id`, excluding any ids in `exclude` (e.g. the
+ * curated frontmatter `related` list) and any that don't resolve to a real KIP.
+ */
+export function similarKips(id: string | undefined, exclude: string[] = []): SimilarKip[] {
+  if (!id) return [];
+  const skip = new Set(exclude);
+  return (RELATED[id] ?? []).filter((s) => !skip.has(s.id) && getKip(s.id));
+}
 
 export const ALL_TAGS = [...new Set(KIPS.flatMap((k) => k.tags))].sort();
 

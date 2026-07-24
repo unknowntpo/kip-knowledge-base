@@ -1,0 +1,15 @@
+{
+  "note": "Hand-authored semantic regression set. Each query should retrieve at least one of `expect` in the top-3 doc neighbors (deterministic cosine, no LLM). Authored from vault content; see docs/ingestion-spec.md M4 for the rubric.",
+  "queries": [
+    { "q": "cutting cross-AZ and cross-datacenter network cost for consumers", "expect": ["KIP-392"] },
+    { "q": "consumers reading from a nearby copy instead of the primary", "expect": ["KIP-392"] },
+    { "q": "remove the ZooKeeper dependency from Kafka", "expect": ["KIP-500"] },
+    { "q": "exactly-once delivery and transactional messaging", "expect": ["KIP-98"] },
+    { "q": "queue semantics with many competing consumers on a topic", "expect": ["KIP-932"] },
+    { "q": "tiered storage for cheap long retention of old data", "expect": ["KIP-405"] },
+    { "q": "stop-the-world rebalance pauses the whole consumer group", "expect": ["KIP-848"] },
+    { "q": "turn on producer idempotence by default", "expect": ["KIP-679", "KIP-98"] },
+    { "q": "log divergence and truncation using leader epoch on recovery", "expect": ["KIP-101"] },
+    { "q": "fetch request overhead grows with many partitions", "expect": ["KIP-227"] }
+  ]
+}

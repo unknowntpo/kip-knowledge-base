@@ -271,6 +271,37 @@ Total steady-state footprint: ~15–20 requests/day — well within polite limit
   LLM synthesis via a Cloudflare Pages Function. **Entity linking only** — full
   call-graph / SCIP is explicitly out of scope.
 
+### M4 — MUSE-inspired practices
+
+Retrieval quality for the embeddings half of the hybrid retriever is guarded by
+practices adapted from MUSE-style evaluation. Semantic v1 (`tools/semantic/`)
+implements the first three; the LLM-as-judge extension is deferred.
+
+- **Golden-query regression harness.** `tools/semantic/golden-queries.json` pairs
+  natural-language queries with the KIP(s) that should answer them.
+  `build-embeddings.mjs` embeds each query into `golden-embeddings.json`; the CI
+  test (`viewer/test/semantic.test.ts`) scores each query against the committed
+  doc vectors with **deterministic cosine** (dot product on normalized vectors)
+  and asserts an expected KIP lands in the top-3. No model download and no network
+  in CI. An **LLM-as-judge** extension (grading answer relevance beyond top-k
+  membership) is deferred until an API key is available in CI.
+- **Asymmetric `query:` / `passage:` prefixes.** The e5 model family is trained
+  asymmetrically: documents are embedded as `"passage: <text>"` and queries as
+  `"query: <text>"`. Both the build script and the golden harness follow this
+  convention; mixing them up silently degrades recall.
+- **Relevance rubric.** A single ordering shared by the golden harness today and
+  by future Ask AI synthesis + judging:
+  **direct answer** (the KIP that resolves the query) > **dependency / mechanism**
+  (a KIP the answer builds on or that shares the underlying mechanism) > **same
+  topic area** (same category, no causal link). Top-3 membership is the current
+  proxy for "direct answer or one hop away."
+
+Semantic artifacts (`embeddings.json`, `related.json`, `golden-embeddings.json`)
+are **committed** and regenerated on any vault change via
+`cd viewer && npm run embeddings`. A **staleness-guard** test hashes the live
+vault corpus and compares it to `embeddings.json.corpusHash`, failing with the
+exact regen command if the two drift — so stale vectors cannot merge.
+
 ---
 
 ## 9. M1 acceptance criteria

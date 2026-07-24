@@ -105,6 +105,30 @@ prefers **stale over wrong**. Raw payload snapshots land in the git-ignored
 `tools/ingest-cache/`. The scheduled workflow is
 [`.github/workflows/ingest.yml`](.github/workflows/ingest.yml) (daily 03:17 UTC).
 
+## Semantic layer
+
+A build-time semantic index over the vault, under [`tools/semantic/`](tools/semantic):
+
+- `embeddings.json` — per-KIP document vectors (`Xenova/e5-small-v2`, 384-dim,
+  mean-pooled + normalized) plus a `corpusHash` staleness guard.
+- `related.json` — top-3 semantic neighbors per KIP; drives the **"Similar KIPs"**
+  card in the detail view's right rail (neighbors already listed in a note's
+  curated `related` frontmatter are filtered out, so the two cards don't repeat).
+- `golden-queries.json` / `golden-embeddings.json` — a hand-authored regression
+  set: each query should retrieve an expected KIP in its top-3 (deterministic
+  cosine, checked in CI with no model download).
+
+Regenerate after editing the vault:
+
+```bash
+cd viewer && npm run embeddings   # first run downloads the ~30MB model
+```
+
+All three JSON files are committed. `viewer/test/semantic.test.ts` fails (with the
+exact regen command) if the vault drifts from the committed vectors. See
+[`docs/ingestion-spec.md`](docs/ingestion-spec.md) §M4 for the rubric and the
+`query:`/`passage:` (e5 asymmetric) convention.
+
 ## Ask AI (deferred)
 
 The semantic-search "Ask AI" view is scaffolded but intentionally **not wired up
