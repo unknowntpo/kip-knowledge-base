@@ -51,6 +51,7 @@ export default function DetailView() {
   return (
     <div style={{ height: "100%", overflowY: "auto", background: "var(--page-bg)" }}>
       <div
+        className="detail-grid"
         style={{
           maxWidth: 1080,
           margin: "0 auto",
@@ -128,7 +129,7 @@ export default function DetailView() {
 
           <div style={section}>
             <div style={heading}>Trade-offs</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div className="tradeoffs-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               <div
                 style={{
                   background: "#eef6f0",
@@ -287,6 +288,7 @@ export default function DetailView() {
 
         {/* right rail */}
         <aside
+          className="detail-rail"
           style={{
             position: "sticky",
             top: 26,

@@ -55,3 +55,92 @@ input { font-family: inherit; }
 .link-underline { text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 @keyframes kbspin { to { transform: rotate(360deg); } }
+
+/* Filters toggle (mobile only; hidden on desktop so layout is unchanged) */
+.filters-toggle { display: none; }
+.filters-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile / responsive re-flow. Desktop (>768px) is untouched.        */
+/* All overrides are scoped to <=768px and use !important only to beat */
+/* the component inline styles they replace.                          */
+/* ------------------------------------------------------------------ */
+@media (max-width: 768px) {
+  body { overflow-x: hidden; }
+
+  /* TopBar: brand + toggle on row 1; search wraps to a full-width row 2 */
+  .topbar {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+    gap: 12px !important;
+  }
+  .topbar-pill { display: none !important; }
+  .topbar-count { display: none !important; }
+  .topbar-search { flex-basis: 100% !important; }
+
+  /* Browse: stack into a single scrolling column */
+  .browse-root {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .filters-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    margin: 14px 16px 0;
+    padding: 9px 16px;
+    border-radius: 9px;
+    border: 1px solid var(--border-1);
+    background: var(--surface);
+    color: #33312c;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .filter-sidebar { display: none !important; }
+  .filter-sidebar.is-open {
+    display: block !important;
+    flex: none !important;
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-1) !important;
+    overflow-y: visible !important;
+  }
+  .browse-results {
+    flex: none !important;
+    overflow-y: visible !important;
+    padding: 16px 16px 40px !important;
+  }
+
+  /* Detail: single column; right rail stacks below and is not sticky */
+  .detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 26px !important;
+    padding: 20px 16px 60px !important;
+  }
+  .detail-rail {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Trade-offs benefits/costs go single column on the narrowest screens */
+  .tradeoffs-grid { grid-template-columns: 1fr !important; }
+}

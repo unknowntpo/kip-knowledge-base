@@ -13,9 +13,11 @@ export default function BrowseView() {
   const query = searchParams.get("q") ?? "";
   const [status, setStatus] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const results = filterKips(query, status, tags);
   const filtering = Boolean(query || status || tags.length);
+  const activeFilterCount = (query ? 1 : 0) + (status ? 1 : 0) + tags.length;
 
   const setQuery = (v: string) => {
     const next = new URLSearchParams(searchParams);
@@ -35,15 +37,25 @@ export default function BrowseView() {
   const toggleStatus = (s: Status) => setStatus((cur) => (cur === s ? null : s));
 
   return (
-    <div style={{ display: "flex", height: "100%" }}>
+    <div className="browse-root" style={{ display: "flex", height: "100%" }}>
+      <button
+        className="filters-toggle"
+        type="button"
+        onClick={() => setShowFilters((v) => !v)}
+        aria-expanded={showFilters}
+      >
+        {showFilters ? "Hide filters" : "Filters"}
+        {activeFilterCount > 0 && <span className="filters-badge">{activeFilterCount}</span>}
+      </button>
       <FilterSidebar
+        open={showFilters}
         status={status}
         tags={tags}
         onToggleStatus={toggleStatus}
         onToggleTag={toggleTag}
         onClearAll={clearAll}
       />
-      <section style={{ flex: 1, overflowY: "auto", padding: "24px 32px 60px" }}>
+      <section className="browse-results" style={{ flex: 1, overflowY: "auto", padding: "24px 32px 60px" }}>
         <div
           style={{
             maxWidth: 940,
@@ -76,7 +88,7 @@ export default function BrowseView() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(430px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(430px, 100%), 1fr))",
               gap: 14,
               maxWidth: 940,
               marginTop: 20,
