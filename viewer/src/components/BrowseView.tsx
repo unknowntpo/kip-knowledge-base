@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { KIPS, filterKips } from "../lib/kips";
+import { useKipIndex } from "../lib/kips";
 import type { Status } from "../types";
 import FilterSidebar from "./FilterSidebar";
 import KipCard from "./KipCard";
@@ -9,13 +9,20 @@ const mono = "var(--font-mono)";
 
 export default function BrowseView() {
   const navigate = useNavigate();
+  const { index, error } = useKipIndex();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") ?? "";
   const [status, setStatus] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const results = filterKips(query, status, tags);
+  // Search matches id + title + blurb + tags + category. Full summary/motivation
+  // text lives in the per-KIP detail payloads and is deliberately not fetched
+  // here (see src/lib/kips.ts) — deep search is the Ask AI/semantic path's job.
+  const results = useMemo(
+    () => index?.filter(query, status, tags) ?? [],
+    [index, query, status, tags]
+  );
   const filtering = Boolean(query || status || tags.length);
   const activeFilterCount = (query ? 1 : 0) + (status ? 1 : 0) + tags.length;
 
@@ -36,6 +43,16 @@ export default function BrowseView() {
     setTags((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]));
   const toggleStatus = (s: Status) => setStatus((cur) => (cur === s ? null : s));
 
+  // The index is one fetch of static JSON off the CDN; show a quiet placeholder
+  // rather than an empty shell while it lands.
+  if (!index) {
+    return (
+      <div style={{ padding: "70px 32px", textAlign: "center", fontSize: 14, color: "#9a968d" }}>
+        {error ? `Could not load the KIP index: ${error}` : "Loading KIPs…"}
+      </div>
+    );
+  }
+
   return (
     <div className="browse-root" style={{ display: "flex", height: "100%" }}>
       <button
@@ -48,6 +65,7 @@ export default function BrowseView() {
         {activeFilterCount > 0 && <span className="filters-badge">{activeFilterCount}</span>}
       </button>
       <FilterSidebar
+        index={index}
         open={showFilters}
         status={status}
         tags={tags}
@@ -74,7 +92,7 @@ export default function BrowseView() {
         <p style={{ maxWidth: 660, fontSize: 13.5, color: "#716e67", marginTop: 8 }}>
           {filtering
             ? "Matching KIPs for your current search and filters. Adjust the status, tags, or keyword to refine."
-            : `Browse ${KIPS.length} Kafka Improvement Proposals. Filter by status or topic, or search motivations and trade-offs.`}
+            : `Browse ${index.kips.length} Kafka Improvement Proposals. Filter by status or topic, or search titles and summaries.`}
         </p>
 
         {results.length === 0 ? (

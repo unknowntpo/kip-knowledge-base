@@ -1,9 +1,9 @@
-import type { Kip } from "../types";
+import type { KipIndexEntry } from "../lib/kips";
 import { StatusBadge, TagPill } from "./common";
 
 const mono = "var(--font-mono)";
 
-export default function KipCard({ kip, onOpen }: { kip: Kip; onOpen: () => void }) {
+export default function KipCard({ kip, onOpen }: { kip: KipIndexEntry; onOpen: () => void }) {
   return (
     <div className="kip-card" style={{ padding: "17px 18px 15px", gap: 10 }} onClick={onOpen}>
       <div style={{ display: "flex", gap: 9, alignItems: "center" }}>
@@ -27,7 +27,7 @@ export default function KipCard({ kip, onOpen }: { kip: Kip; onOpen: () => void 
       >
         {kip.title}
       </h3>
-      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: "#565349" }}>{kip.summary}</p>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: "#565349" }}>{kip.blurb}</p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
         {kip.tags.map((t) => (
           <TagPill key={t} tag={t} />

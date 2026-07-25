@@ -1,10 +1,11 @@
-import { KIPS } from "../lib/kips";
+import { useKipIndex } from "../lib/kips";
 
 const mono = "var(--font-mono)";
 
 // Ask AI (semantic search) is intentionally deferred for now. This keeps the
 // route + shell in place so it can be filled in later behind a single askKips() call.
 export default function AskView() {
+  const { index } = useKipIndex();
   return (
     <div style={{ height: "100%", overflowY: "auto" }}>
       <div style={{ maxWidth: 780, margin: "0 auto", padding: "40px 32px 90px" }}>
@@ -20,7 +21,7 @@ export default function AskView() {
             padding: "4px 12px",
           }}
         >
-          ✦ Semantic search · grounded in {KIPS.length} KIPs indexed
+          ✦ Semantic search · grounded in {index ? index.kips.length : "…"} KIPs indexed
         </span>
         <h1 style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em", margin: "18px 0 10px" }}>
           Ask the KIP knowledge base

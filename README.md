@@ -19,9 +19,10 @@ vault/                  Obsidian vault (source of truth)
   .obsidian/            shared vault config
 viewer/                 "our own viewer" — React + TS + Vite SPA
   scripts/parse-vault.ts    vault markdown -> structured KIP model (typed)
-  scripts/build-kips.ts     writes src/data/kips.generated.json (pre dev/build)
+  scripts/build-kips.ts     writes public/data/** (pre dev/build) — see "Viewer data loading"
   src/                      TopBar, Browse, Detail, Ask views (routes /, /kip/:id, /ask)
   test/parse.test.ts        round-trips the vault losslessly against the seed
+  test/build-data.test.ts   the generated index/detail payload contract
 tools/kips.seed.json    canonical import snapshot (provenance + parser fixture)
 .github/workflows/      Cloudflare Pages deploy for the viewer
 ```
@@ -76,6 +77,31 @@ bun run deploy     # build + wrangler pages deploy   (run `bunx wrangler login` 
 
 `npm install` still works for the viewer's runtime deps (React/Vite), but the
 build/embeddings/ingest scripts shell out to `bun`, so Bun must be on `PATH`.
+
+## Viewer data loading
+
+The corpus is **fetched at runtime, not bundled**. At 1144 KIPs, inlining
+`kips.generated.json` into the JS bundle pushed it to ~472KB gzip, past the
+~300KB gate in [`docs/sync-strategy.md`](docs/sync-strategy.md) §6. `bun
+scripts/build-kips.ts` (run by `predev`/`prebuild`) now writes git-ignored
+static JSON into `viewer/public/data/`, which Vite copies verbatim into `dist/`:
+
+```
+public/data/index.json       one compact entry per KIP: id, title, status,
+                             category, release, tags, ~180-char blurb, stub
+                             (~386KB raw / ~97KB gzip) — one fetch on first paint
+public/data/kips/<id>.json   the full Kip object, one file per KIP — fetched
+                             only when that detail page opens, cached per session
+public/data/related.json     semantic neighbor map ("Similar KIPs")
+```
+
+Shipped JS is back to **~74KB gzip**, and the CDN caches every detail file
+independently so a visitor downloads only what they open.
+
+**Tradeoff:** the Browse index carries a truncated blurb, so client-side search
+matches `id + title + blurb + tags + category` only. Full summary/motivation text
+is no longer searchable in the browser — deep full-text search is the Ask AI
+(semantic) path's job. See `viewer/src/lib/kips.ts`.
 
 ## Deploy — Cloudflare Pages
 

@@ -137,6 +137,15 @@ measure `dist/assets/*.js` gzip; if total shipped exceeds ~300KB gzip, split
 the KIP data out of the bundle into a fetched static JSON (list fields first,
 detail lazy) so the initial payload returns to double-digit KB.
 
+**Status: gate tripped and resolved (1144 KIPs).** Inlined, `dist/assets/*.js`
+measured **472KB gzip**. The corpus was split out of the bundle into static JSON
+under `viewer/public/data/` — `index.json` (compact list entries with a ~180-char
+blurb, ~97KB gzip, one fetch on first paint), `kips/<id>.json` (full KIP, fetched
+lazily per detail page), and `related.json`. Shipped JS is now **74KB gzip**.
+Accepted tradeoff: client-side search covers `id + title + blurb + tags +
+category`; full-text search over summaries/motivations moves to the semantic
+(Ask AI) path. See the README's "Viewer data loading" section.
+
 ## 7. Open items
 
 - [ ] `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo secrets — closes

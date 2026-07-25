@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { Kip } from "../types";
-import { avatarColor, getKip, initials, similarKips } from "../lib/kips";
+import { avatarColor, initials, loadKip, useKipIndex } from "../lib/kips";
 import { StatusBadge, TagPill } from "./common";
 
 const mono = "var(--font-mono)";
@@ -35,9 +36,37 @@ function RailLabel({ children }: { children: React.ReactNode }) {
 export default function DetailView() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const kip = getKip(id);
+  const { index } = useKipIndex();
+  // The full KIP body is a separate static file, fetched only when this page
+  // opens (and memoized for the session) — see src/lib/kips.ts.
+  const [kip, setKip] = useState<Kip | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    let live = true;
+    setLoading(true);
+    setKip(null);
+    loadKip(id).then((k) => {
+      if (!live) return;
+      setKip(k);
+      setLoading(false);
+    });
+    return () => {
+      live = false;
+    };
+  }, [id]);
+
   // Semantic neighbors, excluding ids already surfaced in the curated `related` list.
-  const similar = kip ? similarKips(kip.id, kip.related) : [];
+  const similar = kip && index ? index.similar(kip.id, kip.related) : [];
+
+  if (loading) {
+    return (
+      <div style={{ height: "100%", overflowY: "auto", padding: "60px 32px" }}>
+        <p style={{ color: "#9a968d", fontSize: 14 }}>Loading {id}…</p>
+      </div>
+    );
+  }
 
   if (!kip) {
     return (
@@ -346,7 +375,7 @@ export default function DetailView() {
             <div style={{ background: "#fff", border: "1px solid #e6e2db", borderRadius: 12, padding: "16px 17px" }}>
               <RailLabel>Related KIPs</RailLabel>
               {kip.related.map((rid) => {
-                const r = getKip(rid);
+                const r = index?.get(rid);
                 return (
                   <div
                     key={rid}
@@ -365,7 +394,7 @@ export default function DetailView() {
             <div style={{ background: "#fff", border: "1px solid #e6e2db", borderRadius: 12, padding: "16px 17px" }}>
               <RailLabel>Similar KIPs</RailLabel>
               {similar.map((s) => {
-                const r = getKip(s.id);
+                const r = index?.get(s.id);
                 return (
                   <div
                     key={s.id}

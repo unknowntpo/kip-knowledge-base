@@ -1,10 +1,11 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { KIPS } from "../lib/kips";
+import { useKipIndex } from "../lib/kips";
 
 const mono = "var(--font-mono)";
 
 export default function TopBar() {
   const navigate = useNavigate();
+  const { index } = useKipIndex();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -121,7 +122,7 @@ export default function TopBar() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search KIPs, motivations, trade-offs…"
+              placeholder="Search KIPs by id, title, tag…"
               style={{
                 width: "100%",
                 height: 36,
@@ -142,7 +143,7 @@ export default function TopBar() {
 
       {/* count */}
       <span className="topbar-count" style={{ fontFamily: mono, fontSize: 12, color: "#8f8c96", whiteSpace: "nowrap" }}>
-        {KIPS.length} KIPs indexed
+        {index ? `${index.kips.length} KIPs indexed` : "loading…"}
       </span>
     </header>
   );

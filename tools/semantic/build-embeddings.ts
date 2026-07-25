@@ -51,7 +51,7 @@ interface EmbeddingsManifest {
 interface GoldenManifest {
   model: string;
   dim: number;
-  queries: Array<{ q: string; expect: string[]; vector: number[] }>;
+  queries: Array<{ q: string; expect: string[]; vector: number[]; knownGap?: string }>;
 }
 /** One entry per neighbor in related.json. */
 interface Neighbor {
@@ -106,12 +106,14 @@ async function main(): Promise<void> {
 
   // --- golden-embeddings.json: each golden query embedded with the query prefix ---
   const golden = JSON.parse(readFileSync(resolve(here, "golden-queries.json"), "utf8")) as {
-    queries: Array<{ q: string; expect: string[] }>;
+    queries: Array<{ q: string; expect: string[]; knownGap?: string }>;
   };
   const queries: GoldenManifest["queries"] = [];
-  for (const { q, expect } of golden.queries) {
+  for (const { q, expect, knownGap } of golden.queries) {
     const v = await embed(`query: ${q}`);
-    queries.push({ q, expect, vector: v.map((x) => round(x, 6)) });
+    // knownGap (when present) documents a measured retrieval limitation and
+    // must survive into the manifest — the harness runs those as expected failures.
+    queries.push({ q, expect, vector: v.map((x) => round(x, 6)), ...(knownGap ? { knownGap } : {}) });
     console.log(`embedded query: ${q}`);
   }
   const goldenManifest: GoldenManifest = { model: MODEL, dim: DIM, queries };

@@ -1,4 +1,4 @@
-import { ALL_TAGS, STATUSES, STATUS_META, statusCount, tagCount } from "../lib/kips";
+import { STATUS_META, type KipIndex } from "../lib/kips";
 import type { Status } from "../types";
 
 const mono = "var(--font-mono)";
@@ -13,6 +13,7 @@ const sectionLabel: React.CSSProperties = {
 };
 
 export default function FilterSidebar({
+  index,
   open = false,
   status,
   tags,
@@ -20,6 +21,8 @@ export default function FilterSidebar({
   onToggleTag,
   onClearAll,
 }: {
+  /** Loaded KIP index — supplies the status/tag facets and their counts. */
+  index: KipIndex;
   open?: boolean;
   status: string | null;
   tags: string[];
@@ -40,7 +43,7 @@ export default function FilterSidebar({
     >
       <div style={sectionLabel}>Status</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 3, marginBottom: 26 }}>
-        {STATUSES.map((s) => {
+        {index.statuses.map((s) => {
           const active = status === s;
           const m = STATUS_META[s];
           return (
@@ -66,7 +69,7 @@ export default function FilterSidebar({
                 {s}
               </span>
               <span style={{ fontFamily: mono, fontSize: 12, opacity: active ? 1 : 0.7 }}>
-                {statusCount(s)}
+                {index.statusCount(s)}
               </span>
             </div>
           );
@@ -75,7 +78,7 @@ export default function FilterSidebar({
 
       <div style={sectionLabel}>Topics &amp; Tags</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-        {ALL_TAGS.map((t) => {
+        {index.allTags.map((t) => {
           const active = tags.includes(t);
           return (
             <span
@@ -83,7 +86,7 @@ export default function FilterSidebar({
               className={"tag-chip" + (active ? " active" : "")}
               onClick={() => onToggleTag(t)}
             >
-              {t} <span style={{ opacity: 0.55 }}>{tagCount(t)}</span>
+              {t} <span style={{ opacity: 0.55 }}>{index.tagCount(t)}</span>
             </span>
           );
         })}

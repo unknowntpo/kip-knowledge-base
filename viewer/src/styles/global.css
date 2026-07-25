@@ -29,6 +29,9 @@ input { font-family: inherit; }
   border-color: var(--accent-hover-border);
   box-shadow: 0 6px 20px -12px rgba(40, 50, 120, 0.35);
 }
+/* Full-corpus imports carry raw URLs and long comma-joined field lists; without
+   this a single unbreakable token widens the grid and adds a horizontal scrollbar. */
+.kip-card > * { min-width: 0; overflow-wrap: anywhere; }
 
 /* sidebar rows */
 .status-row { cursor: pointer; border-radius: 7px; transition: background .1s; }

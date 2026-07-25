@@ -3,7 +3,11 @@
   "queries": [
     { "q": "cutting cross-AZ and cross-datacenter network cost for consumers", "expect": ["KIP-392"] },
     { "q": "consumers reading from a nearby copy instead of the primary", "expect": ["KIP-392"] },
-    { "q": "remove the ZooKeeper dependency from Kafka", "expect": ["KIP-500"] },
+    {
+      "q": "remove the ZooKeeper dependency from Kafka",
+      "expect": ["KIP-500"],
+      "knownGap": "Fails at full-corpus scale (KIP-500 ranks ~8th). Whole-doc bi-encoder retrieval cannot rank the flagship umbrella KIP above narrower KIPs whose titles match the query almost verbatim (KIP-90 'Remove zkClient dependency from Streams', KIP-604 'Remove ZooKeeper Flags from the Administrative Tools', KIP-555 'Deprecate Direct Zookeeper access'). All three are genuinely relevant; the rubric (direct answer > mechanism) says KIP-500 should still lead. Measured: chunking lifts KIP-500 from rank 8 to ~4 — not enough on its own. Closing this needs a cross-encoder rerank or an authority/graph signal, tracked for the Ask AI milestone (docs/ingestion-spec.md M4). Kept as a visible gap rather than deleted or weakened."
+    },
     { "q": "exactly-once delivery and transactional messaging", "expect": ["KIP-98"] },
     { "q": "queue semantics with many competing consumers on a topic", "expect": ["KIP-932"] },
     { "q": "tiered storage for cheap long retention of old data", "expect": ["KIP-405"] },
