@@ -54,12 +54,11 @@ jobs:
         working-directory: viewer
         run: bun run embeddings
 
-      - name: Re-test (golden queries gate the new corpus)
-        if: ${{ !inputs.dry_run }}
-        working-directory: viewer
-        run: bun run test
-
-      - name: Commit if changed
+      # Land the crawl BEFORE the quality gate. The crawl costs ~1 req/s over the
+      # whole corpus (~50 min) and queue.json is the checkpoint that makes a
+      # re-run resumable — a retrieval-quality regression must not discard either.
+      # A red gate below still fails the job; the data just survives it.
+      - name: Commit crawl + vectors
         if: ${{ !inputs.dry_run }}
         run: |
           if [ -z "$(git status --porcelain)" ]; then
@@ -71,3 +70,12 @@ jobs:
           git add -A
           git commit -m "chore(backfill): import KIP stubs ($(date -u +%Y-%m-%d))"
           git push
+
+      # Quality gate: golden queries must still retrieve their expected KIP now
+      # that the corpus grew. Failure = red job for review, NOT lost work — the
+      # crawl is already committed above and the deploy workflow's own test run
+      # keeps a regression from reaching production.
+      - name: Quality gate — golden queries
+        if: ${{ !inputs.dry_run }}
+        working-directory: viewer
+        run: bun run test
