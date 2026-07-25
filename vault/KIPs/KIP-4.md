@@ -4,10 +4,10 @@ title: "Metadata Protocol Changes"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "50860476"
-  version: 146
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=50860476"
-  lastChecked: "2026-07-24T18:55:45Z"
+  pageId: "66851858"
+  version: 7
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=66851858"
+  lastChecked: "2026-07-25T07:04:11Z"
 tags: []
 related: []
 ---

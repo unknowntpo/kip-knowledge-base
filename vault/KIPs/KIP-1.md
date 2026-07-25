@@ -4,10 +4,10 @@ title: "Remove support of request.required.acks"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "50859269"
-  version: 8
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=50859269"
-  lastChecked: "2026-07-24T18:55:34Z"
+  pageId: "147427643"
+  version: 6
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=147427643"
+  lastChecked: "2026-07-25T07:04:11Z"
 threads:
   - url: "https://lists.apache.org/thread/jlqnnq4ok66odj5ygrrfoqhvvf27ysoj"
     count: 4

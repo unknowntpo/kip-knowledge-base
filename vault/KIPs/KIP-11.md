@@ -4,10 +4,10 @@ title: "Kafka Authorizer design"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "51807580"
-  version: 128
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=51807580"
-  lastChecked: "2026-07-24T18:55:52Z"
+  pageId: "75974045"
+  version: 13
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=75974045"
+  lastChecked: "2026-07-25T07:04:11Z"
 tags: []
 related: []
 ---

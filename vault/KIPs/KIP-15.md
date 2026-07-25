@@ -4,10 +4,10 @@ title: "Add a close method with a timeout in the producer"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "53739782"
-  version: 28
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=53739782"
-  lastChecked: "2026-07-24T18:56:03Z"
+  pageId: "181310735"
+  version: 2
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=181310735"
+  lastChecked: "2026-07-25T07:04:11Z"
 tags: []
 related: []
 ---

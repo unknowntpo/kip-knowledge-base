@@ -4,10 +4,10 @@ title: "Automated Replica Lag Tuning"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "53740845"
-  version: 14
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=53740845"
-  lastChecked: "2026-07-24T18:56:07Z"
+  pageId: "290982703"
+  version: 8
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=290982703"
+  lastChecked: "2026-07-25T07:04:11Z"
 tags: []
 related: []
 ---

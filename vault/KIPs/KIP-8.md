@@ -4,10 +4,10 @@ title: "Add a flush method to the producer API"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "51809757"
-  version: 8
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=51809757"
-  lastChecked: "2026-07-24T18:55:49Z"
+  pageId: "73633972"
+  version: 31
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=73633972"
+  lastChecked: "2026-07-25T07:04:11Z"
 tags: []
 related: []
 ---

@@ -4,10 +4,10 @@ title: "Mirror Maker Enhancement"
 status: "Adopted"
 stub: true
 cwiki:
-  pageId: "50860288"
-  version: 39
-  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=50860288"
-  lastChecked: "2026-07-24T18:55:42Z"
+  pageId: "66850422"
+  version: 13
+  url: "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=66850422"
+  lastChecked: "2026-07-25T07:04:11Z"
 threads:
   - url: "https://lists.apache.org/thread/z18lhokgz661sjybtjxjslfbj2mg4pr3"
     count: 30
