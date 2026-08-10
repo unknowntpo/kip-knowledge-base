@@ -8195,5 +8195,19 @@
     "toVersion": 6,
     "url": "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=429064565",
     "observedAt": "2026-08-09T04:57:39Z"
+  },
+  {
+    "kipId": "KIP-1266",
+    "fromVersion": 24,
+    "toVersion": 28,
+    "url": "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=406618613",
+    "observedAt": "2026-08-10T05:13:25Z"
+  },
+  {
+    "kipId": "KIP-1279",
+    "fromVersion": 457,
+    "toVersion": 458,
+    "url": "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=406620973",
+    "observedAt": "2026-08-10T05:13:41Z"
   }
 ]
