@@ -8237,5 +8237,12 @@
     "toVersion": 3,
     "url": "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=440303727",
     "observedAt": "2026-08-11T05:01:04Z"
+  },
+  {
+    "kipId": "KIP-1279",
+    "fromVersion": 461,
+    "toVersion": 464,
+    "url": "https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=406620973",
+    "observedAt": "2026-08-12T05:20:59Z"
   }
 ]
