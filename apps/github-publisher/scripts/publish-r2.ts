@@ -2,6 +2,8 @@ import { join } from "node:path";
 
 import { MANIFEST_KEY, type FeedManifest } from "@oss-knowledge-base/serving-contract";
 
+import { requireRemotePublicationTarget } from "../../web/scripts/remote-publication-target";
+
 const webRoot = join(import.meta.dir, "..", "..", "web");
 const root = join(webRoot, "r2-seed");
 const manifestPath = join(root, MANIFEST_KEY);
@@ -12,7 +14,7 @@ const keys: string[] = [];
 for await (const file of new Bun.Glob(`public/v2/releases/${manifest.releaseId}/**/*.json`).scan({ cwd: root })) keys.push(file);
 keys.sort();
 
-const bucket = Bun.env.R2_BUCKET ?? "oss-knowledge-base-poc";
+const { bucket, environment } = requireRemotePublicationTarget();
 async function putObject(key: string): Promise<void> {
   const process = Bun.spawn([
     "bunx", "wrangler", "r2", "object", "put", `${bucket}/${key}`,
@@ -42,4 +44,4 @@ await Promise.all(Array.from({ length: Math.min(concurrency, keys.length) }, asy
 // The only mutable object is deliberately outside the concurrent batch.
 await putObject(MANIFEST_KEY);
 
-console.log(`Published ${keys.length + 1} objects to R2 bucket ${bucket}; manifest was written last`);
+console.log(`Published ${keys.length + 1} Feed objects to ${environment} bucket ${bucket}; manifest was written last`);

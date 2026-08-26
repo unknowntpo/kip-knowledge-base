@@ -73,8 +73,8 @@ External bootstrap state:
    `main`.
 2. **Done:** Pages project `oss-knowledge-base` uses production branch
    `production`.
-3. **Done:** both projects bind `OSS_KB_BUCKET` to the existing private
-   `oss-knowledge-base-poc` R2 bucket.
+3. **Superseded by Spec 006:** both projects temporarily bind
+   `OSS_KB_BUCKET` to the existing private `oss-knowledge-base-poc` R2 bucket.
 4. **Done:** scoped `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`
    repository secrets exist.
 5. **Done:** GitHub environments `development` and `production` exist.
@@ -83,6 +83,27 @@ External bootstrap state:
 
 The first production promotion, `v0.1.0`, and public browser smoke test passed
 on 2026-08-26.
+
+## Environment-isolated data bootstrap
+
+Spec 006 and ADR-0010 replace the temporary shared binding:
+
+| Pages project | Wrangler source of truth | R2 binding |
+| --- | --- | --- |
+| `oss-knowledge-base-dev` | `wrangler.development.jsonc` | `oss-knowledge-base-dev` |
+| `oss-knowledge-base` | `wrangler.production.jsonc` | `oss-knowledge-base-prod` |
+
+The manual `Bootstrap isolated R2 environments` workflow is the only bootstrap
+path. It requires the exact `bootstrap-isolated-r2` input, uses the scoped
+GitHub environment credentials, creates a missing bucket idempotently, and
+publishes the recorded Feed and Search projections pointer-last. It is not
+scheduled and performs no live GitHub fetch, LLM call, benchmark, or frontend
+build.
+
+After bootstrap, merging the configuration change to `main` applies the
+development binding through the normal development deployment. A later
+accepted release tag applies the production binding. Do not deploy either
+project with the local-only `wrangler.jsonc`.
 
 ## Release command
 

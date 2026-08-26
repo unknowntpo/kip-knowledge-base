@@ -56,5 +56,6 @@ export interface FeedManifest {
 }
 
 export * from "./r2";
+export * from "./publication-set";
 export * from "./search-feed-materializer";
 export * from "./search-r2";
