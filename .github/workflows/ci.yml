@@ -6,17 +6,31 @@ on:
     branches: [main]
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      operation:
+        description: Select verify for CI or bootstrap-r2 for the one-time data bootstrap
+        required: true
+        type: choice
+        default: verify
+        options:
+          - verify
+          - bootstrap-r2
+      confirmation:
+        description: Type bootstrap-isolated-r2 only when operation is bootstrap-r2
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ inputs.operation || 'verify' }}
+  cancel-in-progress: ${{ inputs.operation != 'bootstrap-r2' }}
 
 jobs:
   static:
     name: Typecheck and build
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.operation == 'verify' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -37,6 +51,7 @@ jobs:
 
   unit:
     name: Unit tests
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.operation == 'verify' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -49,6 +64,7 @@ jobs:
 
   integration:
     name: Integration tests
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.operation == 'verify' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -61,6 +77,7 @@ jobs:
 
   e2e:
     name: E2E — local R2, Pages Functions, Vue
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.operation == 'verify' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -172,3 +189,70 @@ jobs:
             --project-name=oss-knowledge-base
             --branch=production
             --commit-hash=${{ github.sha }}
+
+  bootstrap-r2-development:
+    name: Bootstrap development R2
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'bootstrap-r2' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: development
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PUBLICATION_ENVIRONMENT: development
+      R2_BUCKET: oss-knowledge-base-dev
+      CONFIRM_R2_PUBLISH: development:oss-knowledge-base-dev
+    steps:
+      - name: Require exact bootstrap confirmation
+        run: test "${{ inputs.confirmation }}" = "bootstrap-isolated-r2"
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      - name: Require scoped Cloudflare credentials
+        run: test -n "$CLOUDFLARE_API_TOKEN" && test -n "$CLOUDFLARE_ACCOUNT_ID"
+      - name: Create development bucket when absent
+        working-directory: apps/web
+        run: |
+          if ! bunx wrangler r2 bucket info "$R2_BUCKET" >/dev/null 2>&1; then
+            bunx wrangler r2 bucket create "$R2_BUCKET"
+          fi
+      - name: Publish recorded Feed manifest-last
+        run: bun apps/github-publisher/scripts/publish-r2.ts
+      - name: Publish recorded Search pointer-last
+        run: bun apps/web/scripts/publish-search-r2.ts --remote
+
+  bootstrap-r2-production:
+    name: Bootstrap production R2
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation == 'bootstrap-r2' }}
+    needs: bootstrap-r2-development
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PUBLICATION_ENVIRONMENT: production
+      R2_BUCKET: oss-knowledge-base-prod
+      CONFIRM_R2_PUBLISH: production:oss-knowledge-base-prod
+    steps:
+      - name: Require exact bootstrap confirmation
+        run: test "${{ inputs.confirmation }}" = "bootstrap-isolated-r2"
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      - name: Require scoped Cloudflare credentials
+        run: test -n "$CLOUDFLARE_API_TOKEN" && test -n "$CLOUDFLARE_ACCOUNT_ID"
+      - name: Create production bucket when absent
+        working-directory: apps/web
+        run: |
+          if ! bunx wrangler r2 bucket info "$R2_BUCKET" >/dev/null 2>&1; then
+            bunx wrangler r2 bucket create "$R2_BUCKET"
+          fi
+      - name: Publish the same recorded Feed manifest-last
+        run: bun apps/github-publisher/scripts/publish-r2.ts
+      - name: Publish the same recorded Search pointer-last
+        run: bun apps/web/scripts/publish-search-r2.ts --remote
