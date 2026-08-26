@@ -93,12 +93,12 @@ Spec 006 and ADR-0010 replace the temporary shared binding:
 | `oss-knowledge-base-dev` | `wrangler.development.jsonc` | `oss-knowledge-base-dev` |
 | `oss-knowledge-base` | `wrangler.production.jsonc` | `oss-knowledge-base-prod` |
 
-The manual `Bootstrap isolated R2 environments` workflow is the only bootstrap
-path. It requires the exact `bootstrap-isolated-r2` input, uses the scoped
-GitHub environment credentials, creates a missing bucket idempotently, and
-publishes the recorded Feed and Search projections pointer-last. It is not
-scheduled and performs no live GitHub fetch, LLM call, benchmark, or frontend
-build.
+The manual `CI and release` workflow with operation `bootstrap-r2` is the only
+bootstrap path. It requires the exact `bootstrap-isolated-r2` confirmation,
+uses the scoped GitHub environment credentials, creates a missing bucket
+idempotently, and publishes the recorded Feed and Search projections
+pointer-last. It is not scheduled and performs no live GitHub fetch, LLM call,
+benchmark, or frontend build.
 
 After bootstrap, merging the configuration change to `main` applies the
 development binding through the normal development deployment. A later
