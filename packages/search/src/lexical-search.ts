@@ -1,0 +1,381 @@
+import { validateSearchFilters, type SearchFiltersV1 } from "./filters";
+import type { SourceRecordChunkV1 } from "./golden-fixture";
+
+export const LEXICAL_INDEX_SCHEMA = "osskb.lexical-index.v1" as const;
+export const DEFAULT_LEXICAL_REVISION = "bm25-reference@1";
+
+export interface LexicalSearchConfigV1 {
+  readonly revision: string;
+  readonly k1: number;
+  readonly b: number;
+  readonly titleWeight: number;
+  readonly tagWeight: number;
+  readonly exactBoost: number;
+  readonly additionalGroupMatchWeight: number;
+  readonly maxEvidenceMatches: number;
+  readonly excerptCharacters: number;
+}
+
+export const defaultLexicalSearchConfig: LexicalSearchConfigV1 = {
+  revision: DEFAULT_LEXICAL_REVISION,
+  k1: 1.2,
+  b: 0.75,
+  titleWeight: 4,
+  tagWeight: 2,
+  exactBoost: 1_000,
+  additionalGroupMatchWeight: 0.25,
+  maxEvidenceMatches: 5,
+  excerptCharacters: 280,
+};
+
+interface IndexedChunk {
+  readonly chunk: SourceRecordChunkV1;
+  readonly terms: ReadonlyMap<string, number>;
+  readonly titleTerms: ReadonlySet<string>;
+  readonly length: number;
+}
+
+export interface LexicalIndexV1 {
+  readonly schema: typeof LEXICAL_INDEX_SCHEMA;
+  readonly indexRevision: string;
+  readonly lexicalRevision: string;
+  readonly chunks: readonly SourceRecordChunkV1[];
+  readonly documentFrequency: ReadonlyMap<string, number>;
+  readonly averageDocumentLength: number;
+  readonly config: LexicalSearchConfigV1;
+  /** Internal immutable representation owned by this package. */
+  readonly documents: readonly IndexedChunk[];
+}
+
+export interface LexicalSearchRequestV1 {
+  readonly query: string;
+  readonly filters?: SearchFiltersV1;
+  /** Internal group eligibility computed from group-level project status metadata. */
+  readonly eligibleGroupRootRecordIds?: ReadonlySet<string>;
+  readonly limit?: number;
+}
+
+export interface LexicalEvidenceMatchV1 {
+  readonly chunkId: string;
+  readonly recordId: string;
+  readonly excerpt: string;
+  readonly canonicalUrl: string;
+  readonly author: string;
+  readonly occurredAt: string;
+  readonly sourceVersion: string;
+  readonly matchedTerms: readonly string[];
+  readonly exactMatch: boolean;
+  readonly score: number;
+}
+
+export interface LexicalSearchResultV1 {
+  readonly groupRootRecordId: string;
+  readonly projectId: string;
+  readonly score: number;
+  readonly exactMatch: boolean;
+  readonly matches: readonly LexicalEvidenceMatchV1[];
+}
+
+export interface BuildLexicalIndexInputV1 {
+  readonly indexRevision: string;
+  readonly chunks: readonly SourceRecordChunkV1[];
+  readonly config?: LexicalSearchConfigV1;
+}
+
+export function buildLexicalIndex(input: BuildLexicalIndexInputV1): LexicalIndexV1 {
+  const config = input.config ?? defaultLexicalSearchConfig;
+  validateConfig(config);
+
+  const chunks = uniqueChunks(input.chunks);
+  const documents = chunks.map((chunk) => indexChunk(chunk, config));
+  const documentFrequency = new Map<string, number>();
+  for (const document of documents) {
+    for (const term of document.terms.keys()) {
+      documentFrequency.set(term, (documentFrequency.get(term) ?? 0) + 1);
+    }
+  }
+  const averageDocumentLength = documents.length === 0
+    ? 0
+    : documents.reduce((total, document) => total + document.length, 0) /
+      documents.length;
+
+  return {
+    schema: LEXICAL_INDEX_SCHEMA,
+    indexRevision: requireText(input.indexRevision, "indexRevision"),
+    lexicalRevision: config.revision,
+    chunks,
+    documentFrequency,
+    averageDocumentLength,
+    config,
+    documents,
+  };
+}
+
+export function searchLexicalIndex(
+  index: LexicalIndexV1,
+  request: LexicalSearchRequestV1,
+): readonly LexicalSearchResultV1[] {
+  const query = requireText(request.query, "query");
+  validateSearchFilters(request.filters);
+  const queryTerms = [...new Set(tokenizeLexical(query))];
+  if (queryTerms.length === 0) return [];
+  const limit = request.limit ?? 20;
+  if (!Number.isInteger(limit) || limit <= 0 || limit > 100) {
+    throw new Error("Search limit must be an integer between 1 and 100");
+  }
+
+  const scored = index.documents
+    .filter((document) => matchesFilters(
+      document.chunk,
+      request.filters,
+      request.eligibleGroupRootRecordIds,
+    ))
+    .map((document) => scoreDocument(index, document, query, queryTerms))
+    .filter((result): result is ScoredDocument => result !== undefined);
+
+  const byGroup = new Map<string, ScoredDocument[]>();
+  for (const result of scored) {
+    const group = byGroup.get(result.document.chunk.groupRootRecordId) ?? [];
+    group.push(result);
+    byGroup.set(result.document.chunk.groupRootRecordId, group);
+  }
+
+  return [...byGroup.entries()]
+    .map(([groupRootRecordId, documents]) => assembleGroup(index, groupRootRecordId, documents))
+    .sort(
+      (left, right) =>
+        Number(right.exactMatch) - Number(left.exactMatch) ||
+        right.score - left.score ||
+        left.groupRootRecordId.localeCompare(right.groupRootRecordId),
+    )
+    .slice(0, limit);
+}
+
+export function tokenizeLexical(value: string): readonly string[] {
+  const tokens = value
+    .normalize("NFKC")
+    .match(
+      /[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)+(?:\(\))?|[\p{L}\p{N}_$]+(?:-[\p{L}\p{N}_$]+)*/gu,
+    ) ?? [];
+  const result: string[] = [];
+  for (const raw of tokens) {
+    const token = raw.toLocaleLowerCase("en-US");
+    result.push(token);
+    if (token.includes(".")) {
+      result.push(...token.replace(/\(\)$/u, "").split("."));
+    }
+    if (token.includes("-")) result.push(...token.split("-"));
+  }
+  return result.filter((token) => token.length > 0);
+}
+
+export function isExactStructuredQuery(query: string): boolean {
+  const trimmed = query.trim();
+  return /^[A-Z][A-Z0-9]+-\d+$/u.test(trimmed) ||
+    /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)+(?:\(\))?$/u.test(trimmed);
+}
+
+interface ScoredDocument {
+  readonly document: IndexedChunk;
+  readonly score: number;
+  readonly exactMatch: boolean;
+  readonly matchedTerms: readonly string[];
+}
+
+function scoreDocument(
+  index: LexicalIndexV1,
+  document: IndexedChunk,
+  rawQuery: string,
+  queryTerms: readonly string[],
+): ScoredDocument | undefined {
+  const matchedTerms = queryTerms.filter((term) => document.terms.has(term));
+  if (matchedTerms.length === 0) return undefined;
+
+  let score = 0;
+  for (const term of matchedTerms) {
+    const frequency = document.terms.get(term) ?? 0;
+    const documentFrequency = index.documentFrequency.get(term) ?? 0;
+    const idf = Math.log(
+      1 +
+        (index.documents.length - documentFrequency + 0.5) /
+          (documentFrequency + 0.5),
+    );
+    const normalization = index.averageDocumentLength === 0
+      ? 1
+      : 1 - index.config.b +
+        index.config.b * (document.length / index.averageDocumentLength);
+    score += idf * ((frequency * (index.config.k1 + 1)) /
+      (frequency + index.config.k1 * normalization));
+  }
+
+  const exactMatch = exactStructuredMatch(document, rawQuery);
+  if (exactMatch) score += index.config.exactBoost;
+  return { document, score, exactMatch, matchedTerms };
+}
+
+function exactStructuredMatch(document: IndexedChunk, query: string): boolean {
+  if (!isExactStructuredQuery(query)) return false;
+  const normalized = query.trim().toLocaleLowerCase("en-US");
+  if (/^[a-z][a-z0-9]+-\d+$/u.test(normalized)) {
+    return document.titleTerms.has(normalized);
+  }
+  return document.chunk.title.toLocaleLowerCase("en-US").includes(normalized) ||
+    document.chunk.text.toLocaleLowerCase("en-US").includes(normalized);
+}
+
+function assembleGroup(
+  index: LexicalIndexV1,
+  groupRootRecordId: string,
+  documents: readonly ScoredDocument[],
+): LexicalSearchResultV1 {
+  const ordered = [...documents].sort(
+    (left, right) =>
+      Number(right.exactMatch) - Number(left.exactMatch) ||
+      right.score - left.score ||
+      left.document.chunk.id.localeCompare(right.document.chunk.id),
+  );
+  const [best, ...additional] = ordered;
+  if (best === undefined) throw new Error("Cannot assemble an empty search group");
+  const score = best.score +
+    additional.reduce((total, result) => total + result.score, 0) *
+      index.config.additionalGroupMatchWeight;
+
+  return {
+    groupRootRecordId,
+    projectId: best.document.chunk.projectId,
+    score,
+    exactMatch: ordered.some((result) => result.exactMatch),
+    matches: ordered.slice(0, index.config.maxEvidenceMatches).map((result) => ({
+      chunkId: result.document.chunk.id,
+      recordId: result.document.chunk.recordId,
+      excerpt: matchedExcerpt(
+        result.document.chunk.text,
+        result.matchedTerms,
+        index.config.excerptCharacters,
+      ),
+      canonicalUrl: result.document.chunk.canonicalUrl,
+      author: result.document.chunk.author,
+      occurredAt: result.document.chunk.occurredAt,
+      sourceVersion: result.document.chunk.sourceVersion,
+      matchedTerms: result.matchedTerms,
+      exactMatch: result.exactMatch,
+      score: result.score,
+    })),
+  };
+}
+
+function indexChunk(
+  chunk: SourceRecordChunkV1,
+  config: LexicalSearchConfigV1,
+): IndexedChunk {
+  const titleTokens = tokenizeLexical(chunk.title);
+  const bodyTokens = tokenizeLexical(chunk.text);
+  const tagTokens = chunk.tags.flatMap(tokenizeLexical);
+  const authorTokens = tokenizeLexical(chunk.author);
+  const weightedTokens = [
+    ...repeat(titleTokens, config.titleWeight),
+    ...bodyTokens,
+    ...repeat(tagTokens, config.tagWeight),
+    ...authorTokens,
+  ];
+  const terms = new Map<string, number>();
+  for (const term of weightedTokens) terms.set(term, (terms.get(term) ?? 0) + 1);
+  return {
+    chunk,
+    terms,
+    titleTerms: new Set(titleTokens),
+    length: weightedTokens.length,
+  };
+}
+
+function repeat(values: readonly string[], weight: number): readonly string[] {
+  if (!Number.isInteger(weight) || weight < 1) {
+    throw new Error("Lexical field weights must be positive integers");
+  }
+  return Array.from({ length: weight }, () => values).flat();
+}
+
+function matchedExcerpt(
+  text: string,
+  matchedTerms: readonly string[],
+  maximumCharacters: number,
+): string {
+  const normalized = text.toLocaleLowerCase("en-US");
+  const positions = matchedTerms
+    .map((term) => normalized.indexOf(term))
+    .filter((position) => position >= 0);
+  const first = positions.length === 0 ? 0 : Math.min(...positions);
+  const start = Math.max(0, first - Math.floor(maximumCharacters / 3));
+  const end = Math.min(text.length, start + maximumCharacters);
+  return `${start > 0 ? "…" : ""}${text.slice(start, end).trim()}${end < text.length ? "…" : ""}`;
+}
+
+function matchesFilters(
+  chunk: SourceRecordChunkV1,
+  filters: SearchFiltersV1 | undefined,
+  eligibleGroupRootRecordIds: ReadonlySet<string> | undefined,
+): boolean {
+  if (
+    eligibleGroupRootRecordIds !== undefined &&
+    !eligibleGroupRootRecordIds.has(chunk.groupRootRecordId)
+  ) return false;
+  if (filters === undefined) return true;
+  if (
+    filters.projectIds !== undefined &&
+    !filters.projectIds.includes(chunk.projectId)
+  ) return false;
+  if (
+    filters.sourceInstanceIds !== undefined &&
+    !filters.sourceInstanceIds.includes(chunk.sourceInstanceId)
+  ) return false;
+  if (
+    filters.tags !== undefined &&
+    !filters.tags.every((tag) => chunk.tags.includes(tag))
+  ) return false;
+  const occurredAt = Date.parse(chunk.occurredAt);
+  if (
+    filters.occurredAfter !== undefined &&
+    occurredAt <= Date.parse(filters.occurredAfter)
+  ) return false;
+  if (
+    filters.occurredBefore !== undefined &&
+    occurredAt >= Date.parse(filters.occurredBefore)
+  ) return false;
+  return true;
+}
+
+function uniqueChunks(
+  chunks: readonly SourceRecordChunkV1[],
+): readonly SourceRecordChunkV1[] {
+  const byId = new Map<string, SourceRecordChunkV1>();
+  for (const chunk of chunks) {
+    const previous = byId.get(chunk.id);
+    if (previous !== undefined && previous.contentHash !== chunk.contentHash) {
+      throw new Error(`Conflicting chunks share id ${chunk.id}`);
+    }
+    if (previous === undefined) byId.set(chunk.id, chunk);
+  }
+  return [...byId.values()].sort((left, right) => left.id.localeCompare(right.id));
+}
+
+function validateConfig(config: LexicalSearchConfigV1): void {
+  requireText(config.revision, "config.revision");
+  if (config.k1 <= 0) throw new Error("BM25 k1 must be positive");
+  if (config.b < 0 || config.b > 1) throw new Error("BM25 b must be between 0 and 1");
+  if (config.exactBoost <= 0) throw new Error("exactBoost must be positive");
+  if (config.additionalGroupMatchWeight < 0) {
+    throw new Error("additionalGroupMatchWeight must not be negative");
+  }
+  if (!Number.isInteger(config.maxEvidenceMatches) || config.maxEvidenceMatches <= 0) {
+    throw new Error("maxEvidenceMatches must be a positive integer");
+  }
+  if (!Number.isInteger(config.excerptCharacters) || config.excerptCharacters < 40) {
+    throw new Error("excerptCharacters must be an integer of at least 40");
+  }
+}
+
+function requireText(value: string, label: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) throw new Error(`${label} must not be empty`);
+  return trimmed;
+}

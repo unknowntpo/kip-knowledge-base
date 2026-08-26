@@ -1,4 +1,4 @@
-# KIP Knowledge Base
+# OSS Knowledge Base
 
 A searchable knowledge base for **Apache Kafka Improvement Proposals (KIPs)**,
 stored as an **Obsidian vault** and browsable two ways:
@@ -10,9 +10,63 @@ stored as an **Obsidian vault** and browsable two ways:
 
 The vault is the **single source of truth**; the viewer derives its data from it.
 
+> This describes the legacy implementation. The new system is a greenfield
+> rebuild: only the frontend visual language is a preservation requirement.
+> Vault storage, data models, ingestion, routes, and build pipelines may be
+> replaced; see [Project Constitution](docs/constitution.md) and
+> [Architecture Context](docs/architecture/context.md).
+
+## Development control plane
+
+New work follows a specification-driven flow: intent → acceptance assertions →
+architecture decisions → implementation plan → tested evidence.
+
+- [Product vision](docs/product/vision.md)
+- [Project constitution](docs/constitution.md)
+- [Project-neutral community model](docs/domain/community-model.md)
+- [Architecture context](docs/architecture/context.md)
+- [Spec 001: Kafka Decision Thread](docs/specs/001-kafka-decision-thread/spec.md)
+- [Spec 001 acceptance scenarios](docs/specs/001-kafka-decision-thread/acceptance.md)
+- [Implementation tasks](docs/tasks.md)
+
+## Live Kafka + DataFusion slice
+
+The smallest end-to-end implementation is split by responsibility: Vue and
+Cloudflare Pages Functions live in `apps/web/`; GitHub polling and R2 publishing
+live in `apps/github-publisher/`; shared domain and serving contracts live in
+`packages/`.
+
+```bash
+bun install
+bun run dev        # Vue :4177 + GitHub publisher :4178
+bun run test:unit  # deterministic domain behavior
+bun run test:integration # replay pipeline + Pages Function/R2 contracts
+bun run test:e2e   # fixture → local R2 → Pages Functions → Vue, desktop/mobile
+bun run typecheck  # all active TypeScript packages
+bun run --cwd apps/github-publisher test:live
+```
+
+This slice requires GitHub CLI authentication (`gh auth login`). In headless
+environments, set `GH_TOKEN`; the application never reads or writes the token
+itself and delegates authentication to `gh api`. The poller keeps one in-memory
+snapshot and GitHub CLI caches endpoint responses for five minutes. No LLM is
+used in this slice.
+
+Pull requests run `.github/workflows/ci.yml` with separate typecheck/build,
+unit, integration, and Playwright E2E gates. CI uses a recorded Kafka/DataFusion
+fixture and recreated local Wrangler/R2 state; it never spends GitHub API quota
+or requires an LLM/embedding credential.
+
 ## Repository layout
 
 ```
+apps/web/               Vue app + Pages Functions + local R2 tooling
+apps/github-publisher/  GitHub polling, Feed materialization, R2 publisher
+packages/domain/        source-neutral domain and Feed behavior
+packages/serving-contract/ FeedIndex/FeedDetail publication contract
+docs/                   specs, ADRs, domain model, and task state
+
+# Legacy implementation retained as migration reference
 vault/                  Obsidian vault (source of truth)
   KIPs/KIP-*.md         one note per KIP — frontmatter metadata + body sections
   KIPs.md               index / map of content

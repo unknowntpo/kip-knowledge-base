@@ -1,0 +1,289 @@
+{
+  "schema": "osskb.search-golden-fixture.v1",
+  "revision": "golden-kafka-datafusion-2026-08-25.v1",
+  "indexRevision": "fixture-index-2026-08-25.v1",
+  "chunks": [
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:github:issue:20983:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-github",
+      "recordId": "kafka:github:issue:20983",
+      "groupRootRecordId": "kafka:github:issue:20983",
+      "ordinal": 0,
+      "title": "KAFKA-20983: Keep static member id when LeaveGroup is suppressed",
+      "text": "A static consumer that calls unsubscribe suppresses the LeaveGroup RPC, but resetGenerationOnLeaveGroup erased the local member id. The next join carries UNKNOWN_MEMBER_ID while the coordinator still retains the old member.",
+      "canonicalUrl": "https://github.com/apache/kafka/issues/20983",
+      "author": "Kafka contributor",
+      "occurredAt": "2026-08-24T09:15:00Z",
+      "sourceVersion": "github-issue-20983-updated-2026-08-24",
+      "tags": ["consumer", "group-coordinator", "static-membership"],
+      "contentHash": "sha256:4b2047dceb2190b2df34e3b27eb13763b8007e02e9b8851df6ded405a9faec09"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:datafusion:github:issue:20983:0",
+      "projectId": "apache-datafusion",
+      "sourceInstanceId": "apache-datafusion-github",
+      "recordId": "datafusion:github:issue:20983",
+      "groupRootRecordId": "datafusion:github:issue:20983",
+      "ordinal": 0,
+      "title": "Issue 20983: Preserve qualifiers through aggregate rewrites",
+      "text": "The optimizer drops a relation qualifier after projection and aggregate rewrites. Column resolution then reports an ambiguous field even though the original qualified reference was valid.",
+      "canonicalUrl": "https://github.com/apache/datafusion/issues/20983",
+      "author": "DataFusion contributor",
+      "occurredAt": "2026-08-23T16:30:00Z",
+      "sourceVersion": "github-issue-20983-updated-2026-08-23",
+      "tags": ["optimizer", "aggregate", "qualified-column"],
+      "contentHash": "sha256:6226e898b8456a69d19cd70e919abdd05a74829831b2938c9d7b402aa7707cac"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:github:pr:23203:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-github",
+      "recordId": "kafka:github:pr:23203",
+      "groupRootRecordId": "kafka:github:pr:23203",
+      "ordinal": 0,
+      "title": "KAFKA-20917: Reduce overhead in RecordAccumulator.ready()",
+      "text": "RecordAccumulator.ready() loops once per topic and calls partitionReady for each partition on every Sender runOnce cycle. Cache the ready batches without changing producer delivery behavior.",
+      "canonicalUrl": "https://github.com/apache/kafka/pull/23203",
+      "author": "Kafka contributor",
+      "occurredAt": "2026-08-25T03:20:00Z",
+      "sourceVersion": "github-pr-23203-merged",
+      "tags": ["producer", "performance", "record-accumulator"],
+      "contentHash": "sha256:9a125c0fd468e8f193b416d301877838b31c431e7214afa9798160254231b05c"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:github:issue:20970:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-github",
+      "recordId": "kafka:github:issue:20970",
+      "groupRootRecordId": "kafka:github:issue:20970",
+      "ordinal": 0,
+      "title": "Expose broker readiness in the health endpoint",
+      "text": "Operators need a cached readiness result so probes do not perform expensive metadata checks for every request. This issue is unrelated to producer batch accumulation.",
+      "canonicalUrl": "https://github.com/apache/kafka/issues/20970",
+      "author": "Kafka operator",
+      "occurredAt": "2026-08-20T04:00:00Z",
+      "sourceVersion": "github-issue-20970-updated-2026-08-20",
+      "tags": ["broker", "health", "readiness"],
+      "contentHash": "sha256:4661eb8e69de917fe83dfef485518ea5baa7794aadd39246b93fb83ec9a0c33c"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:wiki:kip-405:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-wiki",
+      "recordId": "kafka:wiki:kip-405",
+      "groupRootRecordId": "kafka:wiki:kip-405",
+      "ordinal": 0,
+      "title": "KIP-405: Kafka Tiered Storage",
+      "text": "Tiered storage moves older log segments from broker disks to remote object storage while brokers retain hot local data. RemoteStorageManager reads and writes remote log segments.",
+      "canonicalUrl": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-405%3A+Kafka+Tiered+Storage",
+      "author": "Satish Duggana",
+      "occurredAt": "2019-01-08T00:00:00Z",
+      "sourceVersion": "confluence-kip-405-v1",
+      "tags": ["storage", "tiered-storage", "broker"],
+      "contentHash": "sha256:2e7534ddc79c3940b4d7862b9a3f045e0d376e54c0865f0ac7cf51970e5ddf93"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:mail:kip-405-compaction:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-dev-mail",
+      "recordId": "kafka:mail:kip-405-compaction",
+      "groupRootRecordId": "kafka:wiki:kip-405",
+      "ordinal": 0,
+      "title": "Re: [DISCUSS] KIP-405 compacted topic support",
+      "text": "Tiered storage cannot yet be enabled on compacted topics. The cleaner assumes it can rewrite any segment in place, which is false after a segment has been uploaded to remote storage.",
+      "canonicalUrl": "https://lists.apache.org/thread/kip-405-compaction-fixture",
+      "author": "Kafka committer",
+      "occurredAt": "2021-05-04T11:00:00Z",
+      "sourceVersion": "mail-message-2021-05-04",
+      "tags": ["storage", "compaction", "cleaner"],
+      "contentHash": "sha256:de9f8fe1537c049f234a005c9c084a7ac053b4b1edb920fdeaf2574492f90538"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:github:pr:remote-fetch:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-github",
+      "recordId": "kafka:github:pr:remote-fetch",
+      "groupRootRecordId": "kafka:wiki:kip-405",
+      "ordinal": 0,
+      "title": "Bound the remote fetch thread pool per broker",
+      "text": "The implementation caps concurrent remote log fetches per broker and records object-store latency so slow remote reads cannot exhaust request threads.",
+      "canonicalUrl": "https://github.com/apache/kafka/pull/16511",
+      "author": "Kafka contributor",
+      "occurredAt": "2026-06-11T08:00:00Z",
+      "sourceVersion": "github-pr-16511-merged",
+      "tags": ["storage", "remote-fetch", "latency"],
+      "contentHash": "sha256:16f8489e59cbef98fc309bd6fc3d83b3d5b716d2c18b959bcc5cc4118721dbe0"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:kafka:wiki:kip-1150:0",
+      "projectId": "apache-kafka",
+      "sourceInstanceId": "apache-kafka-wiki",
+      "recordId": "kafka:wiki:kip-1150",
+      "groupRootRecordId": "kafka:wiki:kip-1150",
+      "ordinal": 0,
+      "title": "KIP-1150: Diskless Topics",
+      "text": "Diskless topics write producer batches directly to object storage and register them with the coordinator. This proposal is related to storage cost but is not the KIP-405 tiered-storage work.",
+      "canonicalUrl": "https://cwiki.apache.org/confluence/display/KAFKA/KIP-1150%3A+Diskless+Topics",
+      "author": "Josep Prat",
+      "occurredAt": "2026-08-10T09:00:00Z",
+      "sourceVersion": "confluence-kip-1150-v1",
+      "tags": ["storage", "diskless", "object-storage"],
+      "contentHash": "sha256:f89f96f88825ea8c7a9b37811aeec3f7e8ae60f8c705aeacb7880605f1e6dcc4"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:datafusion:github:issue:19877:0",
+      "projectId": "apache-datafusion",
+      "sourceInstanceId": "apache-datafusion-github",
+      "recordId": "datafusion:github:issue:19877",
+      "groupRootRecordId": "datafusion:github:issue:19877",
+      "ordinal": 0,
+      "title": "Optimizer loses relation qualifier after aggregate rewrite",
+      "text": "A logical plan retains the qualified column before optimization, but the aggregate rewrite removes the relation qualifier and later projection cannot resolve the column.",
+      "canonicalUrl": "https://github.com/apache/datafusion/issues/19877",
+      "author": "DataFusion contributor",
+      "occurredAt": "2026-07-01T10:00:00Z",
+      "sourceVersion": "github-issue-19877-updated-2026-07-01",
+      "tags": ["optimizer", "logical-plan", "aggregate"],
+      "contentHash": "sha256:4e21e5779d3a56ded57efc16029d618aabfea921ea12e21fac39f1fb8912a765"
+    },
+    {
+      "schema": "osskb.source-record-chunk.v1",
+      "id": "chunk:datafusion:github:comment:19877-1:0",
+      "projectId": "apache-datafusion",
+      "sourceInstanceId": "apache-datafusion-github",
+      "recordId": "datafusion:github:comment:19877-1",
+      "groupRootRecordId": "datafusion:github:issue:19877",
+      "ordinal": 0,
+      "title": "Issue 19877 maintainer analysis",
+      "text": "The qualifier survives parsing and projection. It disappears specifically when Aggregate rewrites its output schema, so the fix belongs in the optimizer rule rather than the SQL parser.",
+      "canonicalUrl": "https://github.com/apache/datafusion/issues/19877#issuecomment-1",
+      "author": "DataFusion maintainer",
+      "occurredAt": "2026-07-02T14:00:00Z",
+      "sourceVersion": "github-comment-19877-1",
+      "tags": ["optimizer", "aggregate", "schema"],
+      "contentHash": "sha256:1cfb170cb25b3d80f6bf72315de2e7db709c7172b876c619146b50e82ba631e1"
+    }
+  ],
+  "queries": [
+    {
+      "id": "exact-kafka-issue-id",
+      "minimumPhase": 1,
+      "category": "exact-identifier",
+      "request": { "query": "KAFKA-20983" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:github:issue:20983"],
+        "acceptableGroupRootRecordIds": [],
+        "forbiddenGroupRootRecordIds": ["datafusion:github:issue:20983"],
+        "requiredEvidenceRecordIds": ["kafka:github:issue:20983"],
+        "topK": 1
+      }
+    },
+    {
+      "id": "exact-kip-id",
+      "minimumPhase": 1,
+      "category": "exact-identifier",
+      "request": { "query": "KIP-405" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:wiki:kip-405"],
+        "acceptableGroupRootRecordIds": [],
+        "forbiddenGroupRootRecordIds": ["kafka:wiki:kip-1150"],
+        "requiredEvidenceRecordIds": ["kafka:wiki:kip-405"],
+        "topK": 1
+      }
+    },
+    {
+      "id": "exact-code-symbol",
+      "minimumPhase": 1,
+      "category": "code-symbol",
+      "request": { "query": "RecordAccumulator.ready()" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:github:pr:23203"],
+        "acceptableGroupRootRecordIds": [],
+        "forbiddenGroupRootRecordIds": ["kafka:github:issue:20970"],
+        "requiredEvidenceRecordIds": ["kafka:github:pr:23203"],
+        "topK": 1
+      }
+    },
+    {
+      "id": "source-body-only-compaction",
+      "minimumPhase": 1,
+      "category": "source-body",
+      "request": { "query": "cleaner rewrite segment in place" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:wiki:kip-405"],
+        "acceptableGroupRootRecordIds": [],
+        "forbiddenGroupRootRecordIds": ["kafka:wiki:kip-1150"],
+        "requiredEvidenceRecordIds": ["kafka:mail:kip-405-compaction"],
+        "topK": 3
+      }
+    },
+    {
+      "id": "same-number-project-filter",
+      "minimumPhase": 1,
+      "category": "project-filter",
+      "request": {
+        "query": "issue 20983",
+        "filters": { "projectIds": ["apache-datafusion"] }
+      },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["datafusion:github:issue:20983"],
+        "acceptableGroupRootRecordIds": [],
+        "forbiddenGroupRootRecordIds": ["kafka:github:issue:20983"],
+        "requiredEvidenceRecordIds": ["datafusion:github:issue:20983"],
+        "topK": 1
+      }
+    },
+    {
+      "id": "cross-source-tiered-storage-question",
+      "minimumPhase": 1,
+      "category": "cross-source-question",
+      "request": { "query": "remote storage fetch latency compacted topics" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:wiki:kip-405"],
+        "acceptableGroupRootRecordIds": ["kafka:wiki:kip-1150"],
+        "forbiddenGroupRootRecordIds": [],
+        "requiredEvidenceRecordIds": [
+          "kafka:mail:kip-405-compaction",
+          "kafka:github:pr:remote-fetch"
+        ],
+        "topK": 3
+      }
+    },
+    {
+      "id": "hard-negative-readiness-prose",
+      "minimumPhase": 1,
+      "category": "hard-negative",
+      "request": { "query": "RecordAccumulator ready batches Sender" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:github:pr:23203"],
+        "acceptableGroupRootRecordIds": [],
+        "forbiddenGroupRootRecordIds": ["kafka:github:issue:20970"],
+        "requiredEvidenceRecordIds": ["kafka:github:pr:23203"],
+        "topK": 1
+      }
+    },
+    {
+      "id": "vocabulary-gap-cold-data",
+      "minimumPhase": 2,
+      "category": "vocabulary-gap",
+      "request": { "query": "move cold data off broker disks" },
+      "expectation": {
+        "requiredGroupRootRecordIds": ["kafka:wiki:kip-405"],
+        "acceptableGroupRootRecordIds": ["kafka:wiki:kip-1150"],
+        "forbiddenGroupRootRecordIds": [],
+        "requiredEvidenceRecordIds": ["kafka:wiki:kip-405"],
+        "topK": 3
+      }
+    }
+  ]
+}

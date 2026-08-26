@@ -1,0 +1,36 @@
+{
+  "name": "@oss-knowledge-base/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun scripts/dev.ts",
+    "dev:web": "vite",
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.worker.json --noEmit",
+    "test": "bun test test/*.test.ts",
+    "measure:search": "bun scripts/measure-search-fixture.ts",
+    "search:publish": "bun scripts/publish-search-r2.ts",
+    "r2:seed:local": "bun scripts/seed-local-r2.ts",
+    "pages:dev": "wrangler pages dev dist --persist-to .wrangler/state",
+    "pages:dev:e2e": "wrangler pages dev dist --ip 127.0.0.1 --port 8788 --persist-to .wrangler/e2e-state",
+    "pages:deploy:development": "wrangler pages deploy dist --project-name=oss-knowledge-base-dev --branch=main",
+    "pages:deploy:production": "wrangler pages deploy dist --project-name=oss-knowledge-base --branch=production",
+    "poc": "bun run build && bun run --cwd ../github-publisher r2:export && bun run r2:seed:local && bun run pages:dev"
+  },
+  "dependencies": {
+    "@oss-knowledge-base/domain": "workspace:*",
+    "@oss-knowledge-base/search": "workspace:*",
+    "@oss-knowledge-base/serving-contract": "workspace:*",
+    "vue": "3",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260820.1",
+    "@types/node": "^26.2.0",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "typescript": "5.9.3",
+    "vite": "^8.2.2",
+    "vue-tsc": "^3.3.10",
+    "wrangler": "^4.125.0"
+  }
+}

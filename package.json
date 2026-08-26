@@ -1,0 +1,23 @@
+{
+  "name": "oss-knowledge-base",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "test": "bun run test:unit && bun run test:integration",
+    "test:unit": "bun run --cwd packages/domain test && bun run --cwd packages/search test && bun run --cwd packages/serving-contract test",
+    "test:integration": "bun run --cwd packages/reference-pipeline test && bun run --cwd apps/github-publisher test && bun run --cwd apps/web test",
+    "test:e2e": "bun run e2e:prepare && playwright test",
+    "test:ci": "bun run typecheck && bun run build && bun run test:unit && bun run test:integration && bun run test:e2e",
+    "typecheck": "bun run --cwd packages/domain typecheck && bun run --cwd packages/serving-contract typecheck && bun run --cwd packages/search typecheck && bun run --cwd packages/reference-pipeline typecheck && bun run --cwd apps/github-publisher typecheck && bun run --cwd apps/web typecheck",
+    "build": "bun run --cwd apps/web build",
+    "measure:search": "bun run --cwd apps/web measure:search",
+    "search:publish": "bun run --cwd apps/web search:publish",
+    "dev": "bun apps/web/scripts/dev.ts",
+    "e2e:prepare": "bun apps/web/scripts/prepare-e2e-r2.ts",
+    "e2e:server": "bun run --cwd apps/web pages:dev:e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "playwright": "^1.62.1"
+  }
+}

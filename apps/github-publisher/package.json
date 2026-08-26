@@ -1,0 +1,24 @@
+{
+  "name": "@oss-knowledge-base/github-publisher",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "PORT=4178 bun --watch server.ts",
+    "start": "bun server.ts",
+    "test": "bun test test/*.test.ts",
+    "test:live": "RUN_LIVE_GITHUB_TEST=1 bun test test/live-feed.integration.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "r2:export": "bun scripts/export-r2-projection.ts",
+    "r2:publish": "bun scripts/publish-r2.ts"
+  },
+  "dependencies": {
+    "@oss-knowledge-base/domain": "workspace:*",
+    "@oss-knowledge-base/reference-pipeline": "workspace:*",
+    "@oss-knowledge-base/serving-contract": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.0",
+    "@types/node": "^26.2.0",
+    "typescript": "5.9.3"
+  }
+}

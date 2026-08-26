@@ -1,0 +1,20 @@
+{
+  "name": "@oss-knowledge-base/reference-pipeline",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json",
+    "oracle:update": "UPDATE_ORACLE=1 bun scripts/update-oracle-fixture.ts"
+  },
+  "dependencies": {
+    "@oss-knowledge-base/domain": "workspace:*",
+    "@oss-knowledge-base/serving-contract": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.0",
+    "typescript": "5.9.3"
+  }
+}

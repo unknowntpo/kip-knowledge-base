@@ -1,0 +1,348 @@
+/* Interface translations. Source evidence remains in its original language. */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "community-kb-locale";
+  const DEFAULT_LOCALE = "zh-Hant";
+  const SUPPORTED_LOCALES = ["zh-Hant", "en"];
+
+  const messages = {
+    "zh-Hant": {
+      "meta.title.feed": "社群知識庫 · 搜尋與動態",
+      "meta.description": "跨開源專案與來源的技術討論搜尋與社群動態。",
+      "meta.title.topic": "{id} · {title} · 社群知識庫",
+      "a11y.skip": "跳到主要內容",
+      "a11y.home": "回到搜尋與動態首頁",
+      "a11y.search": "搜尋技術主題與來源內容",
+      "a11y.clearQuery": "搜尋字詞",
+      "a11y.filters": "篩選條件",
+      "a11y.timelineFilters": "依來源篩選時間線",
+      "a11y.topicRail": "主題附加資訊",
+      "a11y.openTopic": "開啟主題 {id}：{title}",
+      "a11y.openSearchResult": "開啟搜尋結果：{title}",
+      "brand.name": "社群知識庫",
+      "brand.scope": "開源社群 · 多專案",
+      "demo.label": "示範資料",
+      "demo.title": "本頁所有內容為靜態示範資料，不連線後端",
+      "locale.label": "語言",
+      "feed.title": "搜尋社群知識",
+      "search.placeholder": "搜尋主題、來源或貢獻者",
+      "search.clear": "清除",
+      "search.examples": "熱門搜尋",
+      "search.lexicalMatch": "證據搜尋",
+      "search.exact": "精確命中",
+      "search.evidenceCount": "{count} 筆命中證據",
+      "search.loading": "正在搜尋原始證據…",
+      "search.failed": "目前無法搜尋原始證據。",
+      "filter.toggle": "篩選條件",
+      "filter.project": "專案",
+      "filter.allProjects": "全部專案",
+      "filter.source": "來源",
+      "filter.allSources": "全部來源",
+      "filter.status": "狀態",
+      "filter.status.kip": "KIP 狀態",
+      "filter.status.flip": "FLIP 狀態",
+      "filter.status.pullRequest": "Pull Request 狀態",
+      "filter.status.github": "GitHub 狀態",
+      "filter.allStatuses": "全部狀態",
+      "filter.tags": "標籤（可複選）",
+      "filter.time": "證據時間",
+      "filter.time.any": "不限時間",
+      "filter.time.7d": "最近 7 天",
+      "filter.time.30d": "最近 30 天",
+      "filter.time.365d": "最近一年",
+      "filter.clear": "清除全部篩選條件",
+      "sort.label": "排序",
+      "sort.hot": "熱門討論",
+      "sort.recent": "最新更新",
+      "sort.relevance": "最相關",
+      "stream.trending.kicker": "社群動態",
+      "stream.trending.title": "近期熱門討論",
+      "stream.trending.description": "依最近 30 天的 GitHub 活動訊號排序；機器人留言不計分。左側條件只會縮小這份動態。",
+      "stream.filtered.title": "篩選範圍內的熱門討論",
+      "stream.search.kicker": "搜尋結果",
+      "stream.search.title": "「{query}」的搜尋結果",
+      "stream.search.description": "比對標題、內容、標籤、貢獻者與原始紀錄，再依相關性排序；左側條件可進一步縮小結果。",
+      "evidence.match": "命中的原始片段",
+      "card.lastUpdated": "最後更新 {time}",
+      "card.activity": "30 天活動 {count}",
+      "card.trendingRank": "熱門第 {rank} · 30 天內 {count} 個活動訊號",
+      "card.open": "查看主題 →",
+      "empty.query": "搜尋字詞",
+      "empty.filters": "篩選條件",
+      "empty.current": "目前的條件",
+      "empty.join": "與",
+      "empty.message": "沒有主題符合{reason}。可以換個說法，或放寬條件再試一次。",
+      "empty.reset": "清除所有條件",
+      "results.related": "找到 <strong>{count}</strong> 個相關主題",
+      "results.hits": " · 共 {count} 筆命中的原始紀錄",
+      "results.filtered": "顯示 <strong>{count}</strong> 個主題（全部 {total} 個）",
+      "results.all": "顯示全部 <strong>{count}</strong> 個主題",
+      "timeline.empty": "這個來源目前沒有紀錄。",
+      "timeline.allSources": "看全部來源",
+      "timeline.year": "{year} 年",
+      "timeline.openSource": "開啟原始頁面 ↗",
+      "timeline.title": "主題時間線",
+      "timeline.order": "由新到舊 · 共 {count} 筆紀錄",
+      "keyPoints.title": "重點整理",
+      "keyPoints.optional": "選用",
+      "keyPoints.note": "先快速掌握值得注意的內容；每一點都能跳回時間線中的原始證據。",
+      "keyPoints.show": "查看重點",
+      "keyPoints.collapse": "收合重點",
+      "keyPoints.count": "以下 {count} 點整理自這個 Feed Detail 的原始紀錄。",
+      "keyPoints.sourceExtract": "POC 使用來源內容擷取，不呼叫 LLM。",
+      "keyPoints.generated": "由已設定的摘要工具產生。",
+      "keyPoints.unavailable": "尚未設定摘要工具；你仍可直接閱讀下方完整時間線。",
+      "keyPoints.failed": "重點整理暫時無法產生；原始時間線不受影響。",
+      "topic.back": "返回搜尋與動態",
+      "topic.proposer": "參與者",
+      "topic.release": "版本",
+      "topic.records": "原始紀錄",
+      "topic.recordCount": "{count} 筆",
+      "topic.lastUpdated": "最後更新",
+      "rail.sources": "來源分布",
+      "rail.tags": "標籤",
+      "rail.related": "相關主題",
+      "rail.prototype": "內容來自版本化的公開來源投影；「開啟原始頁面」會連回對應的 Wiki、Issue、郵件或程式碼審查。",
+      "ai.title": "重點摘要",
+      "ai.optional": "選用",
+      "ai.note": "摘要只是入口，不是結論：每一點都附上對應的原始紀錄，可以直接跳過去確認。",
+      "ai.generate": "整理重點摘要",
+      "ai.collapse": "收合摘要",
+      "ai.prototype": "這是原型：摘要為預先寫好的示範文字，不會呼叫任何服務。",
+      "ai.generated": "以下 {count} 點整理自這個主題的原始紀錄。點下方的來源可以跳到時間線上對應的那一筆。",
+      "stats.feed": "{topics} 個主題 · {records} 筆紀錄",
+      "stats.topic": "{id} · {records} 筆紀錄",
+      "footer.prototype": "公開來源證據經版本化 projector 建立 Feed 與 Search 投影；目前不呼叫 LLM。",
+      "date.today": "今天",
+      "date.daysAgo": "{count} 天前",
+      "date.weeksAgo": "{count} 週前",
+      "date.monthsAgo": "{count} 個月前",
+      "date.yearsAgo": "{count} 年前",
+      "status.adopted": "已採用",
+      "status.accepted": "已接受",
+      "status.early": "早期採用",
+      "status.discussing": "討論中",
+      "status.dropped": "已擱置",
+      "status.rejected": "未接受",
+      "status.open": "進行中",
+      "status.merged": "已合併",
+      "status.closed": "未合併結束",
+      "source.wiki": "Wiki",
+      "source.jira": "Jira",
+      "source.mail": "郵件論壇",
+      "source.github": "GitHub",
+      "sourceFull.wiki": "Confluence Wiki 提案頁",
+      "sourceFull.jira": "Jira 議題追蹤",
+      "sourceFull.mail": "dev 郵件論壇",
+      "sourceFull.github": "GitHub 程式碼審查",
+      "example.zookeeper": "為什麼要拿掉 ZooKeeper？",
+      "example.rebalance": "再平衡為什麼會讓整組停頓？",
+      "example.tiered": "分層儲存怎麼降低成本？",
+      "example.queue": "Kafka 可以當工作佇列用嗎？",
+      "example.eos": "剛好一次是怎麼做到的？",
+      "example.sourceApi": "串流的來源介面為什麼要重寫？",
+      "example.kafka": "Kafka Streams",
+      "example.datafusion": "DataFusion",
+      "example.docs": "documentation",
+      "example.performance": "performance"
+    },
+    en: {
+      "meta.title.feed": "Community Knowledge Base · Search & Feed",
+      "meta.description": "Cross-project, cross-source search and community activity for open-source discussions.",
+      "meta.title.topic": "{id} · {title} · Community Knowledge Base",
+      "a11y.skip": "Skip to main content",
+      "a11y.home": "Back to Search & Feed",
+      "a11y.search": "Search technical topics and source content",
+      "a11y.clearQuery": "search query",
+      "a11y.filters": "Filters",
+      "a11y.timelineFilters": "Filter timeline by source",
+      "a11y.topicRail": "Additional topic information",
+      "a11y.openTopic": "Open topic {id}: {title}",
+      "a11y.openSearchResult": "Open search result: {title}",
+      "brand.name": "Community Knowledge Base",
+      "brand.scope": "open source · multi-project",
+      "demo.label": "Demo data",
+      "demo.title": "This page uses static demo data and has no backend connection",
+      "locale.label": "Language",
+      "feed.title": "Search community knowledge",
+      "search.placeholder": "Search topics, sources, or contributors",
+      "search.clear": "Clear",
+      "search.examples": "Popular searches",
+      "search.lexicalMatch": "Evidence search",
+      "search.exact": "Exact match",
+      "search.evidenceCount": "{count} evidence matches",
+      "search.loading": "Searching source evidence…",
+      "search.failed": "Source evidence search is currently unavailable.",
+      "filter.toggle": "Filters",
+      "filter.project": "Project",
+      "filter.allProjects": "All projects",
+      "filter.source": "Source",
+      "filter.allSources": "All sources",
+      "filter.status": "Status",
+      "filter.status.kip": "KIP status",
+      "filter.status.flip": "FLIP status",
+      "filter.status.pullRequest": "Pull request status",
+      "filter.status.github": "GitHub status",
+      "filter.allStatuses": "All statuses",
+      "filter.tags": "Tags (multiple)",
+      "filter.time": "Evidence time",
+      "filter.time.any": "Any time",
+      "filter.time.7d": "Past 7 days",
+      "filter.time.30d": "Past 30 days",
+      "filter.time.365d": "Past year",
+      "filter.clear": "Clear all filters",
+      "sort.label": "Sort",
+      "sort.hot": "Hot discussions",
+      "sort.recent": "Recently updated",
+      "sort.relevance": "Most relevant",
+      "stream.trending.kicker": "COMMUNITY FEED",
+      "stream.trending.title": "Trending discussions",
+      "stream.trending.description": "Ranked by GitHub activity signals from the past 30 days; bot comments do not count. Filters only narrow this feed.",
+      "stream.filtered.title": "Trending in the selected scope",
+      "stream.search.kicker": "SEARCH RESULTS",
+      "stream.search.title": "Results for “{query}”",
+      "stream.search.description": "Matches titles, content, tags, contributors, and source records, then ranks by relevance. Filters refine these results.",
+      "evidence.match": "Matching source excerpt",
+      "card.lastUpdated": "Updated {time}",
+      "card.activity": "{count} activities in 30d",
+      "card.trendingRank": "Trending #{rank} · {count} activity signals in 30d",
+      "card.open": "View topic →",
+      "empty.query": "search query",
+      "empty.filters": "filters",
+      "empty.current": "current conditions",
+      "empty.join": " and ",
+      "empty.message": "No topics match the {reason}. Try another phrase or broaden the filters.",
+      "empty.reset": "Clear all",
+      "results.related": "Found <strong>{count}</strong> related topics",
+      "results.hits": " · {count} matching source records",
+      "results.filtered": "Showing <strong>{count}</strong> of {total} topics",
+      "results.all": "Showing all <strong>{count}</strong> topics",
+      "timeline.empty": "No records from this source yet.",
+      "timeline.allSources": "View all sources",
+      "timeline.year": "{year}",
+      "timeline.openSource": "Open source page ↗",
+      "timeline.title": "Topic timeline",
+      "timeline.order": "Newest first · {count} records",
+      "keyPoints.title": "Key points",
+      "keyPoints.optional": "Optional",
+      "keyPoints.note": "Scan what matters first; every point links back to evidence in the timeline.",
+      "keyPoints.show": "View key points",
+      "keyPoints.collapse": "Collapse key points",
+      "keyPoints.count": "These {count} points were derived from this Feed Detail's source records.",
+      "keyPoints.sourceExtract": "POC source extraction; no LLM is called.",
+      "keyPoints.generated": "Generated by the configured summarizer.",
+      "keyPoints.unavailable": "No summarizer is configured. The complete timeline remains available below.",
+      "keyPoints.failed": "Key points could not be produced. The source timeline is unaffected.",
+      "topic.back": "Back to Search & Feed",
+      "topic.proposer": "Participants",
+      "topic.release": "Release",
+      "topic.records": "Source records",
+      "topic.recordCount": "{count}",
+      "topic.lastUpdated": "Last updated",
+      "rail.sources": "Source distribution",
+      "rail.tags": "Tags",
+      "rail.related": "Related topics",
+      "rail.prototype": "Content comes from versioned public-source projections. Source links open the corresponding wiki, issue, mail, or code review.",
+      "ai.title": "Key points",
+      "ai.optional": "Optional",
+      "ai.note": "Every point links back to the source records used to produce it.",
+      "ai.generate": "Summarize key points",
+      "ai.collapse": "Collapse summary",
+      "ai.prototype": "Prototype only: this summary is prewritten and calls no external service.",
+      "ai.generated": "These {count} points were derived from this topic’s source records. Select a source to jump to its timeline entry.",
+      "stats.feed": "{topics} topics · {records} records",
+      "stats.topic": "{id} · {records} records",
+      "footer.prototype": "Public evidence is projected into versioned Feed and Search releases. No LLM is called.",
+      "date.today": "Today",
+      "date.daysAgo": "{count} days ago",
+      "date.weeksAgo": "{count} weeks ago",
+      "date.monthsAgo": "{count} months ago",
+      "date.yearsAgo": "{count} years ago",
+      "status.adopted": "Adopted",
+      "status.accepted": "Accepted",
+      "status.early": "Early adoption",
+      "status.discussing": "Discussing",
+      "status.dropped": "Dropped",
+      "status.rejected": "Rejected",
+      "status.open": "Open",
+      "status.merged": "Merged",
+      "status.closed": "Closed without merge",
+      "source.wiki": "Wiki",
+      "source.jira": "Jira",
+      "source.mail": "Mailing list",
+      "source.github": "GitHub",
+      "sourceFull.wiki": "Confluence proposal",
+      "sourceFull.jira": "Jira issue tracker",
+      "sourceFull.mail": "dev mailing list",
+      "sourceFull.github": "GitHub code review",
+      "example.zookeeper": "Why remove ZooKeeper?",
+      "example.rebalance": "Why does rebalancing pause the whole group?",
+      "example.tiered": "How does tiered storage reduce cost?",
+      "example.queue": "Can Kafka work as a queue?",
+      "example.eos": "How does exactly-once work?",
+      "example.sourceApi": "Why redesign the streaming source API?",
+      "example.kafka": "Kafka Streams",
+      "example.datafusion": "DataFusion",
+      "example.docs": "documentation",
+      "example.performance": "performance"
+    }
+  };
+
+  function normalizeLocale(value) {
+    return String(value || "").toLowerCase().startsWith("zh") ? "zh-Hant" : "en";
+  }
+
+  function initialLocale() {
+    try {
+      const saved = window.localStorage.getItem(STORAGE_KEY);
+      if (SUPPORTED_LOCALES.indexOf(saved) !== -1) return saved;
+    } catch (_) {
+      // Storage may be unavailable in private browsing; browser language is enough.
+    }
+    return normalizeLocale(window.navigator.language || DEFAULT_LOCALE);
+  }
+
+  let locale = initialLocale();
+
+  function t(key, variables) {
+    const table = messages[locale] || messages[DEFAULT_LOCALE];
+    const fallback = messages[DEFAULT_LOCALE][key];
+    const template = table[key] === undefined ? (fallback === undefined ? key : fallback) : table[key];
+    return String(template).replace(/\{([a-zA-Z0-9_]+)\}/g, function (_, name) {
+      return variables && variables[name] !== undefined ? String(variables[name]) : "{" + name + "}";
+    });
+  }
+
+  function apply(root) {
+    const scope = root || document;
+    document.documentElement.lang = locale;
+    scope.querySelectorAll("[data-i18n]").forEach(function (node) {
+      node.textContent = t(node.getAttribute("data-i18n"));
+    });
+    ["placeholder", "title", "aria-label", "content"].forEach(function (attribute) {
+      scope.querySelectorAll("[data-i18n-" + attribute + "]").forEach(function (node) {
+        node.setAttribute(attribute, t(node.getAttribute("data-i18n-" + attribute)));
+      });
+    });
+  }
+
+  function setLocale(next) {
+    locale = normalizeLocale(next);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, locale);
+    } catch (_) {
+      // Locale still applies for this session when storage is unavailable.
+    }
+    apply(document);
+    window.dispatchEvent(new CustomEvent("kb:localechange", { detail: { locale: locale } }));
+  }
+
+  window.KB_I18N = {
+    apply: apply,
+    getLocale: function () { return locale; },
+    setLocale: setLocale,
+    supportedLocales: SUPPORTED_LOCALES.slice(),
+    t: t,
+  };
+})();

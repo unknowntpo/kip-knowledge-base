@@ -1,0 +1,359 @@
+import type { FeedDetail, FeedEntry } from "@oss-knowledge-base/domain";
+import type { SourceRecordChunkV1 } from "@oss-knowledge-base/search";
+
+import { feedEntryObjectName, type ProjectionObject } from "./r2";
+
+export const SEARCH_CURRENT_KEY = "public/search/v1/current.json";
+export const SEARCH_CURRENT_SCHEMA = "osskb.search-current.v1" as const;
+export const SEARCH_RELEASE_SCHEMA = "osskb.search-release.v1" as const;
+export const SEARCH_LEXICAL_SHARD_SCHEMA = "osskb.search-lexical-shard.v1" as const;
+export const SEARCH_RESPONSE_SCHEMA = "osskb.search-response.v1" as const;
+const SEARCH_DETAIL_REF_SCHEMA = "osskb.search-detail-ref.v1" as const;
+const SEARCH_DETAIL_REF_PREFIX = "sdr1.";
+
+export interface SearchCurrentPointerV1 {
+  readonly schema: typeof SEARCH_CURRENT_SCHEMA;
+  readonly indexRevision: string;
+  readonly releaseManifestKey: string;
+  readonly generatedAt: string;
+}
+
+export interface SearchReleaseManifestV1 {
+  readonly schema: typeof SEARCH_RELEASE_SCHEMA;
+  readonly indexRevision: string;
+  readonly corpusRevision: string;
+  readonly lexicalRevision: string;
+  readonly generatedAt: string;
+  readonly shardKeys: Readonly<Record<string, string>>;
+  readonly detailPrefix: string;
+  readonly chunkCount: number;
+  readonly groupCount: number;
+  readonly objectDigests: Readonly<Record<string, string>>;
+}
+
+export interface SearchGroupProjectionV1 {
+  readonly groupRootRecordId: string;
+  readonly entry: FeedEntry;
+  /** Project-local status derived from the group's root SourceRecord. */
+  readonly projectStatus?: string;
+}
+
+export interface SearchLexicalShardV1 {
+  readonly schema: typeof SEARCH_LEXICAL_SHARD_SCHEMA;
+  readonly indexRevision: string;
+  readonly projectId: string;
+  readonly chunks: readonly SourceRecordChunkV1[];
+  readonly groups: readonly SearchGroupProjectionV1[];
+}
+
+export interface SearchPublicationV1 {
+  readonly indexRevision: string;
+  readonly corpusRevision: string;
+  readonly lexicalRevision: string;
+  readonly generatedAt: string;
+  readonly shards: readonly SearchLexicalShardV1[];
+  readonly details: readonly {
+    readonly groupRootRecordId: string;
+    readonly detail: FeedDetail;
+  }[];
+}
+
+export interface SearchEvidenceMatchV1 {
+  readonly chunkId: string;
+  readonly recordId: string;
+  readonly excerpt: string;
+  readonly canonicalUrl: string;
+  readonly author: string;
+  readonly occurredAt: string;
+  readonly sourceVersion: string;
+  readonly matchedTerms: readonly string[];
+  readonly signals: {
+    readonly exactIdentifier: boolean;
+    readonly lexicalRank: number;
+    readonly fusedRank: number;
+  };
+}
+
+export interface SearchResultV1 {
+  readonly entry: FeedEntry;
+  readonly projectStatus?: string;
+  readonly matches: readonly SearchEvidenceMatchV1[];
+  readonly detailRef: string;
+}
+
+export interface SearchResponseV1 {
+  readonly schema: typeof SEARCH_RESPONSE_SCHEMA;
+  readonly query: string;
+  readonly results: readonly SearchResultV1[];
+  readonly retrieval: {
+    readonly indexRevision: string;
+    readonly lexicalRevision: string;
+    readonly generatedAt: string;
+    readonly stale: boolean;
+  };
+}
+
+export interface SearchDetailRefV1 {
+  readonly schema: typeof SEARCH_DETAIL_REF_SCHEMA;
+  readonly indexRevision: string;
+  readonly projectId: string;
+  readonly groupRootRecordId: string;
+  readonly query: string;
+  readonly matchedRecordIds: readonly string[];
+}
+
+export async function buildR2SearchProjection(
+  publication: SearchPublicationV1,
+): Promise<readonly ProjectionObject[]> {
+  requireSegment(publication.indexRevision, "indexRevision");
+  requireText(publication.corpusRevision, "corpusRevision");
+  requireText(publication.lexicalRevision, "lexicalRevision");
+  requireTimestamp(publication.generatedAt, "generatedAt");
+
+  const prefix = searchReleasePrefix(publication.indexRevision);
+  const detailPrefix = `${prefix}/details/`;
+  const releaseManifestKey = `${prefix}/manifest.json`;
+  const inputShards = [...publication.shards].sort((left, right) =>
+    left.projectId.localeCompare(right.projectId));
+  requireUnique(inputShards.map((shard) => shard.projectId), "Search shard projectId");
+
+  const groups = inputShards.flatMap((shard) => {
+    validateShard(shard, publication.indexRevision);
+    return shard.groups.map((group) => ({ ...group, projectId: shard.projectId }));
+  });
+  requireUnique(groups.map((group) => group.groupRootRecordId), "Search group root");
+  const details = new Map(publication.details.map((item) => [item.groupRootRecordId, item.detail]));
+  requireUnique(publication.details.map((item) => item.groupRootRecordId), "Search detail group root");
+
+  const groupRoots = new Set(groups.map((group) => group.groupRootRecordId));
+  const missing = [...groupRoots].filter((groupRoot) => !details.has(groupRoot));
+  const orphan = [...details.keys()].filter((groupRoot) => !groupRoots.has(groupRoot));
+  if (missing.length > 0 || orphan.length > 0) {
+    throw new Error(`Search publication membership mismatch: missing=[${missing.join(", ")}], orphan=[${orphan.join(", ")}]`);
+  }
+
+  const shards = inputShards.map((shard): SearchLexicalShardV1 => ({
+    ...shard,
+    groups: shard.groups.map((group) => {
+      const detail = details.get(group.groupRootRecordId)!;
+      const root = detail.records.find((record) => record.id === group.groupRootRecordId);
+      const projectStatus = root?.artifactStatus?.trim();
+      return {
+        groupRootRecordId: group.groupRootRecordId,
+        entry: group.entry,
+        ...(projectStatus === undefined || projectStatus.length === 0
+          ? {}
+          : { projectStatus }),
+      };
+    }),
+  }));
+
+  const dataObjects: ProjectionObject[] = [];
+  const shardKeys: Record<string, string> = {};
+  for (const shard of shards) {
+    const key = `${prefix}/lexical/${encodeURIComponent(shard.projectId)}.json`;
+    shardKeys[shard.projectId] = key;
+    dataObjects.push(immutableObject(key, JSON.stringify(shard)));
+  }
+  for (const group of groups) {
+    const detail = details.get(group.groupRootRecordId)!;
+    validateDetail(group.entry, detail, group.groupRootRecordId, group.projectId);
+    const key = `${detailPrefix}${feedEntryObjectName(group.groupRootRecordId)}.json`;
+    dataObjects.push(immutableObject(key, JSON.stringify(detail)));
+  }
+
+  const objectDigests = Object.fromEntries(await Promise.all(dataObjects.map(async (object) => [
+    object.key,
+    `sha256:${await sha256(object.body)}`,
+  ] as const)));
+  const manifest: SearchReleaseManifestV1 = {
+    schema: SEARCH_RELEASE_SCHEMA,
+    indexRevision: publication.indexRevision,
+    corpusRevision: publication.corpusRevision,
+    lexicalRevision: publication.lexicalRevision,
+    generatedAt: publication.generatedAt,
+    shardKeys,
+    detailPrefix,
+    chunkCount: shards.reduce((total, shard) => total + shard.chunks.length, 0),
+    groupCount: groups.length,
+    objectDigests,
+  };
+  const current: SearchCurrentPointerV1 = {
+    schema: SEARCH_CURRENT_SCHEMA,
+    indexRevision: publication.indexRevision,
+    releaseManifestKey,
+    generatedAt: publication.generatedAt,
+  };
+
+  return [
+    ...dataObjects,
+    immutableObject(releaseManifestKey, JSON.stringify(manifest)),
+    {
+      key: SEARCH_CURRENT_KEY,
+      body: JSON.stringify(current),
+      cacheControl: "public, max-age=30, must-revalidate",
+    },
+  ];
+}
+
+export function searchReleasePrefix(indexRevision: string): string {
+  return `public/search/v1/releases/${requireSegment(indexRevision, "indexRevision")}`;
+}
+
+export function searchReleaseManifestKey(indexRevision: string): string {
+  return `${searchReleasePrefix(indexRevision)}/manifest.json`;
+}
+
+export function createSearchDetailRef(
+  value: Omit<SearchDetailRefV1, "schema">,
+): string {
+  const parsed = validateDetailRef({ schema: SEARCH_DETAIL_REF_SCHEMA, ...value });
+  const bytes = new TextEncoder().encode(JSON.stringify(parsed));
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return `${SEARCH_DETAIL_REF_PREFIX}${btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "")}`;
+}
+
+export function parseSearchDetailRef(value: string): SearchDetailRefV1 {
+  if (!value.startsWith(SEARCH_DETAIL_REF_PREFIX) || value.length > 4096) {
+    throw new Error("Search detailRef is invalid");
+  }
+  const encoded = value.slice(SEARCH_DETAIL_REF_PREFIX.length).replaceAll("-", "+").replaceAll("_", "/");
+  const padded = encoded.padEnd(Math.ceil(encoded.length / 4) * 4, "=");
+  try {
+    const binary = atob(padded);
+    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    return validateDetailRef(JSON.parse(new TextDecoder().decode(bytes)) as unknown);
+  } catch {
+    throw new Error("Search detailRef is invalid");
+  }
+}
+
+export function isSearchCurrentPointer(value: unknown): value is SearchCurrentPointerV1 {
+  if (!isObject(value)) return false;
+  return value.schema === SEARCH_CURRENT_SCHEMA &&
+    isNonEmptyString(value.indexRevision) &&
+    isNonEmptyString(value.releaseManifestKey) &&
+    isNonEmptyString(value.generatedAt);
+}
+
+export function isSearchReleaseManifest(value: unknown): value is SearchReleaseManifestV1 {
+  if (!isObject(value) || !isObject(value.shardKeys) || !isObject(value.objectDigests)) return false;
+  return value.schema === SEARCH_RELEASE_SCHEMA &&
+    isNonEmptyString(value.indexRevision) &&
+    isNonEmptyString(value.corpusRevision) &&
+    isNonEmptyString(value.lexicalRevision) &&
+    isNonEmptyString(value.generatedAt) &&
+    isNonEmptyString(value.detailPrefix) &&
+    typeof value.chunkCount === "number" &&
+    typeof value.groupCount === "number" &&
+    Object.values(value.shardKeys).every(isNonEmptyString) &&
+    Object.values(value.objectDigests).every(isSha256);
+}
+
+export function isSearchLexicalShard(value: unknown): value is SearchLexicalShardV1 {
+  if (!isObject(value)) return false;
+  return value.schema === SEARCH_LEXICAL_SHARD_SCHEMA &&
+    isNonEmptyString(value.indexRevision) &&
+    isNonEmptyString(value.projectId) &&
+    Array.isArray(value.chunks) &&
+    Array.isArray(value.groups);
+}
+
+function validateShard(shard: SearchLexicalShardV1, indexRevision: string): void {
+  if (shard.schema !== SEARCH_LEXICAL_SHARD_SCHEMA) throw new Error("Search shard schema is invalid");
+  if (shard.indexRevision !== indexRevision) throw new Error("Search shard index revision mismatch");
+  requireText(shard.projectId, "shard.projectId");
+  requireUnique(shard.groups.map((group) => group.groupRootRecordId), `${shard.projectId} group root`);
+  for (const group of shard.groups) {
+    if (group.projectStatus !== undefined) requireText(group.projectStatus, "group.projectStatus");
+  }
+  const groups = new Map(shard.groups.map((group) => [group.groupRootRecordId, group]));
+  for (const chunk of shard.chunks) {
+    if (chunk.projectId !== shard.projectId) throw new Error(`Chunk ${chunk.id} crossed shard project scope`);
+    const group = groups.get(chunk.groupRootRecordId);
+    if (group === undefined) throw new Error(`Chunk ${chunk.id} has no Search group projection`);
+    if (!group.entry.recordIds.includes(chunk.recordId)) {
+      throw new Error(`Chunk ${chunk.id} record is absent from its FeedEntry`);
+    }
+  }
+}
+
+function validateDetail(
+  entry: FeedEntry,
+  detail: FeedDetail,
+  groupRootRecordId: string,
+  projectId: string,
+): void {
+  if (entry.id !== detail.entry.id) throw new Error(`Search detail entry mismatch for ${groupRootRecordId}`);
+  if (entry.projectId !== projectId || detail.entry.projectId !== projectId) {
+    throw new Error(`Search detail crossed project scope for ${groupRootRecordId}`);
+  }
+  if (!entry.recordIds.includes(groupRootRecordId)) {
+    throw new Error(`Search group root ${groupRootRecordId} is absent from FeedEntry records`);
+  }
+  const expected = [...entry.recordIds].sort();
+  const actual = detail.records.map((record) => record.id).sort();
+  if (JSON.stringify(expected) !== JSON.stringify(actual)) {
+    throw new Error(`Search detail records mismatch for ${groupRootRecordId}`);
+  }
+}
+
+function validateDetailRef(value: unknown): SearchDetailRefV1 {
+  if (!isObject(value) || value.schema !== SEARCH_DETAIL_REF_SCHEMA) {
+    throw new Error("Search detailRef is invalid");
+  }
+  const indexRevision = requireSegment(value.indexRevision, "detailRef.indexRevision");
+  const projectId = requireText(value.projectId, "detailRef.projectId");
+  const groupRootRecordId = requireText(value.groupRootRecordId, "detailRef.groupRootRecordId");
+  const query = requireText(value.query, "detailRef.query");
+  if (query.length > 500) throw new Error("Search detailRef query is too long");
+  if (!Array.isArray(value.matchedRecordIds) || value.matchedRecordIds.length === 0 || value.matchedRecordIds.length > 20) {
+    throw new Error("Search detailRef matchedRecordIds are invalid");
+  }
+  const matchedRecordIds = value.matchedRecordIds.map((recordId) => requireText(recordId, "detailRef.matchedRecordId"));
+  requireUnique(matchedRecordIds, "Search detailRef matchedRecordId");
+  return { schema: SEARCH_DETAIL_REF_SCHEMA, indexRevision, projectId, groupRootRecordId, query, matchedRecordIds };
+}
+
+function immutableObject(key: string, body: string): ProjectionObject {
+  return { key, body, cacheControl: "public, max-age=31536000, immutable" };
+}
+
+async function sha256(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function requireSegment(value: unknown, label: string): string {
+  const result = requireText(value, label);
+  if (!/^[A-Za-z0-9._-]+$/u.test(result)) throw new Error(`${label} is not a safe object-key segment`);
+  return result;
+}
+
+function requireTimestamp(value: unknown, label: string): string {
+  const result = requireText(value, label);
+  if (Number.isNaN(Date.parse(result))) throw new Error(`${label} must be a timestamp`);
+  return result;
+}
+
+function requireText(value: unknown, label: string): string {
+  if (typeof value !== "string" || value.trim().length === 0) throw new Error(`${label} must not be empty`);
+  return value.trim();
+}
+
+function requireUnique(values: readonly string[], label: string): void {
+  if (new Set(values).size !== values.length) throw new Error(`${label} values must be unique`);
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0;
+}
+
+function isSha256(value: unknown): value is string {
+  return typeof value === "string" && /^sha256:[0-9a-f]{64}$/u.test(value);
+}

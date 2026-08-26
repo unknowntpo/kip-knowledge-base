@@ -11,3 +11,9 @@ vault/.obsidian/workspace*.json
 vault/.obsidian/cache
 # Ingestion: raw upstream payload snapshots referenced by ChangeEvent.payloadRef
 tools/ingest-cache/
+apps/web/dist/
+apps/web/.wrangler/
+apps/web/r2-seed/
+apps/web/.e2e/
+playwright-report/
+test-results/

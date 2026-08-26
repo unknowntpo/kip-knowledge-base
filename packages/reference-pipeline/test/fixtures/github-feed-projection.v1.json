@@ -1,0 +1,526 @@
+{
+  "schema": "osskb.reference-projection.v1",
+  "digest": "sha256:cecea8b974520ab3185e0f3ea944642890d24429601595028fd7bc02eb618c36",
+  "publication": {
+    "index": {
+      "schema": "osskb.feed-index.v2",
+      "generatedAt": "2026-08-25T12:00:00Z",
+      "sourceTypes": {
+        "github": {
+          "key": "github",
+          "label": "GitHub",
+          "full": "GitHub issues, pull requests, and comments"
+        }
+      },
+      "projects": [
+        {
+          "key": "datafusion",
+          "label": "Apache DataFusion",
+          "profileVersion": "apache-datafusion@github-live-1",
+          "statusPolicyRef": "github-issue-or-pull-request-status@1",
+          "statusFacetKey": "filter.status.github",
+          "sources": [
+            "github"
+          ],
+          "statuses": [
+            {
+              "key": "open",
+              "label": "Open"
+            },
+            {
+              "key": "merged",
+              "label": "Merged"
+            },
+            {
+              "key": "closed",
+              "label": "Closed"
+            }
+          ]
+        },
+        {
+          "key": "kafka",
+          "label": "Apache Kafka",
+          "profileVersion": "apache-kafka@github-live-1",
+          "statusPolicyRef": "github-issue-or-pull-request-status@1",
+          "statusFacetKey": "filter.status.github",
+          "sources": [
+            "github"
+          ],
+          "statuses": [
+            {
+              "key": "open",
+              "label": "Open"
+            },
+            {
+              "key": "merged",
+              "label": "Merged"
+            },
+            {
+              "key": "closed",
+              "label": "Closed"
+            }
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "displayId": "DATAFUSION-ISSUE-42",
+          "projectKey": "datafusion",
+          "status": "open",
+          "releaseLabel": "GitHub Issue #42",
+          "authors": [
+            "dana",
+            "erin"
+          ],
+          "tags": [
+            "Issue",
+            "optimizer"
+          ],
+          "links": {
+            "github": "https://github.com/apache/datafusion/issues/42"
+          },
+          "sourceCounts": {
+            "github": 2
+          },
+          "lastActivityAt": "2026-08-23T09:00:00Z",
+          "searchText": "Preserve optimizer qualifiers The optimizer must preserve qualified column bindings across rewrites. dana erin Issue #42: Preserve optimizer qualifiers The optimizer must preserve qualified column bindings across rewrites. dana Comment on #42 A late optimizer review confirms the qualifier survives both projection and aggregate rewrites. erin",
+          "entry": {
+            "id": "feed-entry:feed-record-group:datafusion:github:issue:42",
+            "projectId": "apache-datafusion",
+            "title": "Preserve optimizer qualifiers",
+            "summary": "The optimizer must preserve qualified column bindings across rewrites.",
+            "sourceTitleRecordId": "datafusion:github:issue:42",
+            "recordIds": [
+              "datafusion:github:issue:42",
+              "datafusion:github:issue:42:comment:901"
+            ],
+            "highlightedRecordIds": [
+              "datafusion:github:issue:42"
+            ],
+            "reason": {
+              "kind": "trending",
+              "label": "2 GitHub activity signals in the last 30 days",
+              "evidenceEventIds": [
+                "event:datafusion:issue:42:comment:901:v1",
+                "event:datafusion:issue:42:v1"
+              ]
+            },
+            "activity": {
+              "score": 2,
+              "evidenceEventIds": [
+                "event:datafusion:issue:42:comment:901:v1",
+                "event:datafusion:issue:42:v1"
+              ]
+            },
+            "grouping": {
+              "relationshipIds": [
+                "connection:datafusion:github:issue:42:comment:901:discusses:datafusion:github:issue:42"
+              ],
+              "clusteringRevision": "github-thread@1"
+            }
+          }
+        },
+        {
+          "displayId": "KAFKA-ISSUE-42",
+          "projectKey": "kafka",
+          "status": "open",
+          "releaseLabel": "GitHub Issue #42",
+          "authors": [
+            "alice",
+            "carol"
+          ],
+          "tags": [
+            "Issue",
+            "coordinator",
+            "performance"
+          ],
+          "links": {
+            "github": "https://github.com/apache/kafka/issues/42"
+          },
+          "sourceCounts": {
+            "github": 2
+          },
+          "lastActivityAt": "2026-08-24T12:00:00Z",
+          "searchText": "Bound coordinator recovery work The coordinator recovery path must remain bounded during failover. alice carol Issue #42: Bound coordinator recovery work The coordinator recovery path must remain bounded during failover. alice Comment on #42 The latest benchmark confirms recovery stays bounded across repeated coordinator failovers. carol",
+          "entry": {
+            "id": "feed-entry:feed-record-group:kafka:github:issue:42",
+            "projectId": "apache-kafka",
+            "title": "Bound coordinator recovery work",
+            "summary": "The coordinator recovery path must remain bounded during failover.",
+            "sourceTitleRecordId": "kafka:github:issue:42",
+            "recordIds": [
+              "kafka:github:issue:42",
+              "kafka:github:issue:42:comment:900"
+            ],
+            "highlightedRecordIds": [
+              "kafka:github:issue:42"
+            ],
+            "reason": {
+              "kind": "trending",
+              "label": "2 GitHub activity signals in the last 30 days",
+              "evidenceEventIds": [
+                "event:kafka:issue:42:comment:900:v1",
+                "event:kafka:issue:42:v1"
+              ]
+            },
+            "activity": {
+              "score": 2,
+              "evidenceEventIds": [
+                "event:kafka:issue:42:comment:900:v1",
+                "event:kafka:issue:42:v1"
+              ]
+            },
+            "grouping": {
+              "relationshipIds": [
+                "connection:kafka:github:issue:42:comment:900:discusses:kafka:github:issue:42"
+              ],
+              "clusteringRevision": "github-thread@1"
+            }
+          }
+        },
+        {
+          "displayId": "KAFKA-PR-43",
+          "projectKey": "kafka",
+          "status": "merged",
+          "releaseLabel": "GitHub Pull Request #43",
+          "authors": [
+            "bob"
+          ],
+          "tags": [
+            "Pull Request",
+            "metrics"
+          ],
+          "links": {
+            "github": "https://github.com/apache/kafka/pull/43"
+          },
+          "sourceCounts": {
+            "github": 1
+          },
+          "lastActivityAt": "2026-08-24T11:00:00Z",
+          "searchText": "Add bounded recovery metrics This pull request exposes bounded recovery metrics for operators. bob PR #43: Add bounded recovery metrics This pull request exposes bounded recovery metrics for operators. bob",
+          "entry": {
+            "id": "feed-entry:feed-record-group:kafka:github:pull:43",
+            "projectId": "apache-kafka",
+            "title": "Add bounded recovery metrics",
+            "summary": "This pull request exposes bounded recovery metrics for operators.",
+            "sourceTitleRecordId": "kafka:github:pull:43",
+            "recordIds": [
+              "kafka:github:pull:43"
+            ],
+            "highlightedRecordIds": [
+              "kafka:github:pull:43"
+            ],
+            "reason": {
+              "kind": "trending",
+              "label": "1 GitHub activity signals in the last 30 days",
+              "evidenceEventIds": [
+                "event:kafka:pull:43:v1"
+              ]
+            },
+            "activity": {
+              "score": 1,
+              "evidenceEventIds": [
+                "event:kafka:pull:43:v1"
+              ]
+            },
+            "grouping": {
+              "relationshipIds": [],
+              "clusteringRevision": "github-thread@1"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "mode": "replayable-reference-pipeline",
+        "materializedAt": "2026-08-25T12:00:00Z",
+        "inputEventCount": 5,
+        "rejectedEventCount": 0,
+        "materializerRevision": "github-reference-materializer@1",
+        "clusteringRevision": "github-thread@1",
+        "profileRevisions": {
+          "apache-kafka": "apache-kafka@github-live-1",
+          "apache-datafusion": "apache-datafusion@github-live-1"
+        }
+      }
+    },
+    "details": [
+      {
+        "entry": {
+          "id": "feed-entry:feed-record-group:datafusion:github:issue:42",
+          "projectId": "apache-datafusion",
+          "title": "Preserve optimizer qualifiers",
+          "summary": "The optimizer must preserve qualified column bindings across rewrites.",
+          "sourceTitleRecordId": "datafusion:github:issue:42",
+          "recordIds": [
+            "datafusion:github:issue:42",
+            "datafusion:github:issue:42:comment:901"
+          ],
+          "highlightedRecordIds": [
+            "datafusion:github:issue:42"
+          ],
+          "reason": {
+            "kind": "trending",
+            "label": "2 GitHub activity signals in the last 30 days",
+            "evidenceEventIds": [
+              "event:datafusion:issue:42:comment:901:v1",
+              "event:datafusion:issue:42:v1"
+            ]
+          },
+          "activity": {
+            "score": 2,
+            "evidenceEventIds": [
+              "event:datafusion:issue:42:comment:901:v1",
+              "event:datafusion:issue:42:v1"
+            ]
+          },
+          "grouping": {
+            "relationshipIds": [
+              "connection:datafusion:github:issue:42:comment:901:discusses:datafusion:github:issue:42"
+            ],
+            "clusteringRevision": "github-thread@1"
+          }
+        },
+        "records": [
+          {
+            "id": "datafusion:github:issue:42",
+            "projectId": "apache-datafusion",
+            "sourceInstanceId": "datafusion:github",
+            "source": "github",
+            "sourceType": "code-host",
+            "kind": "GitHub Issue",
+            "title": "Issue #42: Preserve optimizer qualifiers",
+            "excerpt": "The optimizer must preserve qualified column bindings across rewrites.",
+            "author": "dana",
+            "role": "Contributor",
+            "occurredAt": "2026-08-23T09:00:00Z",
+            "canonicalUrl": "https://github.com/apache/datafusion/issues/42",
+            "sourceVersion": "2026-08-23T09:00:00Z",
+            "artifactStatus": "open"
+          },
+          {
+            "id": "datafusion:github:issue:42:comment:901",
+            "projectId": "apache-datafusion",
+            "sourceInstanceId": "datafusion:github",
+            "source": "github",
+            "sourceType": "code-host",
+            "kind": "Comment",
+            "title": "Comment on #42",
+            "excerpt": "A late optimizer review confirms the qualifier survives both projection and aggregate rewrites.",
+            "author": "erin",
+            "role": "Apache member",
+            "occurredAt": "2026-08-22T10:00:00Z",
+            "canonicalUrl": "https://github.com/apache/datafusion/issues/42#issuecomment-901",
+            "sourceVersion": "2026-08-25T08:00:00Z"
+          }
+        ],
+        "connections": [
+          {
+            "id": "connection:datafusion:github:issue:42:comment:901:discusses:datafusion:github:issue:42",
+            "fromRecordId": "datafusion:github:issue:42:comment:901",
+            "toRecordId": "datafusion:github:issue:42",
+            "kind": "discusses",
+            "derivation": {
+              "kind": "deterministic-rule",
+              "revision": "github-thread@1"
+            }
+          }
+        ],
+        "keyPoints": {
+          "status": "generated",
+          "points": [
+            {
+              "id": "key-point:datafusion:github:issue:42:scope",
+              "text": "The optimizer must preserve qualified column bindings across rewrites.",
+              "evidenceRecordIds": [
+                "datafusion:github:issue:42"
+              ]
+            },
+            {
+              "id": "key-point:datafusion:github:issue:42:comment:901:latest",
+              "text": "Latest community update from erin: A late optimizer review confirms the qualifier survives both projection and aggregate rewrites.",
+              "evidenceRecordIds": [
+                "datafusion:github:issue:42:comment:901"
+              ]
+            }
+          ],
+          "derivation": {
+            "kind": "source-extract",
+            "revision": "github-source-extract@1"
+          }
+        }
+      },
+      {
+        "entry": {
+          "id": "feed-entry:feed-record-group:kafka:github:issue:42",
+          "projectId": "apache-kafka",
+          "title": "Bound coordinator recovery work",
+          "summary": "The coordinator recovery path must remain bounded during failover.",
+          "sourceTitleRecordId": "kafka:github:issue:42",
+          "recordIds": [
+            "kafka:github:issue:42",
+            "kafka:github:issue:42:comment:900"
+          ],
+          "highlightedRecordIds": [
+            "kafka:github:issue:42"
+          ],
+          "reason": {
+            "kind": "trending",
+            "label": "2 GitHub activity signals in the last 30 days",
+            "evidenceEventIds": [
+              "event:kafka:issue:42:comment:900:v1",
+              "event:kafka:issue:42:v1"
+            ]
+          },
+          "activity": {
+            "score": 2,
+            "evidenceEventIds": [
+              "event:kafka:issue:42:comment:900:v1",
+              "event:kafka:issue:42:v1"
+            ]
+          },
+          "grouping": {
+            "relationshipIds": [
+              "connection:kafka:github:issue:42:comment:900:discusses:kafka:github:issue:42"
+            ],
+            "clusteringRevision": "github-thread@1"
+          }
+        },
+        "records": [
+          {
+            "id": "kafka:github:issue:42",
+            "projectId": "apache-kafka",
+            "sourceInstanceId": "kafka:github",
+            "source": "github",
+            "sourceType": "code-host",
+            "kind": "GitHub Issue",
+            "title": "Issue #42: Bound coordinator recovery work",
+            "excerpt": "The coordinator recovery path must remain bounded during failover.",
+            "author": "alice",
+            "role": "Contributor",
+            "occurredAt": "2026-08-24T10:00:00Z",
+            "canonicalUrl": "https://github.com/apache/kafka/issues/42",
+            "sourceVersion": "2026-08-24T10:00:00Z",
+            "artifactStatus": "open"
+          },
+          {
+            "id": "kafka:github:issue:42:comment:900",
+            "projectId": "apache-kafka",
+            "sourceInstanceId": "kafka:github",
+            "source": "github",
+            "sourceType": "code-host",
+            "kind": "Comment",
+            "title": "Comment on #42",
+            "excerpt": "The latest benchmark confirms recovery stays bounded across repeated coordinator failovers.",
+            "author": "carol",
+            "role": "Apache member",
+            "occurredAt": "2026-08-24T12:00:00Z",
+            "canonicalUrl": "https://github.com/apache/kafka/issues/42#issuecomment-900",
+            "sourceVersion": "2026-08-24T12:00:00Z"
+          }
+        ],
+        "connections": [
+          {
+            "id": "connection:kafka:github:issue:42:comment:900:discusses:kafka:github:issue:42",
+            "fromRecordId": "kafka:github:issue:42:comment:900",
+            "toRecordId": "kafka:github:issue:42",
+            "kind": "discusses",
+            "derivation": {
+              "kind": "deterministic-rule",
+              "revision": "github-thread@1"
+            }
+          }
+        ],
+        "keyPoints": {
+          "status": "generated",
+          "points": [
+            {
+              "id": "key-point:kafka:github:issue:42:scope",
+              "text": "The coordinator recovery path must remain bounded during failover.",
+              "evidenceRecordIds": [
+                "kafka:github:issue:42"
+              ]
+            },
+            {
+              "id": "key-point:kafka:github:issue:42:comment:900:latest",
+              "text": "Latest community update from carol: The latest benchmark confirms recovery stays bounded across repeated coordinator failovers.",
+              "evidenceRecordIds": [
+                "kafka:github:issue:42:comment:900"
+              ]
+            }
+          ],
+          "derivation": {
+            "kind": "source-extract",
+            "revision": "github-source-extract@1"
+          }
+        }
+      },
+      {
+        "entry": {
+          "id": "feed-entry:feed-record-group:kafka:github:pull:43",
+          "projectId": "apache-kafka",
+          "title": "Add bounded recovery metrics",
+          "summary": "This pull request exposes bounded recovery metrics for operators.",
+          "sourceTitleRecordId": "kafka:github:pull:43",
+          "recordIds": [
+            "kafka:github:pull:43"
+          ],
+          "highlightedRecordIds": [
+            "kafka:github:pull:43"
+          ],
+          "reason": {
+            "kind": "trending",
+            "label": "1 GitHub activity signals in the last 30 days",
+            "evidenceEventIds": [
+              "event:kafka:pull:43:v1"
+            ]
+          },
+          "activity": {
+            "score": 1,
+            "evidenceEventIds": [
+              "event:kafka:pull:43:v1"
+            ]
+          },
+          "grouping": {
+            "relationshipIds": [],
+            "clusteringRevision": "github-thread@1"
+          }
+        },
+        "records": [
+          {
+            "id": "kafka:github:pull:43",
+            "projectId": "apache-kafka",
+            "sourceInstanceId": "kafka:github",
+            "source": "github",
+            "sourceType": "code-host",
+            "kind": "Pull Request",
+            "title": "PR #43: Add bounded recovery metrics",
+            "excerpt": "This pull request exposes bounded recovery metrics for operators.",
+            "author": "bob",
+            "role": "Apache member",
+            "occurredAt": "2026-08-24T11:00:00Z",
+            "canonicalUrl": "https://github.com/apache/kafka/pull/43",
+            "sourceVersion": "2026-08-24T11:00:00Z",
+            "artifactStatus": "merged"
+          }
+        ],
+        "connections": [],
+        "keyPoints": {
+          "status": "generated",
+          "points": [
+            {
+              "id": "key-point:kafka:github:pull:43:scope",
+              "text": "This pull request exposes bounded recovery metrics for operators.",
+              "evidenceRecordIds": [
+                "kafka:github:pull:43"
+              ]
+            }
+          ],
+          "derivation": {
+            "kind": "source-extract",
+            "revision": "github-source-extract@1"
+          }
+        }
+      }
+    ]
+  }
+}
