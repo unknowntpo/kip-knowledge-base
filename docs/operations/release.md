@@ -1,6 +1,7 @@
 # Release workflow
 
-Status: Proposed; local workflow implemented, external bootstrap pending  
+Status: Active since v0.1.0
+
 Decision: ADR-0008
 
 ## Delivery path
@@ -46,6 +47,23 @@ or Search R2 release/current pointer.
 Given two valid tags arrive close together, then their production deployments
 serialize. Development may cancel a superseded deployment.
 
+## Automation writes
+
+Scheduled ingestion and manual backfill never push generated data directly to
+`main`. Each workflow:
+
+1. starts from the current `main`;
+2. checkpoints changes on its dedicated `automation/*` branch;
+3. opens or updates a pull request;
+4. explicitly dispatches this repository's CI for the automation branch;
+5. waits for a human to review and merge.
+
+Backfill checkpoints before its golden-query gate because the crawl is costly.
+A failed gate preserves the branch but does not open or update its PR.
+
+The workflows use only their ephemeral repository `GITHUB_TOKEN`; no personal
+access token, deploy key, automatic approval, or automatic merge is allowed.
+
 ## One-time bootstrap
 
 External bootstrap state:
@@ -54,16 +72,16 @@ External bootstrap state:
    `main`.
 2. **Done:** Pages project `oss-knowledge-base` uses production branch
    `production`.
-3. **Pending first deployment:** bind both projects' `OSS_KB_BUCKET` to the existing private
+3. **Done:** both projects bind `OSS_KB_BUCKET` to the existing private
    `oss-knowledge-base-poc` R2 bucket.
-4. **Partial:** `CLOUDFLARE_ACCOUNT_ID` exists; add a scoped
-   `CLOUDFLARE_API_TOKEN` repository secret.
+4. **Done:** scoped `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`
+   repository secrets exist.
 5. **Done:** GitHub environments `development` and `production` exist.
-6. **Pending:** commit the target architecture, run CI once, then protect `main` with its
-   exact required check names.
+6. **Done:** `main` blocks deletion and non-fast-forward updates. Required PR
+   and CI rules are enabled after automation PR creation is verified.
 
-`main` is not protected. The legacy workflow still deploys `viewer/` until its
-deletion is committed. Neither new Pages project has a first deployment yet.
+The first production promotion, `v0.1.0`, and public browser smoke test passed
+on 2026-08-26.
 
 ## Release command
 

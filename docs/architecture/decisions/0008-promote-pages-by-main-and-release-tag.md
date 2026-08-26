@@ -1,15 +1,14 @@
 # ADR-0008: Promote Pages through main and release tags
 
-- Status: Proposed; bootstrap required before merge
+- Status: Accepted and active since v0.1.0
 - Date: 2026-08-26
 
 ## Context
 
-The target Vue application and its CI workflow exist only in the current local
-worktree. GitHub still runs the legacy `viewer/` deployment on every push to
-`main`, has no active target-architecture CI, no Cloudflare repository secrets,
-and no `main` branch protection. The public proof also exposes `poc` in its
-Pages domain.
+The target Vue application now deploys through two Cloudflare Pages projects.
+Before this decision was implemented, the legacy `viewer/` deployment owned
+`main`, Cloudflare repository credentials and branch protection were missing,
+and the public proof exposed `poc` in its Pages domain.
 
 Several feature branches must be able to run CI independently without changing
 a shared public environment. A production deployment must be an explicit
@@ -67,8 +66,8 @@ worktrees.
   the workflow can merge.
 - `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets are
   mandatory; a missing secret fails instead of silently skipping deployment.
-- `main` must gain a required-status-check ruleset after the first CI run
-  establishes the check names.
+- Automation that changes repository data must use a dedicated branch and pull
+  request; it must not weaken `main` protection to preserve direct bot pushes.
 - Dev and production code are isolated, but their read-only projection data are
   temporarily shared. A separate ADR is required before workflows begin
   publishing environment-specific data automatically.
