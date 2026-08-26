@@ -23,8 +23,7 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
-  actions: write
+  issues: write
 
 concurrency:
   group: corpus-backfill
@@ -92,29 +91,30 @@ jobs:
         working-directory: viewer
         run: bun run test
 
-      - name: Open or update the review pull request
+      - name: Publish the human review notice
         if: ${{ steps.checkpoint.outputs.changed == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           AUTOMATION_BRANCH: automation/corpus-backfill
-          PR_TITLE: "chore(backfill): update the KIP corpus"
+          NOTICE_TITLE: "Automation review: corpus backfill is ready"
         run: |
-          body=$'Automated corpus backfill update.\n\n- The crawl checkpoint is retained on a dedicated automation branch.\n- Golden-query regression tests passed before this PR was opened or updated.\n- Review the imported stubs, queue transitions, and regenerated vectors before merge.\n- The repository CI workflow is dispatched explicitly for this branch.'
-          pr_number=$(gh pr list \
-            --base main \
-            --head "$AUTOMATION_BRANCH" \
+          review_url="https://github.com/$GITHUB_REPOSITORY/compare/main...$AUTOMATION_BRANCH?expand=1"
+
+          body=$(printf '%s\n\n%s\n%s\n%s\n\n%s' \
+            'Corpus backfill changes passed the golden-query gate and are ready for human review.' \
+            "Review or open the pull request: $review_url" \
+            "Automation branch: \`$AUTOMATION_BRANCH\`" \
+            "Source run: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            'Automation cannot approve or merge this change.')
+          issue_number=$(gh issue list \
             --state open \
+            --search "\"$NOTICE_TITLE\" in:title" \
+            --limit 1 \
             --json number \
             --jq '.[0].number // empty')
 
-          if [ -n "$pr_number" ]; then
-            gh pr edit "$pr_number" --title "$PR_TITLE" --body "$body"
+          if [ -n "$issue_number" ]; then
+            gh issue edit "$issue_number" --body "$body"
           else
-            gh pr create \
-              --base main \
-              --head "$AUTOMATION_BRANCH" \
-              --title "$PR_TITLE" \
-              --body "$body"
+            gh issue create --title "$NOTICE_TITLE" --body "$body"
           fi
-
-          gh workflow run ci.yml --ref "$AUTOMATION_BRANCH"

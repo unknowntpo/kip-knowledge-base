@@ -20,22 +20,23 @@ checkpoint.
   `automation/confluence-ingest` or `automation/corpus-backfill`.
 - A workflow resets that branch from the current `main`, commits generated
   changes, and updates the remote branch with `--force-with-lease`.
-- It opens or updates a pull request instead of writing to `main`.
-- It explicitly dispatches `ci.yml` for the automation branch. GitHub documents
-  `workflow_dispatch` as the recursion-safe exception for `GITHUB_TOKEN` events.
+- It opens or updates a review issue containing the compare/PR link instead of
+  writing to `main`. A human creates the pull request from that link.
+- The human-created pull request triggers the normal `ci.yml` checks.
 - Backfill pushes its checkpoint before the golden-query gate. A failed gate
   preserves the branch but prevents the PR from being opened or updated.
-- Automation may create a PR but may not approve or merge it.
+- Automation may create the review issue but may not create, approve, or merge
+  the pull request. This avoids GitHub's repository-level setting that combines
+  Actions PR creation with permission to approve reviews.
 - Workflows use only the ephemeral, repository-scoped `GITHUB_TOKEN`. We do not
   create a personal access token or write deploy key for this path.
 
 ## Consequences
 
 - Generated source changes become reviewable and receive the same CI evidence
-  as human branches.
+  as human branches after a maintainer follows the review link.
 - `main` can require pull requests and the four established CI checks.
-- A workflow-created pull request may show an approval-required event run;
-  the explicitly dispatched run supplies the checks without a long-lived token.
+- Review requires one explicit maintainer action to create the pull request.
 - Stable automation branches are rewritten from current `main`; they are
   checkpoints, not append-only audit logs. Merged pull requests retain history.
 

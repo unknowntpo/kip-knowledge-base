@@ -54,15 +54,16 @@ Scheduled ingestion and manual backfill never push generated data directly to
 
 1. starts from the current `main`;
 2. checkpoints changes on its dedicated `automation/*` branch;
-3. opens or updates a pull request;
-4. explicitly dispatches this repository's CI for the automation branch;
-5. waits for a human to review and merge.
+3. opens or updates a review issue containing the compare/PR link;
+4. waits for a human to create the pull request;
+5. runs normal pull-request CI and waits for a human to review and merge.
 
 Backfill checkpoints before its golden-query gate because the crawl is costly.
 A failed gate preserves the branch but does not open or update its PR.
 
 The workflows use only their ephemeral repository `GITHUB_TOKEN`; no personal
-access token, deploy key, automatic approval, or automatic merge is allowed.
+access token, deploy key, repository-wide Actions approval permission,
+automatic approval, or automatic merge is allowed.
 
 ## One-time bootstrap
 
@@ -78,7 +79,7 @@ External bootstrap state:
    repository secrets exist.
 5. **Done:** GitHub environments `development` and `production` exist.
 6. **Done:** `main` blocks deletion and non-fast-forward updates. Required PR
-   and CI rules are enabled after automation PR creation is verified.
+   and CI rules were enabled after the automation review flow was verified.
 
 The first production promotion, `v0.1.0`, and public browser smoke test passed
 on 2026-08-26.
