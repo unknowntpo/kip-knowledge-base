@@ -9,6 +9,7 @@
     "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.worker.json --noEmit",
     "test": "bun test test/*.test.ts",
     "measure:search": "bun scripts/measure-search-fixture.ts",
+    "fixture:recorded-feed:update": "bun scripts/export-recorded-feed-fixture.ts",
     "search:publish": "bun scripts/publish-search-r2.ts",
     "r2:seed:local": "bun scripts/seed-local-r2.ts",
     "pages:dev": "wrangler pages dev dist --persist-to .wrangler/state",

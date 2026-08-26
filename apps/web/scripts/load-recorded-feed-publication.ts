@@ -14,6 +14,14 @@ export interface RecordedFeedPublication {
   readonly publication: FeedPublication;
 }
 
+const defaultFixturePath = join(
+  import.meta.dir,
+  "..",
+  "test",
+  "fixtures",
+  "recorded-feed-publication.v1.json",
+);
+
 /**
  * POC adapter for a completed, already-recorded Feed release.
  * It intentionally performs no GitHub or other network access.
@@ -47,6 +55,43 @@ export async function loadRecordedFeedPublication(
 
   return {
     releaseId: manifest.releaseId,
+    publication: { index, details },
+  };
+}
+
+/**
+ * Loads the compact, version-controlled snapshot used by clean-checkout CI.
+ * Runtime publishing continues to read the manifest-first R2 seed above.
+ */
+export async function loadRecordedFeedFixture(
+  fixturePath = defaultFixturePath,
+): Promise<RecordedFeedPublication> {
+  const fixture = await readJson(fixturePath);
+  if (!isObject(fixture) || typeof fixture.releaseId !== "string" || !isObject(fixture.publication)) {
+    throw new Error(`Recorded Feed fixture is invalid: ${fixturePath}`);
+  }
+
+  const { index, details } = fixture.publication;
+  if (!isFeedIndex(index) || !Array.isArray(details) || !details.every(isFeedDetail)) {
+    throw new Error(`Recorded Feed fixture has invalid publication data: ${fixturePath}`);
+  }
+  if (index.entries.length !== details.length) {
+    throw new Error(
+      `Recorded Feed fixture count mismatch: index=${index.entries.length}, details=${details.length}`,
+    );
+  }
+
+  const indexedIds = new Set(index.entries.map(({ entry }) => entry.id));
+  const detailIds = new Set(details.map(({ entry }) => entry.id));
+  if (indexedIds.size !== index.entries.length || detailIds.size !== details.length) {
+    throw new Error(`Recorded Feed fixture contains duplicate entry IDs: ${fixturePath}`);
+  }
+  if ([...indexedIds].some((id) => !detailIds.has(id))) {
+    throw new Error(`Recorded Feed fixture index/detail membership differs: ${fixturePath}`);
+  }
+
+  return {
+    releaseId: fixture.releaseId,
     publication: { index, details },
   };
 }

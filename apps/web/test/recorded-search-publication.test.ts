@@ -3,11 +3,11 @@ import { describe, expect, test } from "bun:test";
 import { buildLexicalIndex, searchLexicalIndex } from "@oss-knowledge-base/search";
 import { materializeSearchPublicationFromFeed } from "@oss-knowledge-base/serving-contract";
 
-import { loadRecordedFeedPublication } from "../scripts/load-recorded-feed-publication";
+import { loadRecordedFeedFixture } from "../scripts/load-recorded-feed-publication";
 
 describe("recorded Feed snapshot Search publication", () => {
   test("indexes every accepted group and SourceRecord and retrieves both projects", async () => {
-    const recorded = await loadRecordedFeedPublication();
+    const recorded = await loadRecordedFeedFixture();
     const publication = await materializeSearchPublicationFromFeed({
       feed: recorded.publication,
       indexRevision: `feed-${recorded.releaseId}`,
