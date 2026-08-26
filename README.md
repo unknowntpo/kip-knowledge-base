@@ -214,7 +214,8 @@ bun tools/backfill/run.ts                     # drain all pending (~1150 × ~1s/
 In CI: trigger `.github/workflows/backfill.yml` (workflow_dispatch; dry_run /
 limit / no_threads inputs) — it tests first, crawls, regenerates embeddings,
 checkpoints vault + vectors on `automation/corpus-backfill`, and opens a pull
-request only after the golden-query gate passes. It never pushes generated data
+request review issue only after the golden-query gate passes. A maintainer uses
+its compare link to create the PR. The workflow never pushes generated data
 directly to `main`. All crawling goes through the polite-fetch wrapper (1 req/s
 + jitter, cwiki + lists.apache.org only). The resolver is
 space-scoped with a KIP-number boundary match and prefers **skipping over
