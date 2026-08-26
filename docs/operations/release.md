@@ -93,6 +93,11 @@ Spec 006 and ADR-0010 replace the temporary shared binding:
 | `oss-knowledge-base-dev` | `wrangler.development.jsonc` | `oss-knowledge-base-dev` |
 | `oss-knowledge-base` | `wrangler.production.jsonc` | `oss-knowledge-base-prod` |
 
+Cloudflare Pages does not accept a custom Wrangler configuration path. The
+deployment script therefore stages the selected reviewed environment config at
+the canonical `wrangler.jsonc` path only for the duration of the deploy, then
+restores the local-only config in a `finally` block.
+
 The manual `CI and release` workflow with operation `bootstrap-r2` is the only
 bootstrap path. It requires the exact `bootstrap-isolated-r2` confirmation,
 uses the scoped GitHub environment credentials, creates a missing bucket
