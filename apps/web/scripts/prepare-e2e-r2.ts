@@ -53,7 +53,7 @@ for (const object of objects) {
     "r2",
     "object",
     "put",
-    `oss-knowledge-base-poc/${object.key}`,
+    `oss-knowledge-base-local/${object.key}`,
     "--file",
     file,
     "--content-type",

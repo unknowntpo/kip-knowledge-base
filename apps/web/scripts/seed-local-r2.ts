@@ -10,7 +10,7 @@ if (files.length === 0) throw new Error("No R2 seed objects found; run bun run r
 for (const file of files) {
   const key = relative(root, file);
   const process = Bun.spawn([
-    "bunx", "wrangler", "r2", "object", "put", `oss-knowledge-base-poc/${key}`,
+    "bunx", "wrangler", "r2", "object", "put", `oss-knowledge-base-local/${key}`,
     "--file", file,
     "--content-type", "application/json",
     "--local",
