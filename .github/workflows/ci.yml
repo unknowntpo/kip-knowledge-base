@@ -218,6 +218,8 @@ jobs:
           if ! bunx wrangler r2 bucket info "$R2_BUCKET" >/dev/null 2>&1; then
             bunx wrangler r2 bucket create "$R2_BUCKET"
           fi
+      - name: Prepare the version-controlled Feed snapshot
+        run: bun run --cwd apps/web fixture:recorded-feed:seed
       - name: Publish recorded Feed manifest-last
         run: bun apps/github-publisher/scripts/publish-r2.ts
       - name: Publish recorded Search pointer-last
@@ -252,6 +254,8 @@ jobs:
           if ! bunx wrangler r2 bucket info "$R2_BUCKET" >/dev/null 2>&1; then
             bunx wrangler r2 bucket create "$R2_BUCKET"
           fi
+      - name: Prepare the version-controlled Feed snapshot
+        run: bun run --cwd apps/web fixture:recorded-feed:seed
       - name: Publish the same recorded Feed manifest-last
         run: bun apps/github-publisher/scripts/publish-r2.ts
       - name: Publish the same recorded Search pointer-last
