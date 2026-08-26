@@ -23,12 +23,20 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: corpus-backfill
+  cancel-in-progress: false
 
 jobs:
   backfill:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
@@ -54,28 +62,59 @@ jobs:
         working-directory: viewer
         run: bun run embeddings
 
-      # Land the crawl BEFORE the quality gate. The crawl costs ~1 req/s over the
-      # whole corpus (~50 min) and queue.json is the checkpoint that makes a
-      # re-run resumable — a retrieval-quality regression must not discard either.
-      # A red gate below still fails the job; the data just survives it.
-      - name: Commit crawl + vectors
+      # Checkpoint BEFORE the quality gate. The crawl costs ~1 req/s over the
+      # whole corpus (~50 min); a retrieval regression must not discard it. The
+      # checkpoint stays on a review branch and never lands directly on main.
+      - name: Checkpoint crawl and vectors on the automation branch
+        id: checkpoint
         if: ${{ !inputs.dry_run }}
+        env:
+          AUTOMATION_BRANCH: automation/corpus-backfill
         run: |
+          echo "changed=false" >> "$GITHUB_OUTPUT"
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes — nothing to commit."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git switch -C "$AUTOMATION_BRANCH"
           git add -A
           git commit -m "chore(backfill): import KIP stubs ($(date -u +%Y-%m-%d))"
-          git push
+          git push --force-with-lease origin "HEAD:refs/heads/$AUTOMATION_BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
       # Quality gate: golden queries must still retrieve their expected KIP now
-      # that the corpus grew. Failure = red job for review, NOT lost work — the
-      # crawl is already committed above and the deploy workflow's own test run
-      # keeps a regression from reaching production.
+      # that the corpus grew. Failure = no PR update, but the expensive crawl is
+      # retained on the automation branch for diagnosis and recovery.
       - name: Quality gate — golden queries
-        if: ${{ !inputs.dry_run }}
+        if: ${{ steps.checkpoint.outputs.changed == 'true' }}
         working-directory: viewer
         run: bun run test
+
+      - name: Open or update the review pull request
+        if: ${{ steps.checkpoint.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATION_BRANCH: automation/corpus-backfill
+          PR_TITLE: "chore(backfill): update the KIP corpus"
+        run: |
+          body=$'Automated corpus backfill update.\n\n- The crawl checkpoint is retained on a dedicated automation branch.\n- Golden-query regression tests passed before this PR was opened or updated.\n- Review the imported stubs, queue transitions, and regenerated vectors before merge.\n- The repository CI workflow is dispatched explicitly for this branch.'
+          pr_number=$(gh pr list \
+            --base main \
+            --head "$AUTOMATION_BRANCH" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --title "$PR_TITLE" --body "$body"
+          else
+            gh pr create \
+              --base main \
+              --head "$AUTOMATION_BRANCH" \
+              --title "$PR_TITLE" \
+              --body "$body"
+          fi
+
+          gh workflow run ci.yml --ref "$AUTOMATION_BRANCH"

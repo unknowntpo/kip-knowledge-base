@@ -18,12 +18,20 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: confluence-ingest
+  cancel-in-progress: false
 
 jobs:
   ingest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -44,15 +52,51 @@ jobs:
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
         run: bun tools/ingest/run.ts
 
-      - name: Commit deterministic changes if any
+      - name: Checkpoint changes on the automation branch
+        id: checkpoint
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        env:
+          AUTOMATION_BRANCH: automation/confluence-ingest
         run: |
+          echo "changed=false" >> "$GITHUB_OUTPUT"
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes — nothing to commit (idempotent no-op)."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git switch -C "$AUTOMATION_BRANCH"
           git add -A
           git commit -m "chore(ingest): confluence sync $(date -u +%Y-%m-%d)"
-          git push
+          git push --force-with-lease origin "HEAD:refs/heads/$AUTOMATION_BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the review pull request
+        if: ${{ steps.checkpoint.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATION_BRANCH: automation/confluence-ingest
+          PR_TITLE: "chore(ingest): sync Confluence sources"
+        run: |
+          body=$'Automated Confluence ingestion update.\n\n- Changes are checkpointed on a dedicated automation branch.\n- Review the generated source metadata and drift records before merge.\n- The repository CI workflow is dispatched explicitly for this branch.'
+          pr_number=$(gh pr list \
+            --base main \
+            --head "$AUTOMATION_BRANCH" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --title "$PR_TITLE" --body "$body"
+          else
+            gh pr create \
+              --base main \
+              --head "$AUTOMATION_BRANCH" \
+              --title "$PR_TITLE" \
+              --body "$body"
+          fi
+
+          # GITHUB_TOKEN-created pull_request events require manual approval.
+          # workflow_dispatch is the documented recursion-safe path and attaches
+          # the required checks to this branch head without a long-lived PAT.
+          gh workflow run ci.yml --ref "$AUTOMATION_BRANCH"
