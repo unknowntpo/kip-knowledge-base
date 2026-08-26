@@ -100,6 +100,13 @@ idempotently, and publishes the recorded Feed and Search projections
 pointer-last. It is not scheduled and performs no live GitHub fetch, LLM call,
 benchmark, or frontend build.
 
+The workflow first expands the version-controlled recorded Feed fixture into
+the ignored `apps/web/r2-seed` directory on the ephemeral runner. It never
+invokes the live Feed exporter during bootstrap.
+
+For the current recorded release, the clean-checkout plan contains 186 Feed
+objects (184 entries) and 188 Search objects covering 353 SourceRecords.
+
 After bootstrap, merging the configuration change to `main` applies the
 development binding through the normal development deployment. A later
 accepted release tag applies the production binding. Do not deploy either
