@@ -1,6 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "oss-knowledge-base-local",
   "compatibility_date": "2026-08-21",
+  "pages_build_output_dir": "dist",
   "r2_buckets": [
     {
       "binding": "OSS_KB_BUCKET",
