@@ -117,6 +117,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/web
           command: >-
+            --config=wrangler.development.jsonc
             pages deploy dist
             --project-name=oss-knowledge-base-dev
             --branch=main
@@ -166,6 +167,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/web
           command: >-
+            --config=wrangler.production.jsonc
             pages deploy dist
             --project-name=oss-knowledge-base
             --branch=production

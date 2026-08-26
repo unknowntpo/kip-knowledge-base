@@ -10,11 +10,12 @@ import {
 
 import { buildGoldenSearchPublication } from "./build-search-fixture";
 import { loadRecordedFeedPublication } from "./load-recorded-feed-publication";
+import { requireRemotePublicationTarget } from "./remote-publication-target";
 
-const bucket = Bun.env.R2_BUCKET ?? "oss-knowledge-base-poc";
 const remote = Bun.argv.includes("--remote");
 const golden = Bun.argv.includes("--source=golden");
-const confirmation = Bun.env.CONFIRM_PUBLIC_SEARCH_PUBLISH;
+const target = remote ? requireRemotePublicationTarget() : undefined;
+const bucket = target?.bucket ?? "not-selected-dry-run";
 const fixturePath = new URL(
   "../../../packages/search/test/fixtures/golden-queries.v1.json",
   import.meta.url,
@@ -76,10 +77,6 @@ if (!remote) {
   console.log(JSON.stringify(plan, null, 2));
   process.exit(0);
 }
-if (confirmation !== bucket) {
-  throw new Error(`Set CONFIRM_PUBLIC_SEARCH_PUBLISH=${bucket} to publish remotely`);
-}
-
 const work = await mkdtemp(join(tmpdir(), "osskb-search-publish-"));
 try {
   for (let offset = 0; offset < immutable.length; offset += 4) {
