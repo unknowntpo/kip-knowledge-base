@@ -55,6 +55,8 @@ export interface LexicalSearchRequestV1 {
   readonly limit?: number;
 }
 
+export type LexicalSearchFacetRequestV1 = Omit<LexicalSearchRequestV1, "limit">;
+
 export interface LexicalEvidenceMatchV1 {
   readonly chunkId: string;
   readonly recordId: string;
@@ -115,20 +117,42 @@ export function searchLexicalIndex(
   index: LexicalIndexV1,
   request: LexicalSearchRequestV1,
 ): readonly LexicalSearchResultV1[] {
-  const query = requireText(request.query, "query");
-  validateSearchFilters(request.filters);
-  const queryTerms = [...new Set(tokenizeLexical(query))];
-  if (queryTerms.length === 0) return [];
   const limit = request.limit ?? 20;
   if (!Number.isInteger(limit) || limit <= 0 || limit > 100) {
     throw new Error("Search limit must be an integer between 1 and 100");
   }
+
+  return rankLexicalIndex(index, request, false).slice(0, limit);
+}
+
+/** Counts matching groups before the project filter and result limit are applied. */
+export function facetLexicalIndexByProject(
+  index: LexicalIndexV1,
+  request: LexicalSearchFacetRequestV1,
+): Readonly<Record<string, number>> {
+  const facets: Record<string, number> = {};
+  for (const result of rankLexicalIndex(index, request, true)) {
+    facets[result.projectId] = (facets[result.projectId] ?? 0) + 1;
+  }
+  return facets;
+}
+
+function rankLexicalIndex(
+  index: LexicalIndexV1,
+  request: LexicalSearchFacetRequestV1,
+  ignoreProjectIds: boolean,
+): readonly LexicalSearchResultV1[] {
+  const query = requireText(request.query, "query");
+  validateSearchFilters(request.filters);
+  const queryTerms = [...new Set(tokenizeLexical(query))];
+  if (queryTerms.length === 0) return [];
 
   const scored = index.documents
     .filter((document) => matchesFilters(
       document.chunk,
       request.filters,
       request.eligibleGroupRootRecordIds,
+      ignoreProjectIds,
     ))
     .map((document) => scoreDocument(index, document, query, queryTerms))
     .filter((result): result is ScoredDocument => result !== undefined);
@@ -147,8 +171,7 @@ export function searchLexicalIndex(
         Number(right.exactMatch) - Number(left.exactMatch) ||
         right.score - left.score ||
         left.groupRootRecordId.localeCompare(right.groupRootRecordId),
-    )
-    .slice(0, limit);
+    );
 }
 
 export function tokenizeLexical(value: string): readonly string[] {
@@ -314,6 +337,7 @@ function matchesFilters(
   chunk: SourceRecordChunkV1,
   filters: SearchFiltersV1 | undefined,
   eligibleGroupRootRecordIds: ReadonlySet<string> | undefined,
+  ignoreProjectIds: boolean,
 ): boolean {
   if (
     eligibleGroupRootRecordIds !== undefined &&
@@ -321,6 +345,7 @@ function matchesFilters(
   ) return false;
   if (filters === undefined) return true;
   if (
+    !ignoreProjectIds &&
     filters.projectIds !== undefined &&
     !filters.projectIds.includes(chunk.projectId)
   ) return false;

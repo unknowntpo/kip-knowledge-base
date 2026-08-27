@@ -51,8 +51,11 @@ watch(query, (value) => {
 
 const selectedProjectId = computed(() => {
   if (project.value === "") return undefined;
-  return payload.value?.entries.find((entry) => entry.projectKey === project.value)?.entry.projectId;
+  return projectIdForKey(project.value);
 });
+const projectFacetCounts = computed(() => new Map(
+  searchResponse.value?.facets.projects.map((facet) => [facet.projectId, facet.count]) ?? [],
+));
 
 const occurredAfter = computed(() => {
   const days = timeWindow.value === "7d" ? 7
@@ -149,6 +152,18 @@ function projectLabel(projectId: string): string {
   return projects.value.find((profile) => profile.key === indexEntry?.projectKey)?.label ?? projectId;
 }
 
+function projectIdForKey(projectKey: string): string | undefined {
+  return payload.value?.entries.find((entry) => entry.projectKey === projectKey)?.entry.projectId;
+}
+
+function projectCount(projectKey: string): number {
+  if (query.value.trim() === "") {
+    return payload.value?.entries.filter((entry) => entry.projectKey === projectKey).length ?? 0;
+  }
+  const projectId = projectIdForKey(projectKey);
+  return projectId === undefined ? 0 : projectFacetCounts.value.get(projectId) ?? 0;
+}
+
 function toggleTag(tag: string) {
   const next = new Set(tags.value);
   next.has(tag) ? next.delete(tag) : next.add(tag);
@@ -196,7 +211,7 @@ function reset() {
           <div class="filter-label">{{ t("filter.project") }}</div>
           <button class="filter-row" :aria-pressed="project === ''" @click="project = ''"><span>{{ t("filter.allProjects") }}</span></button>
           <button v-for="item in projects" :key="item.key" class="filter-row" :aria-pressed="project === item.key" @click="project = item.key">
-            <span>{{ item.label }}</span><span>{{ payload?.entries.filter((entry) => entry.projectKey === item.key).length }}</span>
+            <span>{{ item.label }}</span><span>{{ projectCount(item.key) }}</span>
           </button>
         </div>
         <div v-if="!query" class="filter-group">

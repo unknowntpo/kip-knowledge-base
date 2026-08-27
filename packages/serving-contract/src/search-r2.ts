@@ -81,10 +81,19 @@ export interface SearchResultV1 {
   readonly detailRef: string;
 }
 
+export interface SearchProjectFacetV1 {
+  readonly projectId: string;
+  readonly count: number;
+}
+
 export interface SearchResponseV1 {
   readonly schema: typeof SEARCH_RESPONSE_SCHEMA;
   readonly query: string;
   readonly results: readonly SearchResultV1[];
+  readonly facets: {
+    /** Query matches after non-project filters, before project filtering and limiting. */
+    readonly projects: readonly SearchProjectFacetV1[];
+  };
   readonly retrieval: {
     readonly indexRevision: string;
     readonly lexicalRevision: string;
