@@ -16,7 +16,7 @@
 import type { FetchLike, FetchResponse } from "./types";
 
 export const USER_AGENT =
-  "kip-knowledge-base/1.0 (+https://github.com/unknowntpo/kip-knowledge-base)";
+  "oss-knowledge-base/1.0 (+https://github.com/unknowntpo/oss-knowledge-base)";
 
 /** Tuning + injectable primitives for {@link createPoliteFetch}. */
 export interface PoliteFetchConfig {
