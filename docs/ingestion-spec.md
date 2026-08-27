@@ -208,7 +208,7 @@ Rules:
 - **Rate:** ≤ 1 request/second per host, with random jitter.
 - **Concurrency:** ≤ 2 in-flight requests total.
 - **User-Agent:** descriptive, with a contact URL, e.g.
-  `kip-knowledge-base/1.0 (+https://github.com/unknowntpo/kip-knowledge-base)`.
+  `oss-knowledge-base/1.0 (+https://github.com/unknowntpo/oss-knowledge-base)`.
 - **robots.txt:** fetch and honor per host.
 - **Backpressure:** honor `429` + `Retry-After`; exponential backoff on `5xx`
   (base 1s, cap 60s, full jitter, max 5 attempts).
