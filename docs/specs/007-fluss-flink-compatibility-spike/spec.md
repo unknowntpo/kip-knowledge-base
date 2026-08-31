@@ -1,0 +1,90 @@
+# Spec 007: Fluss/Flink Compatibility Spike
+
+Status: Accepted for compatibility harness
+
+Owner: Project maintainers
+
+Created: 2026-09-01
+
+## Intent
+
+Establish a reproducible Fluss/Flink baseline and an executable parity boundary
+before implementing the first durable processing slice.
+
+## Scope
+
+This slice contains two independent gates:
+
+1. a JVM classpath gate proving Flink can discover the Fluss catalog connector
+   from the pinned released artifacts;
+2. a semantic gate comparing a future independently generated Flink projection
+   with the accepted Spec 004 oracle.
+
+The selected baseline is governed by
+[ADR-0011](../../architecture/decisions/0011-pin-fluss-flink-compatibility-baseline.md):
+Fluss 0.9.1-incubating, Flink 1.20.3, and Java 17 bytecode.
+
+## Target vertical slice
+
+```text
+recorded DomainEventV1 fixture
+        |
+        v
+Fluss Log Table (append-only canonical observations)
+        |
+        v
+Flink deterministic materializer
+        |
+        +--> Fluss Primary Key Table (current entity state)
+        |
+        v
+osskb.reference-projection.v1 candidate
+        |
+        v
+canonical digest + byte-equivalent semantic parity gate
+```
+
+The Log Table must retain replayable observations. The Primary Key Table is a
+rebuildable current view. The serving publication remains downstream and out
+of scope until parity, restart, and retry evidence pass.
+
+## Isolation and rerun contract
+
+- The classpath smoke test has no cluster, port, filesystem, Cloudflare, or
+  GitHub dependency.
+- A future cluster-backed runner must allocate a unique database/table prefix
+  per run, wait on observable readiness, and clean up only its own resources.
+- The fixture, materialization time, profiles, and revisions remain fixed.
+- Every candidate is written to a run-owned path and never overwrites the
+  accepted oracle.
+- Failed runs preserve logs and the candidate only when explicitly requested;
+  normal CI cleanup remains automatic.
+
+## Parity contract
+
+The candidate envelope must use `osskb.reference-projection.v1`. Its declared
+digest must equal the canonical SHA-256 digest of its publication. The same
+check is applied to the oracle before comparing both canonical JSON payloads
+and digests.
+
+The accepted oracle digest is:
+
+`sha256:cecea8b974520ab3185e0f3ea944642890d24429601595028fd7bc02eb618c36`
+
+Passing the oracle itself as the candidate proves only the gate mechanics. It
+is not Flink parity evidence.
+
+## Non-goals
+
+- production cutover or R2 publication;
+- a claim that connector discovery proves a working Fluss cluster;
+- source acquisition, checkpoint commitment, restart recovery, or retries;
+- Flink 2.2 adoption;
+- Spark, Iceberg, semantic search, LLM, or load testing.
+
+## Next implementation slice
+
+Add a run-owned local Fluss cluster, define the Log and Primary Key tables,
+ingest the Spec 004 fixture, run the smallest deterministic Flink job, export a
+candidate, and pass the scenarios in `acceptance.md`. Production remains on the
+TypeScript materializer until that evidence is reviewed.

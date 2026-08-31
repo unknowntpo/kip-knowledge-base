@@ -81,8 +81,17 @@ External bootstrap state:
 6. **Done:** `main` blocks deletion and non-fast-forward updates. Required PR
    and CI rules were enabled after the automation review flow was verified.
 
-The first production promotion, `v0.1.0`, and public browser smoke test passed
-on 2026-08-26.
+Production promotions and public browser smoke tests:
+
+| Release | Commit | Workflow | Result |
+| --- | --- | --- | --- |
+| `v0.1.0` | recorded in its workflow | first production promotion | passed 2026-08-26 |
+| `v0.2.0` | `308d3fa` | [run 33351078887](https://github.com/unknowntpo/oss-knowledge-base/actions/runs/33351078887) | passed 2026-09-01 |
+
+For `v0.2.0`, both public sites were readable after promotion. Production
+Search returned query-scoped project facets for `Kafka Streams` (DataFusion 1,
+Kafka 38), and desktop/mobile Search → FeedDetail smoke checks had no page,
+console, or network errors.
 
 ## Environment-isolated data bootstrap
 
@@ -122,8 +131,9 @@ project with the local-only `wrangler.jsonc`.
 After the selected commit is merged and green on `main`:
 
 ```bash
-git tag -a v0.1.0 -m "Release v0.1.0"
-git push origin v0.1.0
+VERSION=v0.3.0
+git tag -a "$VERSION" -m "Release $VERSION"
+git push origin "$VERSION"
 ```
 
 Do not move or reuse a published release tag. Roll back by redeploying a prior

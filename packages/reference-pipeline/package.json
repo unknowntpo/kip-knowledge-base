@@ -7,7 +7,8 @@
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc -p tsconfig.json",
-    "oracle:update": "UPDATE_ORACLE=1 bun scripts/update-oracle-fixture.ts"
+    "oracle:update": "UPDATE_ORACLE=1 bun scripts/update-oracle-fixture.ts",
+    "parity:verify": "bun scripts/verify-parity.ts"
   },
   "dependencies": {
     "@oss-knowledge-base/domain": "workspace:*",

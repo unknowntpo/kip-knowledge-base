@@ -25,7 +25,10 @@ substitute for acceptance scenarios or issue history.
 - [ ] Phase 1: implement source-connector interfaces and
       `KafkaCommunityProfile` against the generic Event contract.
 - [ ] Phase 2: build deterministic reference materializer and tests.
-- [ ] Phase 3: run Fluss/Flink compatibility spike and pin versions.
+- [x] Phase 3: pin the first Fluss/Flink compatibility baseline and add the
+      cluster-free connector discovery plus semantic parity gates.
+- [ ] Phase 3: run the cluster-backed Fluss/Flink compatibility slice against
+      the accepted Spec 004 fixture.
 - [ ] Phase 3: implement the first Fluss/Flink vertical slice.
 - [ ] Phase 4: capture legacy visual tokens and reference screenshots.
 - [ ] Phase 4: add project-neutral Decision Thread API and hierarchical
@@ -81,8 +84,22 @@ substitute for acceptance scenarios or issue history.
       provenance acceptance scenarios.
 - [x] Replace the direct `loadLiveFeed()` transformation while preserving the
       existing R2 and Vue contracts.
-- [ ] Use the accepted fixture as the oracle for the following Fluss/Flink
-      compatibility spike.
+- [x] Expose the accepted fixture as a fail-closed semantic parity gate for the
+      Fluss/Flink compatibility spike.
+- [ ] Produce an independent Flink candidate and pass the accepted digest.
+
+## Spec 007: Fluss/Flink Compatibility Spike
+
+- [x] Pin Fluss 0.9.1-incubating, Flink 1.20.3, and Java 17 bytecode in
+      ADR-0011.
+- [x] Add an isolated Maven classpath smoke test for Fluss catalog discovery.
+- [x] Add a canonical projection parity command and mismatch regression test.
+- [x] Run the classpath smoke test in pull-request CI.
+- [ ] Add run-owned Fluss Log and Primary Key tables with explicit readiness
+      and cleanup.
+- [ ] Implement the smallest Flink materializer for the Spec 004 fixture.
+- [ ] Prove duplicate, out-of-order, restart, retry, provenance, and accepted
+      digest parity before any serving cutover.
 
 ## Spec 005: Evidence-first Hybrid Search
 
@@ -133,11 +150,11 @@ substitute for acceptance scenarios or issue history.
 - [x] Create `oss-knowledge-base-dev` and `oss-knowledge-base` Pages projects
       plus GitHub `development` and `production` environments.
 - [x] Store `CLOUDFLARE_ACCOUNT_ID` as a repository secret.
-- [ ] Add a scoped `CLOUDFLARE_API_TOKEN` repository secret and verify the
+- [x] Add a scoped `CLOUDFLARE_API_TOKEN` repository secret and verify the
       first deployment applies the shared read-only `OSS_KB_BUCKET` binding.
-- [ ] Commit and push the target architecture, observe the first CI run, then
+- [x] Commit and push the target architecture, observe the first CI run, then
       protect `main` with the exact passing check names.
-- [ ] Verify `main` deploys only development and a `v0.1.0` tag deploys only
+- [x] Verify `main` deploys only development and release tags deploy only
       production; record both deployment URLs and SHAs.
 
 ## Frontend polish
