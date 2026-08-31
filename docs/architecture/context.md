@@ -69,6 +69,12 @@ evidence retrieval, and serving behavior. They do not replace the target
 Fluss/Flink durability and processing plane. ADR-0006 and ADR-0007 govern this
 intermediate architecture.
 
+Spec 007 begins the target-plane transition without changing production. It
+pins Fluss 0.9.1-incubating, Flink 1.20.3, and a Java 17 bytecode baseline,
+proves connector discovery in isolated CI, and adds the fail-closed semantic
+gate that a future independently generated Flink projection must pass. It does
+not yet prove a cluster-backed replay or replace the TypeScript materializer.
+
 ## Replacement boundary
 
 This is a greenfield replacement, not a data-contract migration. The new system
