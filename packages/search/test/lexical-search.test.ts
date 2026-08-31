@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   buildLexicalIndex,
+  facetLexicalIndexByProject,
   parseSearchGoldenFixture,
   searchLexicalIndex,
   tokenizeLexical,
@@ -87,6 +88,24 @@ describe("Phase 1 deterministic lexical search", () => {
     expect(results[0]?.groupRootRecordId).toBe("datafusion:github:issue:20983");
     expect(results.every((result) => result.projectId === "apache-datafusion"))
       .toBeTrue();
+  });
+
+  test("facets every matching group before project filtering and limiting", async () => {
+    const golden = await fixture();
+    const index = buildLexicalIndex({
+      indexRevision: golden.indexRevision,
+      chunks: golden.chunks,
+    });
+    const request = {
+      query: "issue 20983",
+      filters: { projectIds: ["apache-datafusion"] },
+    } as const;
+
+    expect(searchLexicalIndex(index, { ...request, limit: 1 })).toHaveLength(1);
+    expect(facetLexicalIndexByProject(index, request)).toEqual({
+      "apache-datafusion": 2,
+      "apache-kafka": 2,
+    });
   });
 
   test("applies strict evidence timestamp bounds before grouping and ranking", async () => {

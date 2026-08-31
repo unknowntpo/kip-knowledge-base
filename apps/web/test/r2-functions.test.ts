@@ -179,6 +179,32 @@ describe("versioned R2 Search projection", () => {
       .toBeTrue();
   });
 
+  test("returns project facets before the project filter and limit", async () => {
+    const objects = await buildR2SearchProjection(
+      await buildGoldenSearchPublication(searchFixturePath),
+    );
+    const bucket = memoryBucket(objects);
+    const response = await searchR2Projection(bucket, {
+      query: "issue 20983",
+      filters: {
+        projectIds: ["apache-datafusion"],
+        occurredAfter: "2026-08-22T00:00:00Z",
+      },
+      limit: 10,
+    });
+
+    expect(response.facets.projects).toEqual([
+      { projectId: "apache-datafusion", count: 1 },
+      { projectId: "apache-kafka", count: 1 },
+    ]);
+    expect(response.results).toHaveLength(1);
+    expect(response.results.every((result) => result.entry.projectId === "apache-datafusion"))
+      .toBeTrue();
+    expect(response.results).toHaveLength(
+      response.facets.projects.find((facet) => facet.projectId === "apache-datafusion")?.count ?? -1,
+    );
+  });
+
   test("an immutable detailRef survives a later current release", async () => {
     const firstObjects = await buildR2SearchProjection(
       await buildGoldenSearchPublication(searchFixturePath, "search-release-1"),

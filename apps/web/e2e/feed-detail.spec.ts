@@ -59,15 +59,38 @@ test("evidence search opens its immutable FeedDetail timeline", async ({ page })
   expect(browserProblems).toEqual([]);
 });
 
-test("project status refines evidence search without changing ranking semantics", async ({ page }) => {
+test("project facets shrink with the query and stay consistent when selected", async ({ page }) => {
   const browserProblems = collectBrowserProblems(page);
   await page.goto("/");
   await expect(page.locator("#view-feed")).toBeVisible();
 
+  const initialResponse = page.waitForResponse((response) =>
+    response.url().includes("/api/search?") &&
+    response.url().includes("q=producer") &&
+    !response.url().includes("projectId="));
   await page.locator("#q").fill("producer");
+  expect((await initialResponse).status()).toBe(200);
   const filtersToggle = page.getByRole("button", { name: "Filters" });
   if (await filtersToggle.isVisible()) await filtersToggle.click();
-  await page.getByRole("button", { name: /Apache Kafka/ }).click();
+  const kafkaProject = page.getByRole("button", { name: /Apache Kafka/ });
+  const dataFusionProject = page.getByRole("button", { name: /Apache DataFusion/ });
+  await expect(kafkaProject).toHaveText(/Apache Kafka\s*3/);
+  await expect(dataFusionProject).toHaveText(/Apache DataFusion\s*0/);
+
+  const projectResponse = page.waitForResponse((response) =>
+    response.url().includes("/api/search?") &&
+    response.url().includes("projectId=apache-kafka") &&
+    !response.url().includes("projectStatus="));
+  await kafkaProject.click();
+  const projectBody = await (await projectResponse).json() as {
+    readonly results: readonly unknown[];
+    readonly facets: { readonly projects: readonly { readonly projectId: string; readonly count: number }[] };
+  };
+  expect(projectBody.results).toHaveLength(3);
+  expect(projectBody.facets.projects.find((facet) => facet.projectId === "apache-kafka")?.count)
+    .toBe(3);
+  await expect(page.locator(".search-card")).toHaveCount(3);
+
   const filteredResponse = page.waitForResponse((response) =>
     response.url().includes("/api/search?") &&
     response.url().includes("projectStatus=merged"));

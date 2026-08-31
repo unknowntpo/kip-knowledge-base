@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { buildLexicalIndex, searchLexicalIndex } from "@oss-knowledge-base/search";
+import {
+  buildLexicalIndex,
+  facetLexicalIndexByProject,
+  searchLexicalIndex,
+} from "@oss-knowledge-base/search";
 import { materializeSearchPublicationFromFeed } from "@oss-knowledge-base/serving-contract";
 
 import { loadRecordedFeedFixture } from "../scripts/load-recorded-feed-publication";
@@ -33,5 +37,15 @@ describe("recorded Feed snapshot Search publication", () => {
       groupRootRecordId: "datafusion:github:issue:24111",
       projectId: "apache-datafusion",
     });
+
+    const snapshotCounts = Object.fromEntries(publication.shards.map((shard) => [
+      shard.projectId,
+      shard.groups.length,
+    ]));
+    const kafkaStreamsFacets = facetLexicalIndexByProject(index, { query: "Kafka Streams" });
+    expect(snapshotCounts).toEqual({ "apache-datafusion": 134, "apache-kafka": 50 });
+    expect(kafkaStreamsFacets).toEqual({ "apache-datafusion": 1, "apache-kafka": 38 });
+    expect(kafkaStreamsFacets["apache-datafusion"]!).toBeLessThan(snapshotCounts["apache-datafusion"]!);
+    expect(kafkaStreamsFacets["apache-kafka"]!).toBeLessThan(snapshotCounts["apache-kafka"]!);
   });
 });

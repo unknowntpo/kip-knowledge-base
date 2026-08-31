@@ -1,6 +1,7 @@
 import type { FeedDetail } from "@oss-knowledge-base/domain";
 import {
   buildLexicalIndex,
+  facetLexicalIndexByProject,
   searchLexicalIndex,
   validateSearchFilters,
   type SearchFiltersV1,
@@ -43,13 +44,8 @@ export async function searchR2Projection(
     throw new SearchClientError(error instanceof Error ? error.message : "Search filters are invalid");
   }
   const manifest = await readSearchManifest(bucket);
-  const projectIds = request.filters?.projectIds;
-  const selectedKeys = projectIds === undefined
-    ? Object.entries(manifest.shardKeys)
-    : projectIds.flatMap((projectId) => {
-        const key = manifest.shardKeys[projectId];
-        return key === undefined ? [] : [[projectId, key] as const];
-      });
+  const selectedKeys = Object.entries(manifest.shardKeys)
+    .sort(([left], [right]) => left.localeCompare(right));
   const shards = await Promise.all(selectedKeys.map(async ([projectId, key]) =>
     readSearchShard(bucket, manifest, projectId, key)));
   const chunks = shards.flatMap((shard) => shard.chunks);
@@ -82,6 +78,11 @@ export async function searchR2Projection(
     ...(request.filters === undefined ? {} : { filters: request.filters }),
     ...(eligibleGroupRootRecordIds === undefined ? {} : { eligibleGroupRootRecordIds }),
     limit: request.limit,
+  });
+  const projectFacetCounts = facetLexicalIndexByProject(index, {
+    query,
+    ...(request.filters === undefined ? {} : { filters: request.filters }),
+    ...(eligibleGroupRootRecordIds === undefined ? {} : { eligibleGroupRootRecordIds }),
   });
 
   return {
@@ -128,6 +129,12 @@ export async function searchR2Projection(
         }),
       };
     }),
+    facets: {
+      projects: Object.keys(manifest.shardKeys).sort().map((projectId) => ({
+        projectId,
+        count: projectFacetCounts[projectId] ?? 0,
+      })),
+    },
     retrieval: {
       indexRevision: manifest.indexRevision,
       lexicalRevision: manifest.lexicalRevision,
