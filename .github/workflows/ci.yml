@@ -167,6 +167,38 @@ jobs:
           grep -q 'GITHUB_SOURCE_TOKEN' <<<"$configured"
           grep -q 'MANUAL_TRIGGER_TOKEN' <<<"$configured"
 
+  e2e-development:
+    name: E2E — deployed development
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    needs: [deploy-development]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: development
+      url: https://oss-knowledge-base-dev.pages.dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      - name: Verify the deployed development data path
+        env:
+          DEV_BASE_URL: https://oss-knowledge-base-dev.pages.dev
+          DEV_WORKER_URL: https://oss-knowledge-base-data-dev.unknowntpo.workers.dev
+        run: bun run test:e2e:development
+      - name: Upload deployed development evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-development-evidence
+          path: |
+            playwright-report-development
+            test-results/playwright-development
+          if-no-files-found: ignore
+          retention-days: 7
+
   deploy-production:
     name: Deploy production
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
