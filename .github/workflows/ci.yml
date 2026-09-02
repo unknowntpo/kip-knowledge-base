@@ -91,6 +91,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
       - run: mvn -B verify -f spikes/fluss-flink-compat/pom.xml
       - run: bun run test:fluss-flink-cluster
 
