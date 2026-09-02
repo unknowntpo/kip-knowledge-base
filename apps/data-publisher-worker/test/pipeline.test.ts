@@ -15,8 +15,32 @@ import {
   type PipelineStateRepository,
   type PublicationDestination,
 } from "../src/pipeline";
+import { GitHubFetchTransport } from "../src/github-transport";
 
 describe("Cloudflare data publication", () => {
+  test("retries transient GitHub gateway failures without calling them rate limits", async () => {
+    const statuses = [500, 503, 200];
+    const delays: number[] = [];
+    const transport = new GitHubFetchTransport("github_pat_test", {
+      fetchImpl: async () => {
+        const status = statuses.shift() ?? 500;
+        return Response.json(status === 200 ? [{ id: 1 }] : { error: "temporary" }, { status });
+      },
+      delay: async (milliseconds) => { delays.push(milliseconds); },
+    });
+
+    await expect(transport.getJson("https://api.github.com/repos/apache/kafka/issues"))
+      .resolves.toEqual([{ id: 1 }]);
+    expect(delays).toEqual([250, 500]);
+
+    const failing = new GitHubFetchTransport("github_pat_test", {
+      fetchImpl: async () => Response.json({ error: "gateway" }, { status: 502 }),
+      delay: async () => undefined,
+    });
+    await expect(failing.getJson("https://api.github.com/repos/apache/kafka/issues"))
+      .rejects.toThrow("GitHub API 502");
+  });
+
   test("keeps development and production deployment boundaries disjoint", async () => {
     const development = await config("development");
     const production = await config("production");

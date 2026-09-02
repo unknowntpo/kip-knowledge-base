@@ -38,7 +38,8 @@ export default {
     }
     if (request.method === "POST" && url.pathname === "/run") {
       const authorization = request.headers.get("authorization");
-      if (env.MANUAL_TRIGGER_TOKEN?.trim().length === 0 || authorization !== `Bearer ${env.MANUAL_TRIGGER_TOKEN}`) {
+      const manualToken = env.MANUAL_TRIGGER_TOKEN?.trim() ?? "";
+      if (manualToken.length === 0 || authorization !== `Bearer ${manualToken}`) {
         return new Response("Unauthorized", { status: 401 });
       }
       return stub.fetch("https://pipeline.internal/run", {
