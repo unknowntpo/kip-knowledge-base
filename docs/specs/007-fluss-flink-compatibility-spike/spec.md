@@ -1,6 +1,6 @@
 # Spec 007: Fluss/Flink Compatibility Spike
 
-Status: Accepted for compatibility harness
+Status: Accepted for bounded cluster-backed compatibility slice
 
 Owner: Project maintainers
 
@@ -13,12 +13,14 @@ before implementing the first durable processing slice.
 
 ## Scope
 
-This slice contains two independent gates:
+This work contains three independent gates:
 
 1. a JVM classpath gate proving Flink can discover the Fluss catalog connector
    from the pinned released artifacts;
 2. a semantic gate comparing a future independently generated Flink projection
-   with the accepted Spec 004 oracle.
+   with the accepted Spec 004 oracle;
+3. a run-owned Fluss cluster and bounded Flink replay that produces that
+   independent candidate.
 
 The selected baseline is governed by
 [ADR-0011](../../architecture/decisions/0011-pin-fluss-flink-compatibility-baseline.md):
@@ -52,8 +54,8 @@ of scope until parity, restart, and retry evidence pass.
 
 - The classpath smoke test has no cluster, port, filesystem, Cloudflare, or
   GitHub dependency.
-- A future cluster-backed runner must allocate a unique database/table prefix
-  per run, wait on observable readiness, and clean up only its own resources.
+- The cluster-backed runner allocates a unique database/table prefix
+  per run, waits on observable readiness, and cleans up only its own resources.
 - The fixture, materialization time, profiles, and revisions remain fixed.
 - Every candidate is written to a run-owned path and never overwrites the
   accepted oracle.
@@ -78,13 +80,13 @@ is not Flink parity evidence.
 
 - production cutover or R2 publication;
 - a claim that connector discovery proves a working Fluss cluster;
-- source acquisition, checkpoint commitment, restart recovery, or retries;
+- source acquisition, checkpoint commitment, or continuous-job recovery;
 - Flink 2.2 adoption;
 - Spark, Iceberg, semantic search, LLM, or load testing.
 
 ## Next implementation slice
 
-Add a run-owned local Fluss cluster, define the Log and Primary Key tables,
-ingest the Spec 004 fixture, run the smallest deterministic Flink job, export a
-candidate, and pass the scenarios in `acceptance.md`. Production remains on the
-TypeScript materializer until that evidence is reviewed.
+Run the materializer on a standalone Flink cluster, add a fixture with multiple
+versions of the same entity, and prove checkpoint recovery plus deterministic
+latest-version ordering. Production remains on the TypeScript materializer
+until that evidence is reviewed.

@@ -27,9 +27,9 @@ substitute for acceptance scenarios or issue history.
 - [ ] Phase 2: build deterministic reference materializer and tests.
 - [x] Phase 3: pin the first Fluss/Flink compatibility baseline and add the
       cluster-free connector discovery plus semantic parity gates.
-- [ ] Phase 3: run the cluster-backed Fluss/Flink compatibility slice against
+- [x] Phase 3: run the cluster-backed Fluss/Flink compatibility slice against
       the accepted Spec 004 fixture.
-- [ ] Phase 3: implement the first Fluss/Flink vertical slice.
+- [x] Phase 3: implement the first bounded Fluss/Flink vertical slice.
 - [ ] Phase 4: capture legacy visual tokens and reference screenshots.
 - [ ] Phase 4: add project-neutral Decision Thread API and hierarchical
       Project → Source/Status facets without legacy data or route coupling.
@@ -86,7 +86,7 @@ substitute for acceptance scenarios or issue history.
       existing R2 and Vue contracts.
 - [x] Expose the accepted fixture as a fail-closed semantic parity gate for the
       Fluss/Flink compatibility spike.
-- [ ] Produce an independent Flink candidate and pass the accepted digest.
+- [x] Produce an independent Flink candidate and pass the accepted digest.
 
 ## Spec 007: Fluss/Flink Compatibility Spike
 
@@ -95,10 +95,10 @@ substitute for acceptance scenarios or issue history.
 - [x] Add an isolated Maven classpath smoke test for Fluss catalog discovery.
 - [x] Add a canonical projection parity command and mismatch regression test.
 - [x] Run the classpath smoke test in pull-request CI.
-- [ ] Add run-owned Fluss Log and Primary Key tables with explicit readiness
+- [x] Add run-owned Fluss Log and Primary Key tables with explicit readiness
       and cleanup.
-- [ ] Implement the smallest Flink materializer for the Spec 004 fixture.
-- [ ] Prove duplicate, out-of-order, restart, retry, provenance, and accepted
+- [x] Implement the smallest bounded Flink materializer for the Spec 004 fixture.
+- [x] Prove duplicate, out-of-order, restart, retry, provenance, and accepted
       digest parity before any serving cutover.
 
 ## Spec 005: Evidence-first Hybrid Search

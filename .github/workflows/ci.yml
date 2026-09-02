@@ -88,7 +88,12 @@ jobs:
           java-version: "17"
           cache: maven
           cache-dependency-path: spikes/fluss-flink-compat/pom.xml
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
       - run: mvn -B verify -f spikes/fluss-flink-compat/pom.xml
+      - run: bun run test:fluss-flink-cluster
 
   e2e:
     name: E2E — local R2, Pages Functions, Vue

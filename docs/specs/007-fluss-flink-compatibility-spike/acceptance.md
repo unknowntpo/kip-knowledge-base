@@ -1,13 +1,12 @@
 # Spec 007 Acceptance Scenarios
 
-Status: Compatibility harness implemented; cluster-backed slice pending
+Status: Accepted for bounded cluster-backed compatibility slice
 
 ## Implementation progress
 
-- C1 and C2 are automated in `spikes/fluss-flink-compat` and CI.
-- C3 gate mechanics and mismatch rejection are automated in
-  `packages/reference-pipeline`.
-- C4-C7 require the next cluster-backed vertical slice.
+- C1-C2 run as the fast Maven classpath layer.
+- C3 runs in `packages/reference-pipeline`.
+- C4-C7 run through the isolated Docker/Fluss/Flink cluster runner in CI.
 
 ## C1 — Released artifacts resolve together
 
@@ -46,7 +45,7 @@ match the TypeScript oracle.
 ## C6 — Restart and retry are safe
 
 **Given** a job interruption after a bounded subset of events  
-**When** the same run resumes or replays from the Log Table  
+**When** a second bounded Flink run replays the complete Log Table\
 **Then** the final candidate matches a clean run  
 **And** no serving pointer or source checkpoint advances on partial output.
 
@@ -67,3 +66,7 @@ candidate path, duration, and cleanup result.
   cleanup evidence.
 - **Parity evidence:** C7, candidate must come from the Flink job rather than a
   copied oracle.
+
+The accepted slice uses Fluss's supported batch `LIMIT` and `COUNT(*)` reads.
+Continuous processing and checkpoint recovery require a standalone Flink
+cluster and remain outside this acceptance boundary.

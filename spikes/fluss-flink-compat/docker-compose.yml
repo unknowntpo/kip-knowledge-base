@@ -1,0 +1,46 @@
+services:
+  zookeeper:
+    image: zookeeper:3.9.2
+    restart: unless-stopped
+
+  coordinator-server:
+    image: apache/fluss:0.9.1-incubating
+    command: coordinatorServer
+    depends_on:
+      - zookeeper
+    ports:
+      - "127.0.0.1:${COORDINATOR_PORT}:9123"
+    environment:
+      - |
+        FLUSS_PROPERTIES=
+        zookeeper.address: zookeeper:2181
+        bind.listeners: INTERNAL://coordinator-server:0, CLIENT://coordinator-server:9123
+        advertised.listeners: CLIENT://localhost:${COORDINATOR_PORT}
+        internal.listener.name: INTERNAL
+        remote.data.dir: /tmp/fluss/remote-data
+    volumes:
+      - fluss-state:/tmp/fluss
+
+  tablet-server:
+    image: apache/fluss:0.9.1-incubating
+    command: tabletServer
+    depends_on:
+      - coordinator-server
+    ports:
+      - "127.0.0.1:${TABLET_PORT}:9123"
+    environment:
+      - |
+        FLUSS_PROPERTIES=
+        zookeeper.address: zookeeper:2181
+        bind.listeners: INTERNAL://tablet-server:0, CLIENT://tablet-server:9123
+        advertised.listeners: CLIENT://localhost:${TABLET_PORT}
+        internal.listener.name: INTERNAL
+        tablet-server.id: 0
+        kv.snapshot.interval: 0s
+        data.dir: /tmp/fluss/data
+        remote.data.dir: /tmp/fluss/remote-data
+    volumes:
+      - fluss-state:/tmp/fluss
+
+volumes:
+  fluss-state:
