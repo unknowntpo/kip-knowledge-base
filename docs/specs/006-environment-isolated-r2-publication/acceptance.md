@@ -2,6 +2,10 @@
 
 Status: Accepted as the implementation gate
 
+Amended 2026-09-02 by ADR-0012: P7-P9's normal production path is now an
+environment-local Cron publication rather than development-to-production copy.
+The copy-and-verify path remains valid recovery tooling.
+
 These scenarios define the implementation gate. Pull-request evidence uses
 recorded fixtures and isolated local R2. Live Cloudflare/GitHub checks are
 explicit post-merge operations and are never load tests.
@@ -71,34 +75,34 @@ key with different bytes
 **And** does not overwrite the object  
 **And** does not advance that projection's pointer.
 
-## P7 — Production promotion copies exact validated bytes
+## P7 — Production publication is environment-local
 
-**Given** a selected development `PublicationSetV1`  
-**When** production promotion completes  
-**Then** every promoted immutable production object has the same key, byte
-length, and SHA-256 digest as development  
-**And** production pointers name only those verified releases  
-**And** the workflow performs no GitHub fetch, materialization, timestamp
-regeneration, or frontend build.
+**Given** separately configured development and production publishers
+**When** the production Cron completes
+**Then** it uses only production Durable Object state and credentials
+**And** writes only the production bucket
+**And** production pointers name complete, verified environment-local releases
+**And** no development object, pointer, checkpoint, or deployment is mutated.
 
-## P8 — Production requires explicit authority
+## P8 — Production code requires tagged authority
 
 **Given** a scheduled development run, main push, pull request, or failed
 development publication  
 **When** workflows are inspected and executed  
-**Then** none can write the production bucket or production pointer  
-**And** production changes only through an explicitly dispatched promotion
-that passes the production environment's approval boundary.
+**Then** none can deploy the production Worker or write its bucket
+**And** only a version tag reachable from `main` can deploy new production
+publisher code
+**And** the already-deployed production Cron may continue publishing fresh
+production-local data.
 
-## P9 — Retry and repeated promotion are idempotent
+## P9 — Retry and repeated scheduled publication are idempotent
 
 **Given** immutable objects already uploaded or one publication set already
 current  
-**When** the same upload or promotion is retried  
+**When** the same environment-local run is retried
 **Then** matching objects are accepted without mutation  
 **And** the same logical pointers and public responses remain current  
-**And** an already-current production promotion creates no duplicate object
-writes.
+**And** neither environment creates duplicate immutable object writes.
 
 ## P10 — Feed and Search remain independently safe
 
@@ -176,10 +180,10 @@ namespace
 
 - Confirm that separate buckets, not object prefixes in one bucket, are the
   desired environment isolation boundary.
-- Confirm that development may publish automatically only after a bounded
-  manual proof, while production remains explicit and approved.
-- Confirm that production promotion copies verified bytes and never reruns the
-  source or materializer.
+- Confirm that development and production each publish through their own
+  bounded, serialized Worker and cannot write the other environment.
+- Confirm that production publisher code changes only through a reachable
+  version tag, while its deployed Cron may refresh data automatically.
 - Confirm that Feed and Search may temporarily expose different complete
   revisions, consistent with ADR-0007.
 - Confirm that R2 owns public-safe projections and publication metadata only,

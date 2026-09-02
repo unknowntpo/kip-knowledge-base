@@ -152,6 +152,20 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: bun apps/web/scripts/deploy-pages.ts development --commit-hash=${{ github.sha }}
+      - name: Deploy the isolated development data publisher
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: bun run --cwd apps/data-publisher-worker deploy:development
+      - name: Require provisioned development runtime secrets
+        working-directory: apps/data-publisher-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          configured="$(bunx wrangler secret list -c wrangler.development.jsonc)"
+          grep -q 'GITHUB_SOURCE_TOKEN' <<<"$configured"
+          grep -q 'MANUAL_TRIGGER_TOKEN' <<<"$configured"
 
   deploy-production:
     name: Deploy production
@@ -195,6 +209,20 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: bun apps/web/scripts/deploy-pages.ts production --commit-hash=${{ github.sha }}
+      - name: Deploy the isolated production data publisher
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: bun run --cwd apps/data-publisher-worker deploy:production
+      - name: Require provisioned production runtime secrets
+        working-directory: apps/data-publisher-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          configured="$(bunx wrangler secret list -c wrangler.production.jsonc)"
+          grep -q 'GITHUB_SOURCE_TOKEN' <<<"$configured"
+          grep -q 'MANUAL_TRIGGER_TOKEN' <<<"$configured"
 
   bootstrap-r2-development:
     name: Bootstrap development R2

@@ -2,6 +2,9 @@
   "name": "@oss-knowledge-base/github-publisher",
   "private": true,
   "type": "module",
+  "exports": {
+    "./github-connector": "./github-connector.ts"
+  },
   "scripts": {
     "dev": "PORT=4178 bun --watch server.ts",
     "start": "bun server.ts",

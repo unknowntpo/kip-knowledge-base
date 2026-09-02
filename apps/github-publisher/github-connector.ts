@@ -8,8 +8,6 @@ import {
   type GitHubProjectProfile,
 } from "@oss-knowledge-base/reference-pipeline";
 
-import { ghApiJson } from "./gh-api";
-
 export interface GitHubUser { readonly login: string }
 export interface GitHubLabel { readonly name: string }
 export interface GitHubIssue {
@@ -174,7 +172,10 @@ export class GitHubConnector {
   private readonly issueConcurrency: number;
 
   constructor(options: GitHubConnectorOptions = {}) {
-    this.transport = options.transport ?? { getJson: ghApiJson };
+    if (options.transport === undefined) {
+      throw new Error("GitHubConnector requires an explicit transport");
+    }
+    this.transport = options.transport;
     this.profiles = options.projectProfiles ?? githubProjectProfiles;
     this.connectorRevision = options.connectorRevision ?? "github@1";
     this.pageSize = options.pageSize ?? 100;
