@@ -33,12 +33,15 @@ just vm-ip bench-swarm-01a
 ```
 
 The repository-local wrapper resolves the VM through the infrastructure repo,
-copies the checkout through `morefine` without deleting prior evidence, and
-runs the deployment:
+copies the checkout through the `morefinepublic` SSH jump host without deleting
+prior evidence, and runs the deployment:
 
 ```bash
 just fluss-homelab-deploy
 ```
+
+Override the jump alias only when needed with
+`OSS_KB_HOMELAB_JUMP_HOST=<ssh-alias>`.
 
 Rerun only the standalone parity check with `just fluss-homelab-validate`.
 Inspect with `just fluss-homelab-status` or `just fluss-homelab-logs` and stop
