@@ -15,7 +15,7 @@ vX.Y.Z tag     ──────────────────> CI + main
 | Git event | Required evidence | Deployment |
 | --- | --- | --- |
 | Pull request | typecheck, build, unit, integration, desktop/mobile E2E | none |
-| Push to `main` | same CI, exact retained `dist` artifact | `oss-knowledge-base-dev.pages.dev` |
+| Push to `main` | same CI, exact retained `dist` artifact, deployed Dev E2E | `oss-knowledge-base-dev.pages.dev` |
 | Push `vX.Y.Z` tag | same CI, valid tag, tagged commit reachable from `main` | `oss-knowledge-base.pages.dev` |
 
 ## Acceptance assertions
@@ -46,6 +46,14 @@ or Search R2 release/current pointer.
 
 Given two valid tags arrive close together, then their production deployments
 serialize. Development may cancel a superseded deployment.
+
+### R6 — Development proves the deployed data path
+
+Given a commit has deployed to development, a separate Chromium check reads
+the Dev Worker health status and follows the public Pages Feed → Search →
+query-scoped project facet → project filter → immutable FeedDetail path. The
+main workflow is not complete unless that deployed check passes without page,
+console, or network errors.
 
 ## Automation writes
 

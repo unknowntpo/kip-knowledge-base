@@ -16,4 +16,5 @@ apps/web/.wrangler/
 apps/web/r2-seed/
 apps/web/.e2e/
 playwright-report/
+playwright-report-development/
 test-results/
