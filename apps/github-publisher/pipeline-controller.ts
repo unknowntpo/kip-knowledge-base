@@ -6,6 +6,7 @@ import {
 } from "@oss-knowledge-base/reference-pipeline";
 import type { FeedPublication } from "@oss-knowledge-base/serving-contract";
 
+import { ghApiJson } from "./gh-api";
 import { GitHubConnector, type GitHubPollResult } from "./github-connector";
 
 export interface PipelinePublicationSink {
@@ -49,7 +50,9 @@ export class ReferencePipelineController {
   private lastFailure?: PipelineRunResult & { readonly ok: false };
 
   constructor(options: ReferencePipelineControllerOptions = {}) {
-    this.connector = options.connector ?? new GitHubConnector();
+    this.connector = options.connector ?? new GitHubConnector({
+      transport: { getJson: ghApiJson },
+    });
     this.state = options.state ?? new ReferenceStateStore();
     this.publicationSink = options.publicationSink;
     this.materialize = options.materialize ?? ((events, materializedAt) =>

@@ -1,0 +1,22 @@
+{
+  "name": "@oss-knowledge-base/data-publisher-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "deploy:development": "wrangler deploy -c wrangler.development.jsonc",
+    "deploy:production": "wrangler deploy -c wrangler.production.jsonc"
+  },
+  "dependencies": {
+    "@oss-knowledge-base/domain": "workspace:*",
+    "@oss-knowledge-base/github-publisher": "workspace:*",
+    "@oss-knowledge-base/reference-pipeline": "workspace:*",
+    "@oss-knowledge-base/serving-contract": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260820.1",
+    "typescript": "5.9.3",
+    "wrangler": "^4.125.0"
+  }
+}

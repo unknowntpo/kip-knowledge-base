@@ -1,32 +1,43 @@
 # Spec 006: Environment-isolated R2 Publication
 
-Status: Accepted for implementation
+Status: Amended for independent environment Cron publishers
 
 Owner: Project maintainers
 
 Created: 2026-08-26
 
-Accepted: 2026-08-26
+Accepted: 2026-08-26; amended by ADR-0012 on 2026-09-02
+
+## 2026-09-02 operational amendment
+
+[ADR-0012](../../architecture/decisions/0012-run-independent-cloudflare-data-crons.md)
+supersedes this spec's production-promotion-only rule. Development and
+production now run separate Cloudflare Workers, Cron Triggers, Durable Object
+state, credentials, and R2 bindings. Each environment independently acquires,
+materializes, validates, and publishes complete Feed/Search releases.
+
+The promotion contract remains available as a recovery or one-time migration
+tool, but it is no longer the normal production-liveness path. All manifest-last,
+immutable-object, failure, environment-isolation, and no-external-PR-CI rules in
+this spec remain authoritative.
 
 ## Intent
 
-Let development receive fresh Kafka/DataFusion Feed and Search projections
-without changing production data, then promote one already-validated set of
-immutable objects to production without fetching or materializing the sources
-again.
+Let development and production receive fresh Kafka/DataFusion Feed and Search
+projections from isolated publishers, state, credentials, and R2 buckets.
 
-This spec introduces the data-publication control plane required before
-scheduled refreshes are enabled. It does not introduce the final durable
-Fluss/Flink processing plane.
+This spec introduces the data-publication control plane used by scheduled
+refreshes. It does not introduce the final durable Fluss/Flink processing plane.
 
 ## User outcome
 
 - The development site can show newly published community activity without a
   frontend deployment.
 - A failed refresh leaves the last complete Feed and Search releases readable.
-- Production changes only after an explicit promotion.
-- Production serves the exact immutable projection bytes that were validated in
-  development.
+- Production refreshes on its own isolated Cron and never reads development
+  state or writes the development bucket.
+- A development Worker code change reaches production only through a tagged
+  production Worker deployment.
 
 ## Current behavior and gap
 
@@ -48,30 +59,22 @@ would immediately change production.
 ## Target boundary
 
 ```text
-bounded source acquisition / completed processor output
-                       |
-                       v
-        deterministic Feed + Search materialization
-                       |
-                       v
-       validate one PublicationSetV1 and its digests
-                       |
-                       v
-          development R2 ----> development Pages
-                       |
-                explicit promotion
-             copy + verify exact bytes
-                       |
-                       v
-           production R2 ----> production Pages
+development Cron -> development Durable Object -> development R2 -> development Pages
+
+production Cron  -> production Durable Object  -> production R2  -> production Pages
 ```
+
+Both paths perform bounded source acquisition, deterministic Feed/Search
+materialization, publication-set validation, immutable writes, and pointer-last
+switching. They share contracts and code history, but no runtime state or write
+credential.
 
 The target uses separate private buckets:
 
 | Environment | Pages project | `OSS_KB_BUCKET` target | Write path |
 | --- | --- | --- | --- |
 | Development | `oss-knowledge-base-dev` | `oss-knowledge-base-dev` | scheduled or manual development publisher |
-| Production | `oss-knowledge-base` | `oss-knowledge-base-prod` | explicit production promotion only |
+| Production | `oss-knowledge-base` | `oss-knowledge-base-prod` | isolated scheduled or manual production publisher |
 
 The existing `oss-knowledge-base-poc` bucket remains a temporary rollback and
 inspection resource during cutover. It is not a third active environment.
@@ -91,9 +94,8 @@ inspection resource during cutover. It is not a third active environment.
   decision before automatic environment-specific data writes.
 
 [ADR-0010](../../architecture/decisions/0010-isolate-r2-environments-and-promote-verified-releases.md)
-records the cross-feature choice of separate buckets plus copy-and-verify
-promotion. Acceptance authorizes the local contract slices below; it does not
-authorize creating Cloudflare resources or scheduling a remote publisher.
+records the separate-bucket boundary. ADR-0012 owns the independent scheduled
+publishers and production-code release gate.
 
 ## Publication control contract
 
@@ -175,9 +177,10 @@ deduplication. Connector checkpoints and canonical events must not be stored in
 the serving bucket. Durable incremental processing remains a later Fluss/Flink
 stage.
 
-## Production promotion
+## Recovery-only production promotion
 
-Production promotion is a copy operation, not a rebuild:
+Copy-and-verify promotion remains available for recovery or one-time migration;
+it is not the normal production refresh path:
 
 1. Select one immutable `PublicationSetV1` already present in development.
 2. Require an explicit production workflow dispatch and production-environment
@@ -219,9 +222,9 @@ canonical event checkpoint is durable.
 - Development and production use separate Cloudflare/GitHub environments and
   separately scoped credentials. The development publisher cannot write the
   production bucket.
-- The production promoter may read the selected development objects and write
-  production only after approval. The frontend and Pages Functions contain no
-  R2 credentials.
+- The production publisher can write only production. A recovery promoter may
+  read selected development objects and write production only after approval.
+  The frontend and Pages Functions contain no R2 credentials.
 - Remote commands require an explicit environment and bucket. There is no
   remote fallback to `oss-knowledge-base-poc` or another default bucket.
 - Pull-request CI uses recorded fixtures and isolated local R2 only. It makes no
@@ -234,7 +237,7 @@ canonical event checkpoint is durable.
 
 ## Observability
 
-Each publication or promotion reports:
+Each publication or recovery promotion reports:
 
 - environment, publication-set ID, input digest, and materializer revision;
 - Feed/Search release IDs, object counts, total bytes, and pointer outcomes;
@@ -268,9 +271,9 @@ decision.
    cross-environment isolation.
 3. **Development publisher:** add a manual bounded live run first; after its
    request/write evidence is reviewed, enable a serialized schedule.
-4. **Production promoter:** copy and verify one selected development
-   publication set behind explicit production approval, then run a minimal
-   public smoke check.
+4. **Production publisher:** provision the separately scoped production Worker,
+   secrets, Durable Object, Cron, and R2 binding behind the tagged code-release
+   boundary, then run a minimal public smoke check.
 
 Each slice must leave both public sites on a complete readable release. Code
 deployment under ADR-0008 remains independent throughout.
@@ -278,9 +281,9 @@ deployment under ADR-0008 remains independent throughout.
 ## Exit and next architecture stage
 
 Spec 006 is complete when every scenario in
-[`acceptance.md`](./acceptance.md) passes and development can refresh data
-without a frontend deploy or production mutation.
+[`acceptance.md`](./acceptance.md) passes and both environments can refresh data
+without a frontend deploy or cross-environment mutation.
 
-The following stage introduces durable events, persisted connector progress,
-and Flink parity. It may replace the TypeScript producer, but it must emit the
+The following stage introduces durable events and Flink parity. It may replace
+the TypeScript producer, but it must emit the
 same Feed/Search serving releases and satisfy this publication contract.

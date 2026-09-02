@@ -1,6 +1,6 @@
 # ADR-0010: Isolate R2 environments and promote verified releases
 
-- Status: Accepted
+- Status: Partially superseded by ADR-0012
 - Date: 2026-08-26
 
 ## Context
@@ -17,6 +17,11 @@ pointer. R2 cannot atomically switch both pointers, and the public APIs do not
 join their revisions.
 
 ## Decision
+
+> **2026-09-02 amendment:** ADR-0012 supersedes the production-promotion-only
+> bullets below. Separate buckets, immutable-key conflict handling, independent
+> Feed/Search pointers, the R2 serving boundary, and fixture-only PR tests remain
+> active. Production now has its own isolated Cloudflare Cron publisher.
 
 - Bind development Pages to a private `oss-knowledge-base-dev` bucket and
   production Pages to a private `oss-knowledge-base-prod` bucket.
